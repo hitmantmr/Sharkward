@@ -112,6 +112,24 @@ const Watchtime = () => {
         <p style={styles.subtitle}>Upravljaj svojim povezanim nalozi i prati sakupljanje poena u realnom vremenu</p>
       </div>
 
+      {/* Upozorenje i Obaveštenje ako Discord nije povezan */}
+      {!user.discordLinked && (
+        <div className="discord-lock-banner">
+          <ShieldAlert size={22} color="#00f0ff" style={{ flexShrink: 0 }} />
+          <div>
+            <div style={{ fontWeight: '800', color: '#00f0ff', marginBottom: '2px', fontSize: '0.95rem' }}>
+              🔒 SAKUPLJANJE POENA I KICK UNOS SU ZAKLJUČANI
+            </div>
+            <span>
+              Moraš prvo povezati svoj <strong>Discord nalog</strong>. Ako još uvek nisi član Sharke Discord servera, obavezno se pridruži OVDE: {' '}
+              <a href="https://discord.gg/n2t8ZBDfH3" target="_blank" rel="noopener noreferrer">
+                discord.gg/n2t8ZBDfH3
+              </a>
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Red 1: Povezivanje (Discord levo, Kick desno) */}
       <div style={styles.connectionGrid}>
         
@@ -179,8 +197,18 @@ const Watchtime = () => {
           )}
         </div>
 
-        {/* Kick Povezivanje */}
-        <div style={styles.card} className="glass">
+        {/* Kick Povezivanje - Blurovano dok ne poveže Discord */}
+        <div 
+          style={{ 
+            ...styles.card, 
+            filter: user.discordLinked ? 'none' : 'blur(5px)',
+            opacity: user.discordLinked ? 1 : 0.45,
+            pointerEvents: user.discordLinked ? 'auto' : 'none',
+            userSelect: user.discordLinked ? 'auto' : 'none',
+            position: 'relative' 
+          }} 
+          className="glass"
+        >
           <div style={styles.cardHeader}>
             <div style={styles.platformIconKick}>K</div>
             <div>
@@ -241,8 +269,16 @@ const Watchtime = () => {
 
       </div>
 
-      {/* Red 2: Statistika i Kalkulator */}
-      <div style={styles.statsGrid}>
+      {/* Red 2: Statistika i Kalkulator - Blurovano dok ne poveže Discord */}
+      <div 
+        style={{ 
+          ...styles.statsGrid,
+          filter: user.discordLinked ? 'none' : 'blur(5px)',
+          opacity: user.discordLinked ? 1 : 0.45,
+          pointerEvents: user.discordLinked ? 'auto' : 'none',
+          userSelect: user.discordLinked ? 'auto' : 'none'
+        }}
+      >
         
         {/* Real-time Panel */}
         <div style={styles.cardPoints} className="glass">
@@ -260,14 +296,14 @@ const Watchtime = () => {
             <span style={styles.pointsShowcaseLabel}>Ukupno Poena</span>
             <div style={styles.pointsLargeVal}>
               <Coins size={36} color="#00f0ff" />
-              <span>{formatPoints(user.points)}</span>
+              <span>{user.discordLinked ? formatPoints(user.points) : '0'}</span>
             </div>
           </div>
 
           <div style={styles.statsRow}>
             <div style={styles.subStat}>
               <span style={styles.subStatLabel}>Sati Gledanja</span>
-              <span style={styles.subStatVal}>{formatWatchtime(user.hoursWatched)}</span>
+              <span style={styles.subStatVal}>{user.discordLinked ? formatWatchtime(user.hoursWatched) : '0h 0m'}</span>
             </div>
             <div style={styles.subStat}>
               <span style={styles.subStatLabel}>Sledeći poeni za</span>

@@ -592,3 +592,38 @@ body {
   transform: translateY(-2px) scale(1.1);
   opacity: 1;
 }
+
+/* Global Reset za bele okvire oko dugmadi pri kliku */
+button:focus,
+button:focus-visible,
+input:focus,
+select:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Discord Lock Banner za Watchtime stranicu */
+.discord-lock-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(0, 240, 255, 0.06);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  color: #fff;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  box-shadow: 0 4px 20px rgba(0, 240, 255, 0.08);
+}
+
+.discord-lock-banner a {
+  color: var(--accent-cyan);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.discord-lock-banner a:hover {
+  color: #fff;
+}

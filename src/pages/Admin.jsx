@@ -412,16 +412,6 @@ const Admin = () => {
 
           <div style={styles.formRow}>
             <div style={styles.formGroup}>
-              <label style={styles.label}>Retkost (Rarity)</label>
-              <select value={skinRarity} onChange={(e) => setSkinRarity(e.target.value)} style={styles.select}>
-                <option value="covert">Covert (Crvena)</option>
-                <option value="classified">Classified (Roze)</option>
-                <option value="restricted">Restricted (Ljubičasta)</option>
-                <option value="milspec">Mil-spec (Plava)</option>
-              </select>
-            </div>
-
-            <div style={styles.formGroup}>
               <label style={styles.label}>Cena u poenima (Automatski se preračunava)</label>
               <input
                 type="number"

@@ -41,12 +41,45 @@ const Shop = ({ setActiveTab }) => {
     }
   };
 
+  const getAutoRarityColor = (skin) => {
+    if (!skin) return '#8b5cf6';
+    const name = (skin.name || '').toLowerCase();
+    const type = skin.type || '';
+
+    if (type === 'GiftCard' || name.includes('gift card')) {
+      return '#00f0ff';
+    }
+    if (type === 'Knife' || name.startsWith('★') || name.includes('knife') || name.includes('karambit') || name.includes('butterfly') || name.includes('bayonet') || name.includes('doppler')) {
+      return '#ffd700';
+    }
+    if (
+      name.includes('dragon lore') || name.includes('fire serpent') || name.includes('howl') ||
+      name.includes('asiimov') || name.includes('code red') || name.includes('case hardened') ||
+      name.includes('kill confirmed') || name.includes('printstream')
+    ) {
+      return '#eb4b4b';
+    }
+    if (
+      name.includes('decimator') || name.includes('mecha') || name.includes('jawbreaker') ||
+      name.includes('disco tech') || name.includes('neo-noir') || name.includes('hyper beast')
+    ) {
+      return '#d32ce6';
+    }
+    if (
+      name.includes('atheris') || name.includes('slate') || name.includes('black lotus') ||
+      name.includes('umbral rabbit') || name.includes('tooth fairy') || name.includes('conspiracy')
+    ) {
+      return '#8b5cf6';
+    }
+    return '#3b82f6';
+  };
+
   const getRarityGlow = (rarity) => {
     switch (rarity) {
-      case 'covert': return '#eb4b4b'; // Crvena
-      case 'classified': return '#d946ef'; // Roze
-      case 'restricted': return '#8b5cf6'; // Ljubičasta
-      case 'milspec': return '#3b82f6'; // Plava
+      case 'covert': return '#eb4b4b';
+      case 'classified': return '#d946ef';
+      case 'restricted': return '#8b5cf6';
+      case 'milspec': return '#3b82f6';
       default: return '#9ca3af';
     }
   };
@@ -112,7 +145,7 @@ const Shop = ({ setActiveTab }) => {
   };
 
   // Pomoćna komponenta za prikaz slike/vizuelnog dela skina
-  const RenderSkinImage = ({ skin }) => {
+  const RenderSkinImage = ({ skin, glowColor = '#8b5cf6' }) => {
     const isGiftCard = skin.type === 'GiftCard';
     
     if (isGiftCard) {
@@ -130,13 +163,30 @@ const Shop = ({ setActiveTab }) => {
       );
     }
 
+    const circleGlow = (
+      <div style={{
+        position: 'absolute',
+        width: '95px',
+        height: '95px',
+        borderRadius: '50%',
+        background: `radial-gradient(circle, ${glowColor}66 0%, ${glowColor}22 55%, transparent 80%)`,
+        filter: 'blur(10px)',
+        pointerEvents: 'none',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 1,
+      }} />
+    );
+
     const imgUrl = skin.imageUrl || skin.image;
     // Ako slika počinje sa http/https, renderujemo je direktno sa CDN-a (ByMykel API)
     if (imgUrl && (imgUrl.startsWith('http://') || imgUrl.startsWith('https://'))) {
       const fixedUrl = imgUrl.replace('community.akamai.steamstatic.com', 'community.steamstatic.com');
       return (
-        <div style={styles.imgWrapper}>
-          <img src={fixedUrl} alt={skin.name} style={styles.skinImg} />
+        <div style={{ ...styles.imgWrapper, position: 'relative' }}>
+          {circleGlow}
+          <img src={fixedUrl} alt={skin.name} style={{ ...styles.skinImg, position: 'relative', zIndex: 2 }} />
         </div>
       );
     }
@@ -164,16 +214,18 @@ const Shop = ({ setActiveTab }) => {
 
     if (imageUrl) {
       return (
-        <div style={styles.imgWrapper}>
-          <img src={imageUrl} alt={skin.name} style={styles.skinImg} />
+        <div style={{ ...styles.imgWrapper, position: 'relative' }}>
+          {circleGlow}
+          <img src={imageUrl} alt={skin.name} style={{ ...styles.skinImg, position: 'relative', zIndex: 2 }} />
         </div>
       );
     }
 
     // Default CSS fallback
     return (
-      <div style={styles.fallbackVisual}>
-        <span style={styles.fallbackEmoji}>
+      <div style={{ ...styles.fallbackVisual, position: 'relative' }}>
+        {circleGlow}
+        <span style={{ ...styles.fallbackEmoji, position: 'relative', zIndex: 2 }}>
           {skin.type === 'Knife' ? '🔪' : skin.type === 'Gloves' ? '🧤' : '🔫'}
         </span>
       </div>
@@ -290,7 +342,7 @@ const Shop = ({ setActiveTab }) => {
       {filteredSkins.length > 0 ? (
         <div style={styles.skinsGrid}>
           {filteredSkins.map((skin) => {
-            const glowColor = getRarityGlow(skin.rarity);
+            const glowColor = getAutoRarityColor(skin);
             const hasEnoughPoints = user.points >= skin.price;
             const isSold = skin.status === 'sold' || skin.stock <= 0;
 
@@ -315,7 +367,7 @@ const Shop = ({ setActiveTab }) => {
                 {/* Skin vizuelni prikaz */}
                 <div style={{ ...styles.skinVisual, background: getSkinGradient(skin.image) }}>
                   <div style={styles.radialGlow} />
-                  <RenderSkinImage skin={skin} />
+                  <RenderSkinImage skin={skin} glowColor={glowColor} />
                 </div>
 
                 {/* Skin Info */}

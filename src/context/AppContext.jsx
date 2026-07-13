@@ -222,8 +222,8 @@ export const AppProvider = ({ children }) => {
       discordId: null,
       kickLinked: false,
       kickUser: null,
-      points: 250, // Početni poeni za demo
-      hoursWatched: 15.4,
+      points: 0,
+      hoursWatched: 0,
       tradeUrl: '',
     };
   });
