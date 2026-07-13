@@ -230,8 +230,8 @@ const Shop = ({ setActiveTab }) => {
   return (
     <div style={styles.container} className="fade-in">
       
-      {/* Obaveštenje ako Discord nije povezan */}
-      {!user.discordLinked && (
+      {/* Obaveštenje ako nalozi nisu povezani */}
+      {(!user.discordLinked || !user.kickLinked) && (
         <div className="discord-lock-banner">
           <ShieldAlert size={22} color="#00f0ff" style={{ flexShrink: 0 }} />
           <div>
@@ -239,24 +239,32 @@ const Shop = ({ setActiveTab }) => {
               🔒 PRODAVNICA SKINOVA JE ZAKLJUČANA
             </div>
             <span>
-              Moraš prvo povezati svoj <strong>Discord nalog</strong> da bi kupovao skinove i sačuvao Trade URL. Ako još uvek nisi član Sharke Discord servera, obavezno se pridruži OVDE: {' '}
-              <a href="https://discord.gg/n2t8ZBDfH3" target="_blank" rel="noopener noreferrer">
-                discord.gg/n2t8ZBDfH3
-              </a>
+              {!user.discordLinked ? (
+                <>
+                  Moraš prvo povezati svoj <strong>Discord nalog</strong> i <strong>Kick nalog</strong> da bi kupovao skinove i sačuvao Trade URL. Ako još uvek nisi član Sharke Discord servera, obavezno se pridruži OVDE: {' '}
+                  <a href="https://discord.gg/n2t8ZBDfH3" target="_blank" rel="noopener noreferrer">
+                    discord.gg/n2t8ZBDfH3
+                  </a>
+                </>
+              ) : (
+                <>
+                  Moraš povezati i svoj <strong>Kick nalog</strong> u Watchtime sekciji kako bi otključao prodavnicu skinova!
+                </>
+              )}
             </span>
           </div>
         </div>
       )}
 
-      {/* Sadržaj prodavnice sa blur efektom dok nije povezan Discord */}
+      {/* Sadržaj prodavnice sa blur efektom dok nisu povezani I Discord I Kick */}
       <div style={{
         display: 'flex',
         flexDirection: 'column',
         gap: '2.5rem',
-        filter: user.discordLinked ? 'none' : 'blur(5px)',
-        opacity: user.discordLinked ? 1 : 0.45,
-        pointerEvents: user.discordLinked ? 'auto' : 'none',
-        userSelect: user.discordLinked ? 'auto' : 'none',
+        filter: (user.discordLinked && user.kickLinked) ? 'none' : 'blur(5px)',
+        opacity: (user.discordLinked && user.kickLinked) ? 1 : 0.45,
+        pointerEvents: (user.discordLinked && user.kickLinked) ? 'auto' : 'none',
+        userSelect: (user.discordLinked && user.kickLinked) ? 'auto' : 'none',
       }}>
         {/* 1. Podešavanje isporuke (Steam Trade URL) */}
         <div style={styles.deliveryCard} className="glass">

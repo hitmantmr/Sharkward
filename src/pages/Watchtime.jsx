@@ -112,13 +112,13 @@ const Watchtime = () => {
         <p style={styles.subtitle}>Upravljaj svojim povezanim nalozi i prati sakupljanje poena u realnom vremenu</p>
       </div>
 
-      {/* Upozorenje i Obaveštenje ako Discord nije povezan */}
-      {!user.discordLinked && (
+      {/* Upozorenje i Obaveštenje ako nalozi nisu povezani */}
+      {!user.discordLinked ? (
         <div className="discord-lock-banner">
           <ShieldAlert size={22} color="#00f0ff" style={{ flexShrink: 0 }} />
           <div>
             <div style={{ fontWeight: '800', color: '#00f0ff', marginBottom: '2px', fontSize: '0.95rem' }}>
-              🔒 SAKUPLJANJE POENA I KICK UNOS SU ZAKLJUČANI
+              🔒 KICK UNOS I SAKUPLJANJE POENA SU ZAKLJUČANI
             </div>
             <span>
               Moraš prvo povezati svoj <strong>Discord nalog</strong>. Ako još uvek nisi član Sharke Discord servera, obavezno se pridruži OVDE: {' '}
@@ -128,7 +128,19 @@ const Watchtime = () => {
             </span>
           </div>
         </div>
-      )}
+      ) : !user.kickLinked ? (
+        <div className="discord-lock-banner" style={{ borderColor: 'rgba(83, 252, 24, 0.3)' }}>
+          <ShieldAlert size={22} color="#53fc18" style={{ flexShrink: 0 }} />
+          <div>
+            <div style={{ fontWeight: '800', color: '#53fc18', marginBottom: '2px', fontSize: '0.95rem' }}>
+              🔒 STATISTIKA I SAKUPLJANJE POENA SU ZAKLJUČANI
+            </div>
+            <span>
+              Poveži svoj <strong>Kick nalog</strong> iznad da bi otključao praćenje sati i sakupljanje poena!
+            </span>
+          </div>
+        </div>
+      ) : null}
 
       {/* Red 1: Povezivanje (Discord levo, Kick desno) */}
       <div style={styles.connectionGrid}>
@@ -197,7 +209,7 @@ const Watchtime = () => {
           )}
         </div>
 
-        {/* Kick Povezivanje - Blurovano dok ne poveže Discord */}
+        {/* Kick Povezivanje - Otključava se čim poveže Discord */}
         <div 
           style={{ 
             ...styles.card, 
@@ -269,14 +281,14 @@ const Watchtime = () => {
 
       </div>
 
-      {/* Red 2: Statistika i Kalkulator - Blurovano dok ne poveže Discord */}
+      {/* Red 2: Statistika i Kalkulator - Blurovano sve dok ne poveže I Discord I Kick */}
       <div 
         style={{ 
           ...styles.statsGrid,
-          filter: user.discordLinked ? 'none' : 'blur(5px)',
-          opacity: user.discordLinked ? 1 : 0.45,
-          pointerEvents: user.discordLinked ? 'auto' : 'none',
-          userSelect: user.discordLinked ? 'auto' : 'none'
+          filter: (user.discordLinked && user.kickLinked) ? 'none' : 'blur(5px)',
+          opacity: (user.discordLinked && user.kickLinked) ? 1 : 0.45,
+          pointerEvents: (user.discordLinked && user.kickLinked) ? 'auto' : 'none',
+          userSelect: (user.discordLinked && user.kickLinked) ? 'auto' : 'none'
         }}
       >
         
