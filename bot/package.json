@@ -1,0 +1,20 @@
+{
+  "name": "sharkeshop-discord-bot",
+  "version": "1.0.0",
+  "description": "Discord bot for SharkeShop loyalty points and account linking",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "discord.js": "^14.15.3",
+    "dotenv": "^16.4.5",
+    "express": "^5.2.1",
+    "ws": "^8.21.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}

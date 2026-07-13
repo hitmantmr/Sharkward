@@ -1,0 +1,38 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules
+bot/node_modules
+
+# Build outputs
+dist
+dist-ssr
+
+# Environment files & secrets
+.env
+*.env
+bot/.env
+*.local
+
+# Caches & large temp files
+bot/buff163_cache.json
+bot/prices_cache.json
+bot/steam_market.html
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

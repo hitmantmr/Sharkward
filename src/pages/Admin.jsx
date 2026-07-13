@@ -1,0 +1,884 @@
+import React, { useState, useEffect } from 'react';
+import { useApp } from '../context/AppContext';
+import { ShieldCheck, Plus, Trash2, RotateCcw, Award, Coins, Play, Search, Loader, HelpCircle } from 'lucide-react';
+
+const getAdminSkinImage = (img) => {
+  if (!img) return '/img/butterfly_fade.png';
+  if (img.startsWith('http')) {
+    return img.replace('community.akamai.steamstatic.com', 'community.steamstatic.com');
+  }
+  
+  const localMap = {
+    'fade_butterfly': '/img/butterfly_fade.png',
+    'butterfly_fade': '/img/butterfly_fade.png',
+    'doppler_karambit': '/img/karambit_doppler.png',
+    'karambit_doppler': '/img/karambit_doppler.png',
+    'flip_doppler': '/img/karambit_doppler.png',
+    'gut_marble': '/img/butterfly_fade.png',
+    'shadow_ultraviolet': '/img/karambit_doppler.png',
+    'awp_asiimov': '/img/karambit_doppler.png',
+    'ak_redline': '/img/butterfly_fade.png',
+    'pandora_gloves': '/img/butterfly_fade.png',
+    'dragon_lore': '/img/karambit_doppler.png',
+    'printstream_m4': '/img/karambit_doppler.png',
+    'neon_rider': '/img/butterfly_fade.png',
+    'neo_noir_usp': '/img/karambit_doppler.png',
+    'water_glock': '/img/butterfly_fade.png',
+    'mecha_deagle': '/img/karambit_doppler.png'
+  };
+  return localMap[img] || '/img/butterfly_fade.png';
+};
+
+const Admin = () => {
+  const { 
+    user, 
+    skins, 
+    giveaways, 
+    addSkin, 
+    deleteSkin, 
+    restockSkin, 
+    updateUserPoints, 
+    endGiveawayMock,
+    resetAllData,
+    isLive,
+    setIsLive
+  } = useApp();
+
+  // Država forme za skin
+  const [skinName, setSkinName] = useState('');
+  const [isStatTrak, setIsStatTrak] = useState(false);
+  const [skinType, setSkinType] = useState('Knife');
+  const [skinRarity, setSkinRarity] = useState('covert');
+  const [skinCondition, setSkinCondition] = useState('FN');
+  const [skinPrice, setSkinPrice] = useState('15000');
+  const [skinImage, setSkinImage] = useState('fade_butterfly');
+  const [skinEstPrice, setSkinEstPrice] = useState('');
+
+  // CS2 API i Autocomplete države
+  const [skinsCatalog, setSkinsCatalog] = useState([]);
+  const [loadingCatalog, setLoadingCatalog] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [selectedCatalogSkin, setSelectedCatalogSkin] = useState(null);
+  const [buffPrice, setBuffPrice] = useState(null);
+  const [fetchingPrice, setFetchingPrice] = useState(false);
+
+  // Mapa wear nivoa
+  const wearMap = {
+    'FN': 'Factory New',
+    'MW': 'Minimal Wear',
+    'FT': 'Field-Tested',
+    'WW': 'Well-Worn',
+    'BS': 'Battle-Scarred'
+  };
+
+  // Učitavanje kataloga skinova sa GitHub-a (ByMykel API)
+  useEffect(() => {
+    const fetchCatalog = async () => {
+      const cached = sessionStorage.getItem('csgo_skins_catalog');
+      if (cached) {
+        setSkinsCatalog(JSON.parse(cached));
+        return;
+      }
+
+      setLoadingCatalog(true);
+      try {
+        const res = await fetch('https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/en/skins.json');
+        if (res.ok) {
+          const data = await res.json();
+          // Čuvamo samo potrebna polja radi uštede memorije
+          const mapped = data.map(s => ({
+            id: s.id,
+            name: s.name,
+            image: s.image,
+            rarity: s.rarity ? s.rarity.id : 'rarity_common_color',
+            weapon: s.weapon ? s.weapon.id : 'unknown',
+            category: s.category ? s.category.id : 'unknown'
+          }));
+          setSkinsCatalog(mapped);
+          sessionStorage.setItem('csgo_skins_catalog', JSON.stringify(mapped));
+        }
+      } catch (err) {
+        console.warn('Greška pri učitavanju kataloga skinova:', err);
+      } finally {
+        setLoadingCatalog(false);
+      }
+    };
+
+    fetchCatalog();
+  }, []);
+
+  // Pretraga i autokomplet predlozi
+  useEffect(() => {
+    if (!skinName.trim() || selectedCatalogSkin?.name === skinName) {
+      setSuggestions([]);
+      return;
+    }
+
+    // Uklanjanje StatTrak oznaka pre pretrage slike
+    const cleanNameForImageSearch = skinName
+      .replace('★ StatTrak™ ', '')
+      .replace('★StatTrak™ ', '')
+      .replace('StatTrak™ ', '');
+    const cleanQuery = cleanNameForImageSearch.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    const filtered = skinsCatalog
+      .filter(s => {
+        // Spajamo ime i fazu ako faza postoji na skinu
+        const fullName = s.phase ? `${s.name} (${s.phase})` : s.name;
+        const cleanName = fullName.toLowerCase().replace(/[^a-z0-9]/g, '');
+        
+        // Proveravamo poklapanje u oba smera
+        return cleanName.includes(cleanQuery) || cleanQuery.includes(cleanName);
+      })
+      .slice(0, 8);
+    setSuggestions(filtered);
+  }, [skinName, skinsCatalog, selectedCatalogSkin]);
+
+  // Pomocnik za mapiranje retkosti
+  const mapRarity = (rarityId) => {
+    if (!rarityId) return 'milspec';
+    const lower = rarityId.toLowerCase();
+    if (lower.includes('ancient') || lower.includes('covert') || lower.includes('red')) return 'covert';
+    if (lower.includes('legendary') || lower.includes('classified') || lower.includes('pink')) return 'classified';
+    if (lower.includes('mythical') || lower.includes('restricted') || lower.includes('purple')) return 'restricted';
+    return 'milspec';
+  };
+
+  // Pomocnik za tip oružja
+  const mapWeaponType = (skinObj) => {
+    const category = skinObj.category?.toLowerCase() || '';
+    const name = skinObj.name?.toLowerCase() || '';
+    
+    if (category.includes('knife') || name.includes('knife') || name.includes('bayonet') || name.includes('daggers') || name.includes('karambit')) {
+      return 'Knife';
+    }
+    if (category.includes('gloves')) {
+      return 'Gloves';
+    }
+    if (name.includes('awp') || name.includes('ssg') || name.includes('scar') || name.includes('g3sg1')) {
+      return 'Sniper Rifle';
+    }
+    if (name.includes('ak-47') || name.includes('m4a') || name.includes('galil') || name.includes('famas') || name.includes('aug') || name.includes('sg 553')) {
+      return 'Rifle';
+    }
+    return 'Pistol';
+  };
+
+  // Preuzimanje cene sa Buff163
+  const fetchBuffPrice = async (name, wearCode) => {
+    const wearFullName = wearMap[wearCode] || 'Field-Tested';
+    const queryName = `${name} (${wearFullName})`;
+    
+    setFetchingPrice(true);
+    setBuffPrice(null);
+    try {
+      const res = await fetch(`http://localhost:5000/api/admin/skin-price?name=${encodeURIComponent(queryName)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.price) {
+          setBuffPrice(data.price);
+          setSkinEstPrice('$' + data.price.toFixed(2));
+          // Preporučena cena poena (1 USD = 130 PTS)
+          setSkinPrice(Math.round(data.price * 130).toString());
+        } else {
+          setBuffPrice(null);
+          setSkinEstPrice('');
+        }
+      }
+    } catch (err) {
+      console.warn('Greška pri dobavljanju cene:', err);
+    } finally {
+      setFetchingPrice(false);
+    }
+  };
+
+  // Promena stanja izbora skina
+  const handleSelectSuggestion = (skin) => {
+    setSelectedCatalogSkin(skin);
+    setSkinName(skin.name);
+    setSkinImage(skin.image);
+    setSkinRarity(mapRarity(skin.rarity));
+    setSkinType(mapWeaponType(skin));
+    setSuggestions([]);
+    
+    // Dohvati cenu za izabrano stanje
+    fetchBuffPrice(skin.name, skinCondition);
+  };
+
+  // Kada admin promeni stanje (FN, MW...), ponovo povuci cenu
+  const handleConditionChange = (e) => {
+    const nextCond = e.target.value;
+    setSkinCondition(nextCond);
+    if (selectedCatalogSkin) {
+      fetchBuffPrice(selectedCatalogSkin.name, nextCond);
+    }
+  };
+
+  const handleAddSkinSubmit = (e) => {
+    e.preventDefault();
+    if (!skinName.trim()) return;
+
+    // Normalizacija i čišćenje imena za pretragu
+    let baseName = selectedCatalogSkin ? selectedCatalogSkin.name : skinName.trim();
+    let cleanBase = baseName
+      .replace('★ StatTrak™ ', '')
+      .replace('★StatTrak™ ', '')
+      .replace('StatTrak™ ', '')
+      .replace('★ ', '')
+      .replace('★', '')
+      .trim();
+
+    // Utvrđujemo fazu ako postoji
+    let phase = selectedCatalogSkin?.phase || null;
+    if (!phase) {
+      const phaseMatch = skinName.match(/\((Phase \d|Ruby|Sapphire|Black Pearl|Emerald)\)/i);
+      if (phaseMatch) {
+        phase = phaseMatch[1];
+        cleanBase = cleanBase.replace(`(${phase})`, '').trim();
+      }
+    }
+
+    let displayName = cleanBase;
+    if (phase) {
+      displayName = `${cleanBase} (${phase})`;
+    }
+
+    // Provera da li je u pitanju nož
+    const isKnife = skinType === 'Knife' || cleanBase.toLowerCase().includes('knife') || cleanBase.toLowerCase().includes('bayonet') || cleanBase.toLowerCase().includes('daggers') || cleanBase.toLowerCase().includes('karambit');
+
+    // StatTrak formiranje naziva (Pravilo 3: zvezdica ★ pre prefiksa za noževe)
+    let finalName = '';
+    if (isStatTrak) {
+      finalName = isKnife ? `★ StatTrak™ ${displayName}` : `StatTrak™ ${displayName}`;
+    } else {
+      finalName = isKnife ? `★ ${displayName}` : displayName;
+    }
+
+    addSkin({
+      name: finalName,
+      type: skinType,
+      rarity: skinRarity,
+      condition: skinCondition,
+      price: parseInt(skinPrice) || 1000,
+      image: skinImage, // Steam CDN Link
+      imageUrl: skinImage, // Upisuje se u bazu pod poljem imageUrl kao u specifikaciji
+      estPrice: skinEstPrice || null,
+      stock: 1
+    });
+
+    // Reset forme
+    setSkinName('');
+    setIsStatTrak(false);
+    setSelectedCatalogSkin(null);
+    setBuffPrice(null);
+    setSkinEstPrice('');
+  };
+
+
+
+  const formatPoints = (pts) => {
+    return new Intl.NumberFormat().format(pts);
+  };
+
+  return (
+    <div style={styles.container} className="fade-in">
+      <div style={styles.header} className="glass">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <ShieldCheck size={32} color="#53fc18" />
+          <div>
+            <h2 style={styles.title}>Sharke Admin Dashboard</h2>
+            <p style={styles.subtitle}>Upravljaj skinovima sa tržišnim cenama, giveaway-ima i profilom</p>
+          </div>
+        </div>
+      </div>
+
+
+
+      {/* Dodaj Skin Formu sa autocomplete pretragom i tržišnim cenama */}
+      <div style={{ ...styles.card, width: '100%', marginTop: '1.5rem' }} className="glass">
+        <h3 style={styles.cardTitle}>
+          <Plus size={18} color="var(--accent-cyan)" /> Dodaj Novi Skin (Automatske Cene)
+        </h3>
+        
+        <form onSubmit={handleAddSkinSubmit} style={styles.form}>
+          <div style={{ ...styles.formGroup, position: 'relative' }}>
+            <label style={styles.label}>Pretraži i Izaberi Skin (CS2 API Autocomplete)</label>
+            <div style={styles.inputSearchWrapper}>
+              <input
+                type="text"
+                placeholder="Počni da kucaš naziv skina (npr. Asiimov, Redline)..."
+                value={skinName}
+                onChange={(e) => setSkinName(e.target.value)}
+                style={styles.input}
+                required
+              />
+              {loadingCatalog && <Loader size={16} className="animate-spin" style={styles.searchLoader} />}
+            </div>
+
+            {/* Autocomplete predlozi */}
+            {suggestions.length > 0 && (
+              <div style={styles.suggestionsDropdown} className="glass">
+                {suggestions.map(s => (
+                  <div 
+                    key={s.id} 
+                    style={styles.suggestionItem}
+                    onClick={() => handleSelectSuggestion(s)}
+                  >
+                    <img src={s.image ? s.image.replace('community.akamai.steamstatic.com', 'community.steamstatic.com') : ''} alt={s.name} style={styles.suggestionImg} />
+                    <span>{s.name}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {/* Vizuelni prikaz selektovanog skina sa CS2 API-ja */}
+            {selectedCatalogSkin && (
+              <div style={styles.selectedSkinPreview}>
+                <img 
+                  src={selectedCatalogSkin.image ? selectedCatalogSkin.image.replace('community.akamai.steamstatic.com', 'community.steamstatic.com') : ''} 
+                  alt={selectedCatalogSkin.name} 
+                  style={styles.previewImg} 
+                />
+                <div style={styles.previewInfo}>
+                  <span style={styles.previewName}>{selectedCatalogSkin.name}</span>
+                  <span style={styles.previewType}>
+                    {skinType} • {skinRarity.toUpperCase()}
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div style={styles.formRow}>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Kvalitet (Condition)</label>
+              <select value={skinCondition} onChange={handleConditionChange} style={styles.select}>
+                <option value="FN">Factory New (FN)</option>
+                <option value="MW">Minimal Wear (MW)</option>
+                <option value="FT">Field-Tested (FT)</option>
+                <option value="WW">Well-Worn (WW)</option>
+                <option value="BS">Battle-Scarred (BS)</option>
+              </select>
+            </div>
+
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Tip oružja</label>
+              <select value={skinType} onChange={(e) => setSkinType(e.target.value)} style={styles.select}>
+                <option value="Knife">Nož (Knife)</option>
+                <option value="Gloves">Rukavice (Gloves)</option>
+                <option value="Rifle">Puška (Rifle)</option>
+                <option value="Sniper Rifle">Snajper (Sniper Rifle)</option>
+                <option value="Pistol">Pištolj (Pistol)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: '4px 0' }}>
+            <input
+              type="checkbox"
+              id="isStatTrak"
+              checked={isStatTrak}
+              onChange={(e) => setIsStatTrak(e.target.checked)}
+              style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: 'var(--accent-cyan)' }}
+            />
+            <label htmlFor="isStatTrak" style={{ ...styles.label, cursor: 'pointer', marginBottom: 0, fontSize: '0.85rem', color: '#fff' }}>
+              StatTrak™ Verzija Skina
+            </label>
+          </div>
+
+          <div style={styles.formRow}>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Retkost (Rarity)</label>
+              <select value={skinRarity} onChange={(e) => setSkinRarity(e.target.value)} style={styles.select}>
+                <option value="covert">Covert (Crvena)</option>
+                <option value="classified">Classified (Roze)</option>
+                <option value="restricted">Restricted (Ljubičasta)</option>
+                <option value="milspec">Mil-spec (Plava)</option>
+              </select>
+            </div>
+
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Cena u poenima (Automatski se preračunava)</label>
+              <input
+                type="number"
+                value={skinPrice}
+                onChange={(e) => setSkinPrice(e.target.value)}
+                style={styles.input}
+                required
+              />
+            </div>
+          </div>
+
+          {/* Informacije o ceni */}
+          {selectedCatalogSkin && (
+            <div style={styles.priceInfoPanel}>
+              {fetchingPrice ? (
+                <div style={styles.fetchingPriceText}>
+                  <Loader size={14} className="animate-spin" /> Tražim najnoviju tržišnu cenu...
+                </div>
+              ) : buffPrice ? (
+                <div style={styles.priceFoundText}>
+                  🎉 Pronađena tržišna cena: <strong>${buffPrice.toFixed(2)}</strong>
+                  <span style={styles.priceSubText}>
+                    (Predložena cena u poenima: {formatPoints(Math.round(buffPrice * 130))} pts)
+                  </span>
+                </div>
+              ) : (
+                <div style={styles.priceNotFoundText}>
+                  ⚠️ Nije pronađena tačna tržišna cena za ovaj kvalitet. Upotrebite ručni unos.
+                </div>
+              )}
+            </div>
+          )}
+
+          <button type="submit" className="glow-btn-cyan" style={{ backgroundColor: 'var(--accent-cyan)', color: '#000', width: '100%', fontWeight: '800' }}>
+            DODAJ U PRODAVNICU
+          </button>
+        </form>
+      </div>
+
+      {/* Upravljanje skinovima */}
+      <section style={styles.section} className="glass">
+        <h3 style={styles.sectionTitle}>
+          <Coins size={18} color="#53fc18" /> Trenutni Skinovi u Prodavnici
+        </h3>
+        <div style={styles.tableWrapper}>
+          <table style={styles.table}>
+            <thead>
+              <tr>
+                <th style={styles.th}>Naziv Skina</th>
+                <th style={styles.th}>Cena</th>
+                <th style={styles.th}>Status</th>
+                <th style={{ ...styles.th, textAlign: 'right' }}>Akcije</th>
+              </tr>
+            </thead>
+            <tbody>
+              {skins.map((skin) => (
+                <tr key={skin.id} style={styles.tr}>
+                  <td style={styles.td}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      {skin.image && (
+                        <img 
+                          src={getAdminSkinImage(skin.imageUrl || skin.image)} 
+                          alt={skin.name} 
+                          style={{ width: '40px', height: 'auto', maxHeight: '30px', objectFit: 'contain' }} 
+                        />
+                      )}
+                      <div>
+                        <strong>{skin.name}</strong>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                          {skin.type} | {skin.condition} | {skin.rarity} {skin.estPrice && `| Est: ${skin.estPrice}`}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td style={styles.td}>
+                    <span style={{ color: 'var(--accent-cyan)', fontWeight: '700' }}>
+                      {formatPoints(skin.price)} pts
+                    </span>
+                  </td>
+                  <td style={styles.td}>
+                    <span style={{
+                      ...styles.statusBadge,
+                      backgroundColor: skin.status === 'available' ? 'rgba(0, 255, 136, 0.1)' : 'rgba(235, 75, 75, 0.1)',
+                      color: skin.status === 'available' ? '#00ff88' : '#eb4b4b'
+                    }}>
+                      {skin.status === 'available' ? 'Dostupan' : 'Prodat'}
+                    </span>
+                  </td>
+                  <td style={{ ...styles.td, textAlign: 'right' }}>
+                    <div style={styles.actionCell}>
+                      {skin.status === 'sold' && (
+                        <button 
+                          style={styles.restockBtn} 
+                          onClick={() => restockSkin(skin.id)}
+                          title="Dopuni zalihe"
+                        >
+                          Dopuni
+                        </button>
+                      )}
+                      <button 
+                        style={styles.deleteBtn} 
+                        onClick={() => deleteSkin(skin.id)}
+                        title="Obriši"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* Upravljanje aktivnim giveaway-ima */}
+      <section style={styles.section} className="glass">
+        <h3 style={styles.sectionTitle}>
+          <Award size={18} color="#53fc18" /> Upravljanje Aktivnim Giveaway-ima
+        </h3>
+        <div style={styles.tableWrapper}>
+          <table style={styles.table}>
+            <thead>
+              <tr>
+                <th style={styles.th}>Nagrada</th>
+                <th style={styles.th}>Sponzor</th>
+                <th style={styles.th}>Učesnici</th>
+                <th style={{ ...styles.th, textAlign: 'right' }}>Akcije</th>
+              </tr>
+            </thead>
+            <tbody>
+              {giveaways.filter(g => g.status === 'active').map((gw) => (
+                <tr key={gw.id} style={styles.tr}>
+                  <td style={styles.td}>
+                    <strong>{gw.prizeName}</strong>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{gw.condition}</div>
+                  </td>
+                  <td style={styles.td}>{gw.sponsor}</td>
+                  <td style={styles.td}>{gw.participantsCount}</td>
+                  <td style={{ ...styles.td, textAlign: 'right' }}>
+                    <button 
+                      style={styles.endGwBtn} 
+                      onClick={() => endGiveawayMock(gw.id)}
+                    >
+                      Završi i Izvuci Pobednika
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {giveaways.filter(g => g.status === 'active').length === 0 && (
+                <tr>
+                  <td colSpan="4" style={{ ...styles.td, textAlign: 'center', color: 'var(--text-secondary)' }}>
+                    Nema aktivnih giveaway-ova.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* Reset dugme */}
+      <div style={styles.resetContainer}>
+        <button style={styles.resetBtn} onClick={resetAllData}>
+          <RotateCcw size={16} /> Resetuj Sve Podatke (Fabričko Podešavanje)
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '2rem',
+    textAlign: 'left',
+  },
+  header: {
+    padding: '2rem',
+  },
+  title: {
+    fontSize: '2rem',
+    fontWeight: '800',
+    color: '#fff',
+  },
+  subtitle: {
+    color: 'var(--text-secondary)',
+    fontSize: '0.95rem',
+    marginTop: '4px',
+  },
+  section: {
+    padding: '2rem',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1.25rem',
+  },
+  sectionTitle: {
+    fontSize: '1.25rem',
+    fontWeight: '700',
+    color: '#fff',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    borderBottom: '1px solid var(--border-color)',
+    paddingBottom: '10px',
+  },
+  btnGroup: {
+    display: 'flex',
+    gap: '10px',
+    flexWrap: 'wrap',
+  },
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: '1fr',
+    gap: '1.5rem',
+    '@media (min-width: 992px)': {
+      gridTemplateColumns: '1fr 1fr',
+    },
+  },
+  column: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1.5rem',
+  },
+  card: {
+    padding: '2rem',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1.5rem',
+  },
+  cardTitle: {
+    fontSize: '1.2rem',
+    fontWeight: '700',
+    color: '#fff',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1.25rem',
+  },
+  formGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px',
+  },
+  formRow: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '1rem',
+  },
+  label: {
+    fontSize: '0.85rem',
+    color: 'var(--text-secondary)',
+    fontWeight: '600',
+  },
+  input: {
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    border: '1px solid var(--border-color)',
+    borderRadius: '8px',
+    color: '#fff',
+    padding: '0.75rem 1rem',
+    fontSize: '0.85rem',
+    outline: 'none',
+    fontFamily: 'var(--font-sans)',
+    transition: 'border-color 0.2s',
+  },
+  select: {
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    border: '1px solid var(--border-color)',
+    borderRadius: '8px',
+    color: '#fff',
+    padding: '0.75rem 1rem',
+    fontSize: '0.85rem',
+    outline: 'none',
+    cursor: 'pointer',
+    fontFamily: 'var(--font-sans)',
+  },
+  tableWrapper: {
+    overflowX: 'auto',
+    borderRadius: '12px',
+    border: '1px solid var(--border-color)',
+  },
+  table: {
+    width: '100%',
+    borderCollapse: 'collapse',
+    fontSize: '0.9rem',
+  },
+  th: {
+    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+    padding: '1rem 1.25rem',
+    fontWeight: '700',
+    color: 'var(--text-secondary)',
+    borderBottom: '1px solid var(--border-color)',
+    textAlign: 'left',
+  },
+  tr: {
+    borderBottom: '1px solid var(--border-color)',
+    transition: 'background-color 0.2s',
+    ':hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.01)',
+    }
+  },
+  td: {
+    padding: '1rem 1.25rem',
+    color: '#fff',
+    verticalAlign: 'middle',
+  },
+  statusBadge: {
+    padding: '4px 8px',
+    borderRadius: '6px',
+    fontSize: '0.75rem',
+    fontWeight: '700',
+  },
+  actionCell: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: '8px',
+  },
+  restockBtn: {
+    backgroundColor: 'rgba(0, 255, 136, 0.1)',
+    border: '1px solid rgba(0, 255, 136, 0.2)',
+    color: '#00ff88',
+    padding: '6px 12px',
+    borderRadius: '6px',
+    fontSize: '0.8rem',
+    fontWeight: '700',
+    cursor: 'pointer',
+    fontFamily: 'var(--font-sans)',
+  },
+  deleteBtn: {
+    backgroundColor: 'rgba(235, 75, 75, 0.1)',
+    border: '1px solid rgba(235, 75, 75, 0.2)',
+    color: '#eb4b4b',
+    padding: '6px',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  endGwBtn: {
+    backgroundColor: 'rgba(229, 193, 88, 0.1)',
+    border: '1px solid rgba(229, 193, 88, 0.2)',
+    color: '#e5c158',
+    padding: '8px 14px',
+    borderRadius: '6px',
+    fontSize: '0.8rem',
+    fontWeight: '700',
+    cursor: 'pointer',
+    fontFamily: 'var(--font-sans)',
+  },
+  resetContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '2rem',
+  },
+  resetBtn: {
+    backgroundColor: 'rgba(235, 75, 75, 0.05)',
+    border: '1px solid rgba(235, 75, 75, 0.15)',
+    color: '#eb4b4b',
+    padding: '0.75rem 1.5rem',
+    borderRadius: '8px',
+    fontSize: '0.85rem',
+    fontWeight: '800',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    fontFamily: 'var(--font-sans)',
+  },
+
+  // Autocomplete & Price Info
+  inputSearchWrapper: {
+    display: 'flex',
+    alignItems: 'center',
+    position: 'relative',
+    width: '100%',
+  },
+  searchLoader: {
+    position: 'absolute',
+    right: '12px',
+    color: 'var(--text-secondary)',
+  },
+  suggestionsDropdown: {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    width: '100%',
+    maxHeight: '220px',
+    overflowY: 'auto',
+    borderRadius: '8px',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    zIndex: 999,
+    marginTop: '4px',
+    backgroundColor: 'rgba(10, 15, 26, 0.95) !important',
+    backdropFilter: 'blur(20px) !important',
+    boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+  },
+  suggestionItem: {
+    padding: '0.65rem 1rem',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    fontSize: '0.85rem',
+    color: '#fff',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
+    transition: 'all 0.2s',
+    ':hover': {
+      backgroundColor: 'rgba(83, 252, 24, 0.08)',
+      color: '#53fc18',
+    }
+  },
+  suggestionImg: {
+    width: '32px',
+    height: 'auto',
+    maxHeight: '24px',
+    objectFit: 'contain',
+  },
+  priceInfoPanel: {
+    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+    border: '1px solid rgba(255, 255, 255, 0.05)',
+    borderRadius: '8px',
+    padding: '0.85rem 1rem',
+    fontSize: '0.825rem',
+    textAlign: 'left',
+  },
+  fetchingPriceText: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    color: 'var(--text-secondary)',
+  },
+  priceFoundText: {
+    color: '#fff',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '3px',
+  },
+  priceSubText: {
+    fontSize: '0.75rem',
+    color: '#53fc18',
+    fontWeight: '700',
+  },
+  priceNotFoundText: {
+    color: '#f97316',
+    fontWeight: '500',
+  },
+  selectedSkinPreview: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    borderRadius: '8px',
+    padding: '8px 12px',
+    marginTop: '10px',
+  },
+  previewImg: {
+    width: '48px',
+    height: '48px',
+    objectFit: 'contain',
+  },
+  previewInfo: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '2px',
+  },
+  previewName: {
+    fontSize: '0.85rem',
+    fontWeight: '700',
+    color: '#fff',
+  },
+  previewType: {
+    fontSize: '0.75rem',
+    color: 'var(--text-secondary)',
+    fontWeight: '500',
+  }
+};
+
+export default Admin;

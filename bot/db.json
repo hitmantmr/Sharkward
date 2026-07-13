@@ -1,0 +1,295 @@
+{
+  "users": {
+    "12345678901": {
+      "username": "kiza_csgo",
+      "points": 247200,
+      "kickUsername": "kiza_csgo",
+      "hoursWatched": 412,
+      "linkedAt": "2026-07-11T16:26:31.482Z"
+    },
+    "12345678902": {
+      "username": "milosh_99",
+      "points": 194500,
+      "kickUsername": "milosh_99",
+      "hoursWatched": 389,
+      "linkedAt": "2026-07-11T16:26:31.482Z"
+    },
+    "12345678903": {
+      "username": "sharke_brat",
+      "points": 175000,
+      "kickUsername": "sharke_brat",
+      "hoursWatched": 350,
+      "linkedAt": "2026-07-11T16:26:31.482Z"
+    },
+    "12345678904": {
+      "username": "zoki_kick",
+      "points": 149000,
+      "kickUsername": "zoki_kick",
+      "hoursWatched": 298,
+      "linkedAt": "2026-07-11T16:26:31.482Z"
+    },
+    "12345678905": {
+      "username": "nikola_k",
+      "points": 142000,
+      "kickUsername": "nikola_k",
+      "hoursWatched": 284,
+      "linkedAt": "2026-07-11T16:26:31.482Z"
+    },
+    "12345678906": {
+      "username": "csgo_king",
+      "points": 125500,
+      "kickUsername": "csgo_king",
+      "hoursWatched": 251,
+      "linkedAt": "2026-07-11T16:26:31.482Z"
+    },
+    "12345678907": {
+      "username": "luka_kick",
+      "points": 110000,
+      "kickUsername": "luka_kick",
+      "hoursWatched": 220,
+      "linkedAt": "2026-07-11T16:26:31.482Z"
+    },
+    "12345678908": {
+      "username": "sone_brat",
+      "points": 97500,
+      "kickUsername": "sone_brat",
+      "hoursWatched": 195,
+      "linkedAt": "2026-07-11T16:26:31.482Z"
+    },
+    "12345678909": {
+      "username": "mare_moz",
+      "points": 91000,
+      "kickUsername": "mare_moz",
+      "hoursWatched": 182,
+      "linkedAt": "2026-07-11T16:26:31.482Z"
+    },
+    "12345678910": {
+      "username": "kick_watcher",
+      "points": 85000,
+      "kickUsername": "kick_watcher",
+      "hoursWatched": 170,
+      "linkedAt": "2026-07-11T16:26:31.482Z"
+    },
+    "436295751543554050": {
+      "username": "hitmaan25",
+      "points": 1020,
+      "hoursWatched": 0.3334,
+      "linkedAt": "2026-07-11T19:25:09.495Z",
+      "kickUsername": "Hitmaan",
+      "kickAvatar": "https://files.kick.com/images/user/238639/profile_image/conversion/a3f2a63b-9f74-486b-8847-ef508dd71256-medium.webp",
+      "kickId": "238639",
+      "lastRewardAt": "2026-07-11T22:18:02.528Z"
+    }
+  },
+  "linkingCodes": {
+    "1AUSEQ": {
+      "status": "pending",
+      "discordId": null,
+      "username": null,
+      "expiresAt": 1783795082979
+    },
+    "TORX3U": {
+      "status": "pending",
+      "discordId": null,
+      "username": null,
+      "expiresAt": 1783795211730
+    }
+  },
+  "stats": {
+    "youtube": 264000,
+    "tiktok": 146100,
+    "kick": 6382,
+    "registered": 102
+  },
+  "skins": [
+    {
+      "id": "1",
+      "name": "CSGO SKINS - Gift Card $10",
+      "type": "GiftCard",
+      "rarity": "milspec",
+      "condition": "GIFT CARD",
+      "price": 1300,
+      "estPrice": "$10.00",
+      "stock": 10,
+      "image": "gift_card_10",
+      "status": "available"
+    },
+    {
+      "id": "2",
+      "name": "CSGO SKINS - Gift Card $5",
+      "type": "GiftCard",
+      "rarity": "milspec",
+      "condition": "GIFT CARD",
+      "price": 700,
+      "estPrice": "$5.00",
+      "stock": 9,
+      "image": "gift_card_5",
+      "status": "available"
+    },
+    {
+      "id": "3",
+      "name": "★ Karambit | Case Hardened",
+      "type": "Knife",
+      "rarity": "covert",
+      "condition": "FACTORY NEW",
+      "stock": 1,
+      "image": "https://community.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1Q7uCvZaZkNM-SH1ifyOJztN5lRi67gVNz5DvUmdj4eXuWOFAhAsF4RLFc5BC4xtbuY7yx7wDbgo9CzSj2h3xK8G81tB_XeHWq",
+      "status": "available"
+    },
+    {
+      "id": "4",
+      "name": "★ Butterfly Knife | Blue Steel",
+      "type": "Knife",
+      "rarity": "covert",
+      "condition": "MINIMAL WEAR",
+      "stock": 1,
+      "image": "https://community.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1Z-ua6bbZrLOmsD3avw-JjteVWQyC0nQlpsmyBwo2tcS-eaFB2XpUjE7Jeuhi_kdfvYerj4FCMgtgUm3732ipM6jErvbi_vJM0jA",
+      "status": "available"
+    },
+    {
+      "id": "5",
+      "name": "AWP | Atheris",
+      "type": "Sniper Rifle",
+      "rarity": "restricted",
+      "condition": "FIELD-TESTED",
+      "stock": 1,
+      "image": "https://community.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLwiYbf_jdk7uW-V7JkMPWBMWuZxuZi_rZsS3zgzU8isW3dnIr6eHKfPVAhDpojEe9YsUW4xta1Nuzm5FDci4NbjXKpmWVQppo",
+      "status": "available"
+    },
+    {
+      "id": "6",
+      "name": "AK-47 | Slate",
+      "type": "Rifle",
+      "rarity": "restricted",
+      "condition": "FIELD-TESTED",
+      "stock": 1,
+      "image": "https://community.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLwlcK3wiVI0POlPPNSMOKcCGKD0ud5vuBlcCW6khUz_W3Sytb4cCqTOFUpWJtzTOUD5hPsw9a0Yrnrs1SK3ooXzy6shilM5311o7FVYrIufmI",
+      "status": "available"
+    },
+    {
+      "id": "7",
+      "name": "M4A1-S | Decimator",
+      "type": "Rifle",
+      "rarity": "classified",
+      "condition": "MINIMAL WEAR",
+      "stock": 1,
+      "image": "https://community.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8ypexwjFS4_ega6F_H_eAMWrEwL9JtORqRiSygRI1jDGMnYftb3iUb1dxW5ImFLNftxCxktflZLm2tgaP2otGyn_-hytOvy9q5elQV_A7uvqA6CRSoZY",
+      "status": "available"
+    },
+    {
+      "id": "8",
+      "name": "M4A4 | Tooth Fairy",
+      "type": "Rifle",
+      "rarity": "classified",
+      "condition": "FIELD-TESTED",
+      "stock": 1,
+      "image": "https://community.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8ypexwiFO0P_6afBSMeWWC2mWwOdkqd5lRi67gVN35WyDwtv8IC-RblVxCpchQLIOuhK8xNG2YbnktAXZjthFxCiohntP8G81tOVu8Qhw",
+      "status": "available"
+    },
+    {
+      "id": "9",
+      "name": "USP-S | Black Lotus",
+      "type": "Pistol",
+      "rarity": "milspec",
+      "condition": "FACTORY NEW",
+      "stock": 1,
+      "image": "https://community.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLkjYbf7itX6vytbbZSI-WsG3SA_ux6seJicCW8gQg0jDGMnYftbynFZg8nXpt2Ru8D5hSwl9PhN7_m7wzdjotFxXr62y4Y6C894OxQVKA7uvqAvobUkb8",
+      "status": "available"
+    },
+    {
+      "id": "10",
+      "name": "Glock-18 | Umbral Rabbit",
+      "type": "Pistol",
+      "rarity": "restricted",
+      "condition": "MINIMAL WEAR",
+      "stock": 1,
+      "image": "https://community.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL2kpnj9h1Y-s2pZKtuK8-eAWie_vx3suNgWxa_nBovp3PXyo76Ii_FPAQmDMYiTLYDthm_kdbmZry2slCLjoMQzC7_3y1J7nts_a9cBi_qumx0",
+      "status": "available"
+    },
+    {
+      "id": "11",
+      "name": "Desert Eagle | Mecha Industries",
+      "type": "Pistol",
+      "rarity": "classified",
+      "condition": "FACTORY NEW",
+      "stock": 1,
+      "image": "https://community.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL1m5fn8Sdk6OGRbKFsJ_yWMWqVwuZ3j-1gSCGn20h042vSyY2tdyjCZwIlXJBxQeNe4EWxxoHkMOq0sQGIid5Fnyr42HtXrnE8p4gbgvE",
+      "status": "available"
+    },
+    {
+      "id": "12",
+      "name": "MAC-10 | Disco Tech",
+      "type": "Pistol",
+      "rarity": "classified",
+      "condition": "FIELD-TESTED",
+      "stock": 1,
+      "image": "https://community.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8n5WxrR1Y-s2jaac8cM-dD2SCxNF6ueZhW2frkR5z4m_SyY37cnKRblIpW5smQOcO4EW7lYa1ZOjgtFCLg4wXnn72kGoXuTa4h8QB",
+      "status": "available"
+    }
+  ],
+  "giveaways": [
+    {
+      "id": "gw_howl_completed",
+      "prize": "M4A4 | Howl (Factory New)",
+      "value": "$5,200.00",
+      "minDeposit": "$50.00",
+      "ticketCost": 50,
+      "availableFrom": "July 10, 2026",
+      "status": "COMPLETED",
+      "imageUrl": "https://community.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL1m5fn8Sdk6OGRbKFsJ_yWMWqVwuZ3j-1gSCGn20h042vSyY2tdyjCZwIlXJBxQeNe4EWxxoHkMOq0sQGIid5Fnyr42HtXrnE8p4gbgvE",
+      "winnerName": "arsa_squad",
+      "winnerAvatar": "https://files.kick.com/images/user/238639/profile_image/conversion/a3f2a63b-9f74-486b-8847-ef508dd71256-medium.webp",
+      "wonAt": "July 11, 2026 21:00"
+    },
+    {
+      "id": "gw_vulcan_completed",
+      "prize": "AK-47 | Vulcan (Field-Tested)",
+      "value": "$280.00",
+      "minDeposit": "$5.00",
+      "ticketCost": 5,
+      "availableFrom": "July 11, 2026",
+      "status": "COMPLETED",
+      "imageUrl": "https://community.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL2kpnj9h1Y-s2pZKtuK8-eAWie_vx3suNgWxa_nBovp3PXyo76Ii_FPAQmDMYiTLYDthm_kdbmZry2slCLjoMQzC7_3y1J7nts_a9cBi_qumx0",
+      "winnerName": "sharke_fan_123",
+      "winnerAvatar": null,
+      "wonAt": "July 12, 2026 01:30"
+    },
+    {
+      "id": "gw_m4a4_desolate_space_ft_completed",
+      "prize": "M4A4 | Desolate Space (Field-Tested)",
+      "value": "$8.20",
+      "minDeposit": "$2.00",
+      "ticketCost": 2,
+      "availableFrom": "July 11, 2026",
+      "status": "COMPLETED",
+      "imageUrl": "https://community.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL1m5fn8Sdk6OGRbKFsJ_yWMWqVwuZ3j-1gSCGn20h042vSyY2tdyjCZwIlXJBxQeNe4EWxxoHkMOq0sQGIid5Fnyr42HtXrnE8p4gbgvE",
+      "winnerName": "hitmaan25",
+      "winnerAvatar": "https://files.kick.com/images/user/238639/profile_image/conversion/a3f2a63b-9f74-486b-8847-ef508dd71256-medium.webp",
+      "wonAt": "July 11, 2026 22:45"
+    },
+    {
+      "id": "gw_m9_fade_active",
+      "prize": "★ M9 Bayonet | Fade (Factory New)",
+      "value": "$1,450.00",
+      "minDeposit": "$10.00",
+      "ticketCost": 10,
+      "availableFrom": "July 12, 2026 14:00",
+      "status": "ACTIVE",
+      "imageUrl": "https://community.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1Q7uCvZaZkNM-SH1ifyOJztN5lRi67gVNz5DvUmdj4eXuWOFAhAsF4RLFc5BC4xtbuY7yx7wDbgo9CzSj2h3xK8G81tB_XeHWq",
+      "winnerName": null,
+      "winnerAvatar": null,
+      "wonAt": null
+    }
+  ],
+  "lastVideoId": "12syCSGAW8g",
+  "liveState": {
+    "youtube": {
+      "isLive": false,
+      "messages": {}
+    },
+    "kick": {
+      "isLive": false,
+      "messages": {}
+    }
+  }
+}
