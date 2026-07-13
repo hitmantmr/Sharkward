@@ -2325,65 +2325,58 @@ app.get('/api/auth/kick/simulate', (req, res) => {
 });
 
 app.get('/api/auth/discord/login', (req, res) => {
-  const clientId = process.env.DISCORD_CLIENT_ID;
+  const clientId = process.env.DISCORD_CLIENT_ID || '1525220477142827038';
   const redirectUri = encodeURIComponent('http://localhost:5000/api/auth/discord/callback');
-  // Po defaultu preusmeravamo na simulaciju osim ako se eksplicitno u .env ne navede USE_REAL_OAUTH=true
-  if (process.env.USE_REAL_OAUTH !== 'true') {
-    return res.redirect('/api/auth/discord/simulate');
-  }
-  const discordUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=identify`;
+  
+  // Zapamti odakle je došao korisnik (localhost ili GitHub Pages)
+  const clientOrigin = req.headers.referer || req.query.origin || 'http://localhost:5173';
+  const state = encodeURIComponent(clientOrigin);
+  
+  const discordUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=identify&state=${state}`;
   res.redirect(discordUrl);
 });
 
 app.get('/api/auth/discord/callback', async (req, res) => {
-  const { code, username, id, is_member } = req.query;
+  const { code, state } = req.query;
   
-  if (code === 'mock_code_123') {
-    const finalUsername = username || 'sharke_brat';
-    const finalId = id || '12345678903';
-    
-    const db = readDb();
-    if (!db.users[finalId]) {
-      db.users[finalId] = {
-        username: finalUsername,
-        points: 250,
-        hoursWatched: 0,
-        linkedAt: new Date().toISOString()
-      };
-      writeDb(db);
+  // Odredi ciljnu frontend adresu (npr. http://localhost:5173 ili https://hitmantmr.github.io/Sharkward)
+  let frontendOrigin = 'http://localhost:5173';
+  if (state) {
+    try {
+      const decodedState = decodeURIComponent(state);
+      if (decodedState.startsWith('http://') || decodedState.startsWith('https://')) {
+        frontendOrigin = decodedState.replace(/\/$/, '');
+      }
+    } catch (e) {
+      // Ignoriši grešku pri dekodiranju i koristi fallback
     }
-    
-    if (!app.locals.mockSessions) app.locals.mockSessions = {};
-    app.locals.mockSessions[finalId] = {
-      isMember: is_member === 'true'
-    };
-    
-    return res.redirect(`http://localhost:5173/watchtime?discord_user=${finalUsername}&discord_id=${finalId}&avatar=`);
+  }
+
+  if (!code) {
+    return res.redirect(`${frontendOrigin}/watchtime?error=no_code`);
   }
   
   try {
-    const clientId = process.env.DISCORD_CLIENT_ID;
+    const clientId = process.env.DISCORD_CLIENT_ID || '1525220477142827038';
     const clientSecret = process.env.DISCORD_CLIENT_SECRET;
     const redirectUri = 'http://localhost:5000/api/auth/discord/callback';
     
     const tokenResponse = await fetch('https://discord.com/api/v10/oauth2/token', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
         client_id: clientId,
         client_secret: clientSecret,
-        code: code,
         grant_type: 'authorization_code',
+        code: code,
         redirect_uri: redirectUri,
-        scope: 'identify',
       }),
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
     });
     
     if (!tokenResponse.ok) {
-      console.warn('OAuth2 Token Exchange failed, falling back to simulation screen');
-      return res.redirect('/api/auth/discord/simulate');
+      const errText = await tokenResponse.text();
+      console.error('Greška pri dobijanju tokena od Discord-a:', errText);
+      return res.redirect(`${frontendOrigin}/watchtime?error=token_failed`);
     }
     
     const tokenData = await tokenResponse.json();
