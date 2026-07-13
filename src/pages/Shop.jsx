@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Coins, Filter, Search, ShieldCheck, ArrowRight, Sparkles, Truck, CreditCard, LayoutGrid, Sword, Save, Info } from 'lucide-react';
+import { Coins, Filter, Search, ShieldAlert, ArrowRight, Sparkles, Truck, CreditCard, LayoutGrid, Sword, Info } from 'lucide-react';
 
 const Shop = ({ setActiveTab }) => {
   const { user, skins, buySkin, saveTradeUrl } = useApp();
@@ -82,11 +82,6 @@ const Shop = ({ setActiveTab }) => {
       case 'milspec': return '#3b82f6';
       default: return '#9ca3af';
     }
-  };
-
-  const getRarityTextShadow = (rarity) => {
-    const color = getRarityGlow(rarity);
-    return `0 0 10px ${color}44`;
   };
 
   // Filtriranje i sortiranje
@@ -235,32 +230,60 @@ const Shop = ({ setActiveTab }) => {
   return (
     <div style={styles.container} className="fade-in">
       
-      {/* 1. Podešavanje isporuke (Steam Trade URL) - Prema slici */}
-      <div style={styles.deliveryCard} className="glass">
-        <div style={styles.deliveryHeader}>
-          <div style={styles.deliveryIconCircle}>
-            <Truck size={18} color="var(--accent-cyan)" />
+      {/* Obaveštenje ako Discord nije povezan */}
+      {!user.discordLinked && (
+        <div className="discord-lock-banner">
+          <ShieldAlert size={22} color="#00f0ff" style={{ flexShrink: 0 }} />
+          <div>
+            <div style={{ fontWeight: '800', color: '#00f0ff', marginBottom: '2px', fontSize: '0.95rem' }}>
+              🔒 PRODAVNICA SKINOVA JE ZAKLJUČANA
+            </div>
+            <span>
+              Moraš prvo povezati svoj <strong>Discord nalog</strong> da bi kupovao skinove i sačuvao Trade URL. Ako još uvek nisi član Sharke Discord servera, obavezno se pridruži OVDE: {' '}
+              <a href="https://discord.gg/n2t8ZBDfH3" target="_blank" rel="noopener noreferrer">
+                discord.gg/n2t8ZBDfH3
+              </a>
+            </span>
           </div>
-          <span style={styles.deliveryTitle}>PODEŠAVANJE ISPORUKE</span>
         </div>
-        
-        <p style={styles.deliveryDesc}>
-          Da bi ti administratori mogli poslati skin, moraš uneti ispravan Steam Trade URL.
-        </p>
+      )}
 
-        <form onSubmit={handleSaveTradeUrl} style={styles.deliveryForm}>
-          <input 
-            type="text" 
-            placeholder="Unesi svoj Steam Trade URL (npr. https://steamcommunity.com/tradeoffer/new/...)" 
-            value={tradeUrlInput}
-            onChange={(e) => setTradeUrlInput(e.target.value)}
-            style={styles.deliveryInput}
-          />
-          <button type="submit" style={styles.deliverySubmitBtn}>
-            SAČUVAJ LINK
-          </button>
-        </form>
-      </div>
+      {/* Sadržaj prodavnice sa blur efektom dok nije povezan Discord */}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '2.5rem',
+        filter: user.discordLinked ? 'none' : 'blur(5px)',
+        opacity: user.discordLinked ? 1 : 0.45,
+        pointerEvents: user.discordLinked ? 'auto' : 'none',
+        userSelect: user.discordLinked ? 'auto' : 'none',
+      }}>
+        {/* 1. Podešavanje isporuke (Steam Trade URL) */}
+        <div style={styles.deliveryCard} className="glass">
+          <div style={styles.deliveryHeader}>
+            <div style={styles.deliveryIconCircle}>
+              <Truck size={18} color="var(--accent-cyan)" />
+            </div>
+            <span style={styles.deliveryTitle}>PODEŠAVANJE ISPORUKE</span>
+          </div>
+          
+          <p style={styles.deliveryDesc}>
+            Da bi ti administratori mogli poslati skin, moraš uneti ispravan Steam Trade URL.
+          </p>
+
+          <form onSubmit={handleSaveTradeUrl} style={styles.deliveryForm}>
+            <input 
+              type="text" 
+              placeholder="Unesi svoj Steam Trade URL (npr. https://steamcommunity.com/tradeoffer/new/...)" 
+              value={tradeUrlInput}
+              onChange={(e) => setTradeUrlInput(e.target.value)}
+              style={styles.deliveryInput}
+            />
+            <button type="submit" style={styles.deliverySubmitBtn}>
+              SAČUVAJ LINK
+            </button>
+          </form>
+        </div>
 
       {/* 2. Zaglavlje sa Balansom poena */}
       <div style={styles.shopSubHeader}>
@@ -423,6 +446,7 @@ const Shop = ({ setActiveTab }) => {
           <p>Trenutno nema skinova koji odgovaraju pretrazi.</p>
         </div>
       )}
+      </div>
 
       {/* 5. Modal za potvrdu kupovine */}
       {selectedSkin && (
