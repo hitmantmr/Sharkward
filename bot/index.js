@@ -948,11 +948,8 @@ async function checkLiveStatus() {
     }
   } else {
     // Offline
-    console.log(`📡 [LIVE CHECK KICK] Stream is offline. State was:`, kickState.isLive);
-    if (kickState.isLive) {
+    if (kickState.isLive !== false) {
       kickState.isLive = false;
-      // Strim je završen - po zahtevu korisnika ne menjamo i ne brišemo embed poruke (ostaju live izgled)
-      // Samo čistimo poruke iz praćenja kako bi sledeći live kreirao novu poruku
       kickState.messages = {};
       writeDb(dbData);
       console.log('📡 [LIVE CHECK KICK] Database successfully updated to offline!');

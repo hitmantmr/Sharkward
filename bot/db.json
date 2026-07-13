@@ -294,7 +294,7 @@
       "messages": {}
     },
     "kick": {
-      "isLive": true,
+      "isLive": false,
       "messages": {
         "667758066262867980": "1526347354548998236"
       }
