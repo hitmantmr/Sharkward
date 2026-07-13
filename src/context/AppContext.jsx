@@ -540,11 +540,13 @@ export const AppProvider = ({ children }) => {
       addToast('Moraš se prvo prijaviti preko Discord-a!', 'error');
       return;
     }
-    window.location.href = `${API_URL}/auth/kick/login?discordId=${user.discordId}`;
+    const currentOrigin = encodeURIComponent(window.location.origin + window.location.pathname);
+    window.location.href = `${API_URL}/auth/kick/login?discordId=${user.discordId}&origin=${currentOrigin}`;
   };
 
   const linkDiscord = () => {
-    window.location.href = `${API_URL}/auth/discord/login`;
+    const currentOrigin = encodeURIComponent(window.location.origin + window.location.pathname);
+    window.location.href = `${API_URL}/auth/discord/login?origin=${currentOrigin}`;
   };
 
   const unlinkKick = async () => {

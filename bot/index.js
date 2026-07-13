@@ -2328,8 +2328,8 @@ app.get('/api/auth/discord/login', (req, res) => {
   const clientId = process.env.DISCORD_CLIENT_ID || '1525220477142827038';
   const redirectUri = encodeURIComponent('http://localhost:5000/api/auth/discord/callback');
   
-  // Zapamti odakle je došao korisnik (localhost ili GitHub Pages)
-  const clientOrigin = req.headers.referer || req.query.origin || 'http://localhost:5173';
+  // Zapamti odakle je došao korisnik (GitHub Pages ili localhost)
+  const clientOrigin = req.query.origin || req.headers.referer || 'https://hitmantmr.github.io/Sharkward';
   const state = encodeURIComponent(clientOrigin);
   
   const discordUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=identify&state=${state}`;
@@ -2339,8 +2339,8 @@ app.get('/api/auth/discord/login', (req, res) => {
 app.get('/api/auth/discord/callback', async (req, res) => {
   const { code, state } = req.query;
   
-  // Odredi ciljnu frontend adresu (npr. http://localhost:5173 ili https://hitmantmr.github.io/Sharkward)
-  let frontendOrigin = 'http://localhost:5173';
+  // Odredi ciljnu frontend adresu (npr. https://hitmantmr.github.io/Sharkward ili http://localhost:5173)
+  let frontendOrigin = 'https://hitmantmr.github.io/Sharkward';
   if (state) {
     try {
       const decodedState = decodeURIComponent(state);
@@ -2348,7 +2348,7 @@ app.get('/api/auth/discord/callback', async (req, res) => {
         frontendOrigin = decodedState.replace(/\/$/, '');
       }
     } catch (e) {
-      // Ignoriši grešku pri dekodiranju i koristi fallback
+      // Ignoriši grešku pri dekodiranju
     }
   }
 
