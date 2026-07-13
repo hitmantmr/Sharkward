@@ -219,7 +219,7 @@ const initialLeaderboard = [
 ];
 
 export const AppProvider = ({ children }) => {
-  const API_URL = 'http://localhost:5000/api';
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
   // --- State učitavanje iz localStorage sa try-catch zaštitom ---
   const [user, setUser] = useState(() => {
@@ -337,7 +337,7 @@ export const AppProvider = ({ children }) => {
   // --- Učitavanje skinova sa API-ja sa dinamički izračunatim cenama ---
   const fetchSkinsFromApi = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/skins');
+      const res = await fetch(`${API_URL}/skins`);
       if (res.ok) {
         const data = await res.json();
         setSkins(data);
@@ -350,7 +350,7 @@ export const AppProvider = ({ children }) => {
   // --- Učitavanje partnerskih giveaway-a sa API-ja ---
   const fetchGiveawaysFromApi = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/giveaways');
+      const res = await fetch(`${API_URL}/giveaways`);
       if (res.ok) {
         const data = await res.json();
         setGiveaways(data);
@@ -540,11 +540,11 @@ export const AppProvider = ({ children }) => {
       addToast('Moraš se prvo prijaviti preko Discord-a!', 'error');
       return;
     }
-    window.location.href = `http://localhost:5000/api/auth/kick/login?discordId=${user.discordId}`;
+    window.location.href = `${API_URL}/auth/kick/login?discordId=${user.discordId}`;
   };
 
   const linkDiscord = () => {
-    window.location.href = 'http://localhost:5000/api/auth/discord/login';
+    window.location.href = `${API_URL}/auth/discord/login`;
   };
 
   const unlinkKick = async () => {

@@ -2115,8 +2115,15 @@ client.on('guildBanRemove', ban => {
   sendLog(ban.guild, 'MEMBER-UNBANNED', embed);
 });
 
-// Povezivanje na Discord
-client.login(process.env.DISCORD_TOKEN);
+// Povezivanje na Discord sa zaštitom od nevažećeg tokena
+if (process.env.DISCORD_TOKEN) {
+  client.login(process.env.DISCORD_TOKEN).catch(err => {
+    console.warn('⚠️ Nije moguće povezati Discord bota (nevažeći DISCORD_TOKEN):', err.message);
+    console.warn('ℹ️ Express API server nastavlja sa radom na portu 5000 za web prijavu i shop.');
+  });
+} else {
+  console.warn('⚠️ DISCORD_TOKEN nije postavljen u .env fajlu. Express API server nastavlja rad.');
+}
 
 /* ==========================================================
    EXPRESS INTEGRATION API SERVER (PORT 5000)
