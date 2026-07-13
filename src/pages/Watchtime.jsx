@@ -400,6 +400,7 @@ const styles = {
     gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
     gap: '1.5rem',
     marginBottom: '1.5rem',
+    alignItems: 'stretch',
   },
   statsGrid: {
     display: 'grid',
@@ -415,7 +416,10 @@ const styles = {
     padding: '1.75rem',
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'space-between',
     gap: '1.5rem',
+    height: '100%',
+    boxSizing: 'border-box',
   },
   cardPoints: {
     padding: '1.75rem',
@@ -466,6 +470,8 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     gap: '1rem',
+    flex: 1,
+    justifyContent: 'space-between',
   },
   inputWrapper: {
     display: 'flex',
@@ -494,6 +500,7 @@ const styles = {
     width: '100%',
     justifyContent: 'center',
     padding: '0.75rem',
+    marginTop: 'auto',
   },
   avatarImg: {
     width: '44px',
@@ -515,11 +522,13 @@ const styles = {
   linkedWrapper: {
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'space-between',
     gap: '1rem',
     backgroundColor: 'rgba(0, 0, 0, 0.15)',
     padding: '1.25rem',
     borderRadius: '10px',
     border: '1px solid var(--border-color)',
+    flex: 1,
   },
   statusPillSuccess: {
     alignSelf: 'flex-start',
@@ -550,6 +559,7 @@ const styles = {
     fontWeight: '600',
     transition: 'all 0.2s',
     fontFamily: 'var(--font-sans)',
+    marginTop: 'auto',
     ':hover': {
       backgroundColor: 'rgba(235, 75, 75, 0.05)',
     }
@@ -774,15 +784,18 @@ const styles = {
     fontSize: '0.85rem',
     fontWeight: '600',
     transition: 'all 0.2s',
-    marginTop: '0.5rem',
+    marginTop: 'auto',
     width: '100%',
   },
   linkPromptWrapper: {
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'space-between',
     alignItems: 'center',
     textAlign: 'center',
     padding: '0.5rem 0',
+    flex: 1,
+    gap: '1rem',
   },
   linkPromptText: {
     fontSize: '0.85rem',
