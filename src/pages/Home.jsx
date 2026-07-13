@@ -168,46 +168,51 @@ const Home = ({ setActiveTab }) => {
         {/* CSGO Skins Card */}
         <div className="premium-card sponsor-card-premium csgoskins-card reveal-on-scroll" style={{ ...styles.partnerCard, transitionDelay: '100ms' }}>
           <div style={styles.partnerHeader}>
-            <img src="./img/csgoskins logo.png" alt="CSGO Skins Logo" style={styles.partnerLogoImg} />
-            <span style={styles.partnerTag}>SPONZOR</span>
+            <img src="./img/csgoskins logo.png" alt="CSGO Skins Logo" style={{ ...styles.partnerLogoImg, filter: 'drop-shadow(0 4px 12px rgba(0, 240, 255, 0.35))' }} />
+            <span className="sponsor-tag-badge cyan">SPONZOR</span>
           </div>
 
           <div className="sponsor-benefits-list">
-            <div className="sponsor-benefit-item">
-              <span className="sponsor-benefit-check-circle" style={{ background: 'rgba(0, 240, 255, 0.1)', color: '#00f0ff' }}>
-                <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </span>
-              <span className="sponsor-benefit-text">Besplatnih $0.50 pri reg.</span>
+            <div className="sponsor-benefit-row">
+              <div className="sponsor-benefit-icon-box cyan">
+                <Gift size={14} color="#00f0ff" />
+              </div>
+              <div className="sponsor-benefit-content">
+                <span className="sponsor-benefit-title">Besplatnih $0.50</span>
+                <span className="sponsor-benefit-sub">Pri registraciji</span>
+              </div>
             </div>
-            <div className="sponsor-benefit-item">
-              <span className="sponsor-benefit-check-circle" style={{ background: 'rgba(0, 240, 255, 0.1)', color: '#00f0ff' }}>
-                <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </span>
-              <span className="sponsor-benefit-text">10% Depozit Bonus</span>
+
+            <div className="sponsor-benefit-row">
+              <div className="sponsor-benefit-icon-box cyan">
+                <Award size={14} color="#00f0ff" />
+              </div>
+              <div className="sponsor-benefit-content">
+                <span className="sponsor-benefit-title">10% Depozit Bonus</span>
+                <span className="sponsor-benefit-sub">Na sve uplate</span>
+              </div>
             </div>
-            <div className="sponsor-benefit-item">
-              <span className="sponsor-benefit-check-circle" style={{ background: 'rgba(0, 240, 255, 0.1)', color: '#00f0ff' }}>
-                <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </span>
-              <span className="sponsor-benefit-text">Dnevni Giveaway-evi</span>
+
+            <div className="sponsor-benefit-row">
+              <div className="sponsor-benefit-icon-box cyan">
+                <Play size={14} color="#00f0ff" />
+              </div>
+              <div className="sponsor-benefit-content">
+                <span className="sponsor-benefit-title">Dnevni Giveaway-evi</span>
+                <span className="sponsor-benefit-sub">Besplatni CS2 skinovi</span>
+              </div>
             </div>
           </div>
 
           <div style={{ width: '100%' }}>
             <div 
-              className="premium-sponsor-code-btn"
-              style={{ '--accent-color': '#00f0ff', '--accent-rgb': '0, 240, 255' }}
+              className="premium-sponsor-code-btn cyan-theme"
               onClick={() => copyToClipboard('SHARKE')}
               title="Klikni da kopiraš kod"
             >
-              <span>KOD: SHARKE</span>
-              <Copy size={13} color="#00f0ff" />
+              <span className="code-label">PROMO KOD:</span>
+              <span className="code-value cyan">SHARKE</span>
+              <Copy size={14} color="#00f0ff" style={{ marginLeft: 'auto' }} />
             </div>
 
             <a 
@@ -225,46 +230,51 @@ const Home = ({ setActiveTab }) => {
         {/* Mozzart Card */}
         <div className="premium-card sponsor-card-premium mozzart-card reveal-on-scroll" style={{ ...styles.partnerCard, transitionDelay: '200ms' }}>
           <div style={styles.partnerHeader}>
-            <img src="./img/mozzart logo.png" alt="Mozzart Logo" style={styles.partnerLogoImg} />
-            <span style={styles.partnerTag}>SPONZOR</span>
+            <img src="./img/mozzart logo.png" alt="Mozzart Logo" style={{ ...styles.partnerLogoImg, filter: 'drop-shadow(0 4px 12px rgba(229, 193, 88, 0.35))' }} />
+            <span className="sponsor-tag-badge gold">SPONZOR</span>
           </div>
 
           <div className="sponsor-benefits-list">
-            <div className="sponsor-benefit-item">
-              <span className="sponsor-benefit-check-circle" style={{ background: 'rgba(229, 193, 88, 0.1)', color: '#e5c158' }}>
-                <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </span>
-              <span className="sponsor-benefit-text">Bonusi na prva 3 depozita</span>
+            <div className="sponsor-benefit-row">
+              <div className="sponsor-benefit-icon-box gold">
+                <Gift size={14} color="#e5c158" />
+              </div>
+              <div className="sponsor-benefit-content">
+                <span className="sponsor-benefit-title">Bonusi na 3 depozita</span>
+                <span className="sponsor-benefit-sub">Paket dobrodošlice</span>
+              </div>
             </div>
-            <div className="sponsor-benefit-item">
-              <span className="sponsor-benefit-check-circle" style={{ background: 'rgba(229, 193, 88, 0.1)', color: '#e5c158' }}>
-                <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </span>
-              <span className="sponsor-benefit-text">Besplatni spinovi i freebet</span>
+
+            <div className="sponsor-benefit-row">
+              <div className="sponsor-benefit-icon-box gold">
+                <Award size={14} color="#e5c158" />
+              </div>
+              <div className="sponsor-benefit-content">
+                <span className="sponsor-benefit-title">Spinovi & Freebet</span>
+                <span className="sponsor-benefit-sub">Besplatno igranje</span>
+              </div>
             </div>
-            <div className="sponsor-benefit-item">
-              <span className="sponsor-benefit-check-circle" style={{ background: 'rgba(229, 193, 88, 0.1)', color: '#e5c158' }}>
-                <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </span>
-              <span className="sponsor-benefit-text">Najveće kvote na svetu</span>
+
+            <div className="sponsor-benefit-row">
+              <div className="sponsor-benefit-icon-box gold">
+                <Play size={14} color="#e5c158" />
+              </div>
+              <div className="sponsor-benefit-content">
+                <span className="sponsor-benefit-title">Najveće kvote na svetu</span>
+                <span className="sponsor-benefit-sub">Najbolji uslovi</span>
+              </div>
             </div>
           </div>
 
           <div style={{ width: '100%' }}>
             <div 
-              className="premium-sponsor-code-btn"
-              style={{ '--accent-color': '#e5c158', '--accent-rgb': '229, 193, 88' }}
+              className="premium-sponsor-code-btn gold-theme"
               onClick={() => copyToClipboard('AJKULA')}
               title="Klikni da kopiraš kod"
             >
-              <span>KOD: AJKULA</span>
-              <Copy size={13} color="#e5c158" />
+              <span className="code-label">PROMO KOD:</span>
+              <span className="code-value gold">AJKULA</span>
+              <Copy size={14} color="#e5c158" style={{ marginLeft: 'auto' }} />
             </div>
 
             <a 
@@ -933,67 +943,165 @@ const Home = ({ setActiveTab }) => {
           --bg-hover: rgba(0, 240, 255, 0.1);
         }
 
-        /* NEW SPONSOR CARDS STYLING */
+        /* MODERN HIGH-TECH SPONSOR CARDS STYLING */
+        .csgoskins-card {
+          background: linear-gradient(180deg, rgba(0, 240, 255, 0.06) 0%, rgba(10, 15, 26, 0.85) 100%) !important;
+          border: 1px solid rgba(0, 240, 255, 0.22) !important;
+          box-shadow: 0 10px 30px rgba(0, 240, 255, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+          transition: all 0.3s ease !important;
+        }
+
+        .csgoskins-card:hover {
+          border-color: rgba(0, 240, 255, 0.45) !important;
+          box-shadow: 0 15px 35px rgba(0, 240, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .mozzart-card {
+          background: linear-gradient(180deg, rgba(229, 193, 88, 0.06) 0%, rgba(10, 15, 26, 0.85) 100%) !important;
+          border: 1px solid rgba(229, 193, 88, 0.22) !important;
+          box-shadow: 0 10px 30px rgba(229, 193, 88, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+          transition: all 0.3s ease !important;
+        }
+
+        .mozzart-card:hover {
+          border-color: rgba(229, 193, 88, 0.45) !important;
+          box-shadow: 0 15px 35px rgba(229, 193, 88, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .sponsor-tag-badge {
+          font-size: 0.65rem;
+          font-weight: 800;
+          letter-spacing: 1.2px;
+          padding: 3px 10px;
+          border-radius: 20px;
+          text-transform: uppercase;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .sponsor-tag-badge.cyan {
+          background: rgba(0, 240, 255, 0.1);
+          border: 1px solid rgba(0, 240, 255, 0.3);
+          color: #00f0ff;
+        }
+
+        .sponsor-tag-badge.gold {
+          background: rgba(229, 193, 88, 0.1);
+          border: 1px solid rgba(229, 193, 88, 0.3);
+          color: #e5c158;
+        }
+
         .sponsor-benefits-list {
           display: flex;
           flex-direction: column;
           gap: 0.65rem;
           width: 100%;
-          margin: 1.25rem 0;
+          margin: 1.2rem 0;
         }
 
-        .sponsor-benefit-item {
+        .sponsor-benefit-row {
           display: flex;
           align-items: center;
-          gap: 10px;
-          background: rgba(0, 0, 0, 0.25) !important;
-          border: 1px solid rgba(255, 255, 255, 0.03) !important;
-          border-radius: 10px !important;
-          padding: 0.65rem 0.85rem !important;
+          gap: 12px;
+          background: rgba(5, 8, 15, 0.5);
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          border-radius: 12px;
+          padding: 0.6rem 0.85rem;
           text-align: left;
+          transition: all 0.2s ease;
         }
 
-        .sponsor-benefit-check-circle {
+        .sponsor-benefit-row:hover {
+          background: rgba(255, 255, 255, 0.03);
+          border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .sponsor-benefit-icon-box {
+          width: 28px;
+          height: 28px;
+          border-radius: 8px;
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 18px;
-          height: 18px;
-          border-radius: 50%;
           flex-shrink: 0;
         }
 
-        .sponsor-benefit-text {
-          font-size: 0.8rem;
+        .sponsor-benefit-icon-box.cyan {
+          background: rgba(0, 240, 255, 0.1);
+          border: 1px solid rgba(0, 240, 255, 0.2);
+        }
+
+        .sponsor-benefit-icon-box.gold {
+          background: rgba(229, 193, 88, 0.1);
+          border: 1px solid rgba(229, 193, 88, 0.2);
+        }
+
+        .sponsor-benefit-content {
+          display: flex;
+          flex-direction: column;
+          gap: 1px;
+        }
+
+        .sponsor-benefit-title {
+          font-size: 0.82rem;
           color: #fff;
-          font-weight: 600;
-          letter-spacing: 0.25px;
+          font-weight: 700;
+          letter-spacing: 0.2px;
+        }
+
+        .sponsor-benefit-sub {
+          font-size: 0.72rem;
+          color: var(--text-muted);
+          font-weight: 500;
         }
 
         .premium-sponsor-code-btn {
           display: flex;
           align-items: center;
-          justify-content: center;
-          gap: 10px;
+          gap: 8px;
           width: 100%;
-          background: rgba(0, 0, 0, 0.35) !important;
-          border: 1.5px dashed var(--accent-color) !important;
+          background: rgba(0, 0, 0, 0.4) !important;
           border-radius: 10px !important;
-          padding: 0.75rem !important;
-          color: #fff !important;
-          font-weight: 800;
-          font-size: 0.85rem;
+          padding: 0.65rem 0.85rem !important;
           cursor: pointer;
-          transition: all 0.3s ease !important;
+          transition: all 0.2s ease !important;
           margin-bottom: 0.75rem;
-          text-transform: uppercase;
-          letter-spacing: 1px;
           box-sizing: border-box;
         }
 
-        /* NO HOVER ANIMATION FOR CODE BUTTON */
+        .premium-sponsor-code-btn.cyan-theme {
+          border: 1.5px dashed rgba(0, 240, 255, 0.5) !important;
+        }
+
+        .premium-sponsor-code-btn.gold-theme {
+          border: 1.5px dashed rgba(229, 193, 88, 0.5) !important;
+        }
+
         .premium-sponsor-code-btn:hover {
-          /* Ostaje statičan na zahtev korisnika, menjamo samo cursor koji je već definisan */
+          background: rgba(0, 0, 0, 0.6) !important;
+        }
+
+        .code-label {
+          font-size: 0.72rem;
+          font-weight: 700;
+          color: var(--text-muted);
+          letter-spacing: 0.5px;
+        }
+
+        .code-value {
+          font-size: 0.9rem;
+          font-weight: 800;
+          letter-spacing: 1px;
+          font-family: var(--font-mono, monospace);
+        }
+
+        .code-value.cyan {
+          color: #00f0ff;
+          text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+        }
+
+        .code-value.gold {
+          color: #e5c158;
+          text-shadow: 0 0 10px rgba(229, 193, 88, 0.4);
         }
 
         /* PREMIUM SPONSOR ACTIVATION BUTTONS */
