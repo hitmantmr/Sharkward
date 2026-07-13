@@ -2340,9 +2340,15 @@ app.get('/api/auth/discord/callback', async (req, res) => {
   let frontendOrigin = 'https://hitmantmr.github.io/Sharkward';
   if (state) {
     try {
-      const decodedState = decodeURIComponent(state);
+      let decodedState = decodeURIComponent(state).replace(/\/$/, '');
+      const validTabs = ['watchtime', 'shop', 'giveaway', 'leaderboard', 'admin', 'home'];
+      validTabs.forEach(tab => {
+        if (decodedState.toLowerCase().endsWith(`/${tab}`)) {
+          decodedState = decodedState.slice(0, -`/${tab}`.length);
+        }
+      });
       if (decodedState.startsWith('http://') || decodedState.startsWith('https://')) {
-        frontendOrigin = decodedState.replace(/\/$/, '');
+        frontendOrigin = decodedState;
       }
     } catch (e) {
       // Ignoriši grešku pri dekodiranju

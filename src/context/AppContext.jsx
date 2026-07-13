@@ -535,17 +535,28 @@ export const AppProvider = ({ children }) => {
   }, []);
 
   // --- User Funkcije (OAuth2) ---
+  const getCleanBaseOrigin = () => {
+    const parts = window.location.pathname.split('/').filter(Boolean);
+    const validTabs = ['home', 'shop', 'watchtime', 'giveaway', 'leaderboard', 'admin'];
+    let path = window.location.pathname;
+    if (parts.length > 0 && validTabs.includes(parts[parts.length - 1].toLowerCase())) {
+      parts.pop();
+      path = parts.length > 0 ? `/${parts.join('/')}` : '';
+    }
+    return encodeURIComponent(window.location.origin + path);
+  };
+
   const linkKick = () => {
     if (!user.discordId) {
       addToast('Moraš se prvo prijaviti preko Discord-a!', 'error');
       return;
     }
-    const currentOrigin = encodeURIComponent(window.location.origin + window.location.pathname);
+    const currentOrigin = getCleanBaseOrigin();
     window.location.href = `${API_URL}/auth/kick/login?discordId=${user.discordId}&origin=${currentOrigin}`;
   };
 
   const linkDiscord = () => {
-    const currentOrigin = encodeURIComponent(window.location.origin + window.location.pathname);
+    const currentOrigin = getCleanBaseOrigin();
     window.location.href = `${API_URL}/auth/discord/login?origin=${currentOrigin}`;
   };
 
