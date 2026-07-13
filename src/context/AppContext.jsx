@@ -205,10 +205,17 @@ const initialLeaderboard = [
 export const AppProvider = ({ children }) => {
   const API_URL = 'http://localhost:5000/api';
 
-  // --- State učitavanje iz localStorage ili default ---
+  // --- State učitavanje iz localStorage sa try-catch zaštitom ---
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('sharke_user');
-    return saved ? JSON.parse(saved) : {
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        localStorage.removeItem('sharke_user');
+      }
+    }
+    return {
       isLoggedIn: false,
       discordLinked: false,
       discordUser: null,
@@ -222,7 +229,11 @@ export const AppProvider = ({ children }) => {
   });
 
   const [isAdmin, setIsAdmin] = useState(() => {
-    return localStorage.getItem('sharke_is_admin') === 'true';
+    try {
+      return localStorage.getItem('sharke_is_admin') === 'true';
+    } catch (e) {
+      return false;
+    }
   });
 
   const [skins, setSkins] = useState(() => {
@@ -230,7 +241,6 @@ export const AppProvider = ({ children }) => {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        // Radimo automatsku migraciju na novu listu od 10 neutralnih CS2 skinova ako detektujemo staru listu sa slike
         const needsMigration = parsed.some(s => 
           s.name === 'AWP | Asiimov' || 
           s.name === '★ StatTrak™ Flip Knife | Doppler (Phase 4)' || 
@@ -251,12 +261,28 @@ export const AppProvider = ({ children }) => {
 
   const [giveaways, setGiveaways] = useState(() => {
     const saved = localStorage.getItem('sharke_giveaways');
-    return saved ? JSON.parse(saved) : initialGiveaways;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return Array.isArray(parsed) ? parsed : initialGiveaways;
+      } catch (e) {
+        return initialGiveaways;
+      }
+    }
+    return initialGiveaways;
   });
 
   const [leaderboard, setLeaderboard] = useState(() => {
     const saved = localStorage.getItem('sharke_leaderboard');
-    return saved ? JSON.parse(saved) : initialLeaderboard;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return Array.isArray(parsed) ? parsed : initialLeaderboard;
+      } catch (e) {
+        return initialLeaderboard;
+      }
+    }
+    return initialLeaderboard;
   });
 
   const [toasts, setToasts] = useState([]);
