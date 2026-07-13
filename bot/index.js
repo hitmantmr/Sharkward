@@ -2361,7 +2361,7 @@ app.get('/api/auth/discord/callback', async (req, res) => {
   
   try {
     const clientId = process.env.DISCORD_CLIENT_ID || '1525220477142827038';
-    const clientSecret = process.env.DISCORD_CLIENT_SECRET;
+    const clientSecret = process.env.DISCORD_CLIENT_SECRET || 'BnvzjKtKeA7EoaA86ZauIQn9Cs_TGG1a';
     const redirectUri = 'http://localhost:5000/api/auth/discord/callback';
     
     const tokenResponse = await fetch('https://discord.com/api/v10/oauth2/token', {
@@ -2379,17 +2379,7 @@ app.get('/api/auth/discord/callback', async (req, res) => {
     if (!tokenResponse.ok) {
       const errText = await tokenResponse.text();
       console.warn('⚠️ Greška pri razmeni tokena sa Discord-om:', errText);
-      console.log('💡 Automatski se aktivira siguran fallback prijava.');
-      
-      const fallbackId = '1525220477142827038';
-      const fallbackUser = 'sharke_brat';
-      
-      const db = readDb();
-      if (!db.users[fallbackId]) {
-        db.users[fallbackId] = { username: fallbackUser, points: 250, hoursWatched: 0, linkedAt: new Date().toISOString() };
-        writeDb(db);
-      }
-      return res.redirect(`${frontendOrigin}/watchtime?discord_user=${encodeURIComponent(fallbackUser)}&discord_id=${fallbackId}&avatar=`);
+      return res.redirect(`${frontendOrigin}/watchtime?error=token_exchange_failed`);
     }
     
     const tokenData = await tokenResponse.json();
@@ -2400,7 +2390,7 @@ app.get('/api/auth/discord/callback', async (req, res) => {
     });
     
     if (!userResponse.ok) {
-      return res.redirect('/api/auth/discord/simulate');
+      return res.redirect(`${frontendOrigin}/watchtime?error=user_fetch_failed`);
     }
     
     const userData = await userResponse.json();
@@ -2408,17 +2398,18 @@ app.get('/api/auth/discord/callback', async (req, res) => {
     if (!db.users[userData.id]) {
       db.users[userData.id] = {
         username: userData.username,
-        points: 250,
+        points: 0,
         hoursWatched: 0,
         linkedAt: new Date().toISOString()
       };
       writeDb(db);
     }
     
+    const avatarUrl = userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png` : '';
     res.redirect(`${frontendOrigin}/watchtime?discord_user=${userData.username}&discord_id=${userData.id}&avatar=${avatarUrl}`);
   } catch (err) {
     console.error('Error during Discord login:', err.message);
-    res.redirect('/api/auth/discord/simulate');
+    res.redirect(`${frontendOrigin}/watchtime?error=server_error`);
   }
 });
 
