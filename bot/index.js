@@ -778,20 +778,36 @@ async function checkLiveStatus() {
   let kickLiveInfo = null;
 
   try {
-    const targetUrl = `https://kick.com/api/v1/channels/sharke?cb=${Date.now()}`;
+    const targetUrl = 'https://kick.com/api/v1/channels/sharke';
     const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
 
-    const response = await fetch(proxyUrl, {
+    let response = await fetch(proxyUrl, {
       headers: {
         'Origin': 'http://localhost:5173',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        'Referer': 'http://localhost:5173/',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
       }
     });
 
     console.log(`📡 [LIVE CHECK KICK] Proxy status: ${response.status}`);
 
+    let data = null;
     if (response.status === 200) {
-      const data = await response.json();
+      data = await response.json();
+    } else {
+      // Rezervni mehanizam ako corsproxy vrati neuspeh
+      console.warn(`⚠️ [LIVE CHECK KICK] Primarni proxy vrati status ${response.status}, pokušavam rezervni proxy...`);
+      const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+      const fbRes = await fetch(fallbackUrl);
+      if (fbRes.ok) {
+        const fbJson = await fbRes.json();
+        if (fbJson && fbJson.contents) {
+          data = JSON.parse(fbJson.contents);
+        }
+      }
+    }
+
+    if (data) {
       console.log(`📡 [LIVE CHECK KICK] Livestream data exists:`, !!data.livestream);
       if (data.livestream) {
         isKickLive = true;
