@@ -15,11 +15,21 @@ import Admin from './pages/Admin';
 import { MessageSquare, ExternalLink, ShieldCheck } from 'lucide-react';
 
 const AppContent = () => {
-  const getInitialTab = () => {
-    const path = window.location.pathname.replace(/^\//, '').toLowerCase();
+  const getSubpathBase = () => {
+    const parts = window.location.pathname.split('/').filter(Boolean);
     const validTabs = ['home', 'shop', 'watchtime', 'giveaway', 'leaderboard', 'admin'];
-    if (validTabs.includes(path)) {
-      return path;
+    if (parts.length > 0 && !validTabs.includes(parts[0].toLowerCase())) {
+      return `/${parts[0]}`;
+    }
+    return '';
+  };
+
+  const getInitialTab = () => {
+    const parts = window.location.pathname.split('/').filter(Boolean);
+    const lastPart = parts.length > 0 ? parts[parts.length - 1].toLowerCase() : '';
+    const validTabs = ['home', 'shop', 'watchtime', 'giveaway', 'leaderboard', 'admin'];
+    if (validTabs.includes(lastPart)) {
+      return lastPart;
     }
     return localStorage.getItem('activeTab') || 'home';
   };
@@ -30,16 +40,18 @@ const AppContent = () => {
   const setActiveTab = (tab) => {
     setActiveTabState(tab);
     localStorage.setItem('activeTab', tab);
-    const newPath = tab === 'home' ? '/' : `/${tab}`;
+    const base = getSubpathBase();
+    const newPath = tab === 'home' ? (base ? `${base}/` : '/') : `${base}/${tab}`;
     window.history.pushState({}, '', newPath);
   };
 
   React.useEffect(() => {
     const handlePopState = () => {
-      const path = window.location.pathname.replace(/^\//, '').toLowerCase();
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const lastPart = parts.length > 0 ? parts[parts.length - 1].toLowerCase() : '';
       const validTabs = ['home', 'shop', 'watchtime', 'giveaway', 'leaderboard', 'admin'];
-      if (validTabs.includes(path)) {
-        setActiveTabState(path);
+      if (validTabs.includes(lastPart)) {
+        setActiveTabState(lastPart);
       } else {
         setActiveTabState('home');
       }
