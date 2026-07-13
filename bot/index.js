@@ -194,7 +194,7 @@ const initialSkins = [
     rarity: 'classified',
     condition: 'FIELD-TESTED',
     stock: 1,
-    image: 'https://community.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8n5WxrR1Y-s2jaac8cM-dD2SCxNF6ueZhW2frkR5z4m_SyY37cnKRblIpW5smQOcO4EW7lYa1ZOjgtFCLg4wXnn72kGoXuTa4h8QB',
+    image: 'https://community.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGJai0ki7VeTHjNisJynHtwY64o7g62bhThT90MDhrHcI7KD3Ofw-cKLFXWTBlb4n4-Q8S3-2kR5zsmXSntutJC2WbFU-Sswnlnw3PcM',
     status: 'available',
   }
 ];
