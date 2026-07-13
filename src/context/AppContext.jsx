@@ -251,7 +251,16 @@ export const AppProvider = ({ children }) => {
           localStorage.setItem('sharke_skins', JSON.stringify(initialSkins));
           return initialSkins;
         }
-        return parsed;
+        // Osvežavamo URL slike iz initialSkins da se pokvareni CDN linkovi iz starog localStorage keša automatski zamene
+        const synced = parsed.map(s => {
+          const match = initialSkins.find(init => init.id === s.id || init.name === s.name);
+          if (match && match.image && match.image.startsWith('http')) {
+            return { ...s, image: match.image };
+          }
+          return s;
+        });
+        localStorage.setItem('sharke_skins', JSON.stringify(synced));
+        return synced;
       } catch (e) {
         return initialSkins;
       }
