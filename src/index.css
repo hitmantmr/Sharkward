@@ -567,10 +567,10 @@ body {
   border: none;
   color: var(--text-secondary);
   font-family: var(--font-sans);
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  padding: 4px 6px;
+  padding: 2px 4px;
   transition: all 0.2s ease;
 }
 
@@ -581,11 +581,14 @@ body {
 }
 
 .footer-social-link {
-  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  opacity: 0.85;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .footer-social-link:hover {
-  transform: translateY(-3px);
-  background-color: rgba(255, 255, 255, 0.08) !important;
-  border-color: var(--accent-cyan) !important;
+  transform: translateY(-2px) scale(1.1);
+  opacity: 1;
 }
