@@ -10,8 +10,8 @@ const Giveaway = () => {
   const refCode = import.meta.env.VITE_CSGOSKINS_REF_CODE || 'SHARKE';
 
   // Filtriramo aktivne i završene giveaway-e na osnovu specifikacije (ACTIVE i COMPLETED)
-  const activeGw = giveaways.filter(g => g.status === 'ACTIVE' || g.status === 'active');
-  const completedGw = giveaways.filter(g => g.status === 'COMPLETED' || g.status === 'completed');
+  const activeGw = (giveaways || []).filter(g => g && (g.status === 'ACTIVE' || g.status === 'active'));
+  const completedGw = (giveaways || []).filter(g => g && (g.status === 'COMPLETED' || g.status === 'completed'));
 
   return (
     <div style={styles.container} className="fade-in">
@@ -52,14 +52,19 @@ const Giveaway = () => {
           {activeGw.length > 0 ? (
             <div className="gw-active-grid">
               {activeGw.map((gw) => {
+                const prizeStr = gw.prize || gw.prizeName || 'CS2 Skin';
                 // Razdvajamo ime na tip oružja i naziv skina
-                const prizeParts = gw.prize.split(' | ');
+                const prizeParts = prizeStr.split(' | ');
                 const weaponType = prizeParts.length > 1 
                   ? prizeParts[0].replace('★', '').trim().toUpperCase() 
                   : 'CS2 SKIN';
                 const skinName = prizeParts.length > 1 
                   ? prizeParts[1].trim() 
-                  : gw.prize;
+                  : prizeStr;
+
+                const imgSrc = gw.imageUrl || gw.image || '';
+                const valText = gw.value || gw.estPrice || gw.condition || '-';
+                const minDepText = gw.minDeposit || 'Depozit sa kodom SHARKE';
 
                 return (
                   <div key={gw.id} className="gw-card">
@@ -72,7 +77,7 @@ const Giveaway = () => {
 
                     {/* Slika skina sa radijalnim sjajem u pozadini */}
                     <div className="gw-visual-box">
-                      <img src={gw.imageUrl} alt={gw.prize} className="gw-skin-image" />
+                      {imgSrc && <img src={imgSrc} alt={prizeStr} className="gw-skin-image" />}
                     </div>
 
                     {/* Detalji o nagradi */}
@@ -87,11 +92,11 @@ const Giveaway = () => {
                       <div className="gw-values-row">
                         <div className="gw-val-box">
                           <span className="gw-val-label">VREDNOST</span>
-                          <span className="gw-val-amount">{gw.value}</span>
+                          <span className="gw-val-amount">{valText}</span>
                         </div>
                         <div className="gw-val-box">
                           <span className="gw-val-label">MIN. DEPOZIT</span>
-                          <span className="gw-val-amount-dep">{gw.minDeposit}</span>
+                          <span className="gw-val-amount-dep">{minDepText}</span>
                         </div>
                       </div>
 
@@ -119,32 +124,42 @@ const Giveaway = () => {
         <section style={styles.section} className="fade-in">
           <div style={styles.completedList} className="glass">
             {completedGw.length > 0 ? (
-              completedGw.map((gw) => (
-                <div key={gw.id} style={styles.completedItem}>
-                  <div style={styles.completedLeft}>
-                    <img src={gw.imageUrl} alt={gw.prize} style={styles.completedSkinImg} />
-                    <div>
-                      <h4 style={styles.completedPrize}>{gw.prize}</h4>
-                      <p style={styles.completedMeta}>Vrednost: {gw.value} | Min. Depozit: {gw.minDeposit}</p>
-                    </div>
-                  </div>
-                  
-                  <div style={styles.completedRight}>
-                    <div style={styles.winnerCard}>
-                      {gw.winnerAvatar ? (
-                        <img src={gw.winnerAvatar} alt={gw.winnerName} style={styles.winnerAvatarImg} />
-                      ) : (
-                        <Award size={18} color="#e5c158" />
-                      )}
-                      <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <span style={styles.winnerLabel}>Pobednik:</span>
-                        <strong style={styles.winnerName}>@{gw.winnerName || 'Neko'}</strong>
+              completedGw.map((gw) => {
+                const prizeStr = gw.prize || gw.prizeName || 'CS2 Skin';
+                const imgSrc = gw.imageUrl || gw.image || '';
+                const valText = gw.value || gw.estPrice || gw.condition || '-';
+                const minDepText = gw.minDeposit || '-';
+                const winner = gw.winnerName || gw.winner || 'Neko';
+                const avatar = gw.winnerAvatar;
+                const ended = gw.wonAt || gw.endedAt || '';
+
+                return (
+                  <div key={gw.id} style={styles.completedItem}>
+                    <div style={styles.completedLeft}>
+                      {imgSrc && <img src={imgSrc} alt={prizeStr} style={styles.completedSkinImg} />}
+                      <div>
+                        <h4 style={styles.completedPrize}>{prizeStr}</h4>
+                        <p style={styles.completedMeta}>Vrednost: {valText} | Min. Depozit: {minDepText}</p>
                       </div>
                     </div>
-                    <span style={styles.endedTime}>{gw.wonAt}</span>
+                    
+                    <div style={styles.completedRight}>
+                      <div style={styles.winnerCard}>
+                        {avatar ? (
+                          <img src={avatar} alt={winner} style={styles.winnerAvatarImg} />
+                        ) : (
+                          <Award size={18} color="#e5c158" />
+                        )}
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          <span style={styles.winnerLabel}>Pobednik:</span>
+                          <strong style={styles.winnerName}>@{winner}</strong>
+                        </div>
+                      </div>
+                      <span style={styles.endedTime}>{ended}</span>
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
                 Nema završenih nagradnih igara.

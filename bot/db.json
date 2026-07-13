@@ -97,8 +97,8 @@
   },
   "stats": {
     "youtube": 264000,
-    "tiktok": 146100,
-    "kick": 6382,
+    "tiktok": 146000,
+    "kick": 6494,
     "registered": 102
   },
   "skins": [
@@ -288,8 +288,10 @@
       "messages": {}
     },
     "kick": {
-      "isLive": false,
-      "messages": {}
+      "isLive": true,
+      "messages": {
+        "667758066262867980": "1526347354548998236"
+      }
     }
   }
 }
