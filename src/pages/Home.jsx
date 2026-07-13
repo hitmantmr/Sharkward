@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { Play, Award, Users, ShoppingBag, ArrowRight, ExternalLink, Copy } from 'lucide-react';
+import { Play, Award, Users, ShoppingBag, ArrowRight, ExternalLink, Copy, Gift } from 'lucide-react';
 
 const Home = ({ setActiveTab }) => {
   const { user, giveaways, skins, isLive, addToast } = useApp();
