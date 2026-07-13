@@ -212,7 +212,7 @@ const Home = ({ setActiveTab }) => {
             >
               <span className="code-label">PROMO KOD:</span>
               <span className="code-value cyan">SHARKE</span>
-              <Copy size={14} color="#00f0ff" style={{ marginLeft: 'auto' }} />
+              <Copy size={14} color="#00f0ff" />
             </div>
 
             <a 
@@ -274,7 +274,7 @@ const Home = ({ setActiveTab }) => {
             >
               <span className="code-label">PROMO KOD:</span>
               <span className="code-value gold">AJKULA</span>
-              <Copy size={14} color="#e5c158" style={{ marginLeft: 'auto' }} />
+              <Copy size={14} color="#e5c158" />
             </div>
 
             <a 
@@ -1057,6 +1057,7 @@ const Home = ({ setActiveTab }) => {
         .premium-sponsor-code-btn {
           display: flex;
           align-items: center;
+          justify-content: center !important;
           gap: 8px;
           width: 100%;
           background: rgba(0, 0, 0, 0.4) !important;
