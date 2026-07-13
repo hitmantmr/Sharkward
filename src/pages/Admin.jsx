@@ -2,31 +2,38 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { ShieldCheck, Plus, Trash2, RotateCcw, Award, Coins, Play, Search, Loader, HelpCircle } from 'lucide-react';
 
+// 1. Pomoćna funkcija za čišćenje naziva od wear-a, zvezdica i StatTrak oznaka
+function getCleanSkinName(fullName) {
+  if (!fullName) return '';
+  return fullName
+    // Uklanjanje wear-a u zagradi: (Factory New), (Field-Tested), itd.
+    .replace(/\s*\((Factory New|Minimal Wear|Field-Tested|Well-Worn|Battle-Scarred|Vanilla[^\)]*)\)/i, '')
+    // Uklanjanje StatTrak i zvezdica
+    .replace(/^★\s*/, '')
+    .replace(/StatTrak™?\s*/i, '')
+    .trim();
+}
+
+// 2. Pretraga slike iz ByMykel skins.json baze
+function findSkinImage(inputName, skinsList) {
+  const cleanSearchName = getCleanSkinName(inputName).toLowerCase();
+  
+  if (!cleanSearchName) return '';
+  // EKSPLICITNA PRETRAGA: Tražimo tačno poklapanje čistog imena
+  const matchedSkin = skinsList.find(s => {
+    const apiNameClean = s.name.toLowerCase().trim();
+    return apiNameClean === cleanSearchName;
+  });
+  // Ako postoji slika vraćamo je, u suprotnom VRAĆAMO PRAZNO (NE SME OSTATI STARA SLIKA!)
+  return matchedSkin ? matchedSkin.image : '';
+}
+
 const getAdminSkinImage = (img) => {
-  if (!img) return '/img/butterfly_fade.png';
+  if (!img) return '';
   if (img.startsWith('http')) {
     return img.replace('community.akamai.steamstatic.com', 'community.steamstatic.com');
   }
-  
-  const localMap = {
-    'fade_butterfly': '/img/butterfly_fade.png',
-    'butterfly_fade': '/img/butterfly_fade.png',
-    'doppler_karambit': '/img/karambit_doppler.png',
-    'karambit_doppler': '/img/karambit_doppler.png',
-    'flip_doppler': '/img/karambit_doppler.png',
-    'gut_marble': '/img/butterfly_fade.png',
-    'shadow_ultraviolet': '/img/karambit_doppler.png',
-    'awp_asiimov': '/img/karambit_doppler.png',
-    'ak_redline': '/img/butterfly_fade.png',
-    'pandora_gloves': '/img/butterfly_fade.png',
-    'dragon_lore': '/img/karambit_doppler.png',
-    'printstream_m4': '/img/karambit_doppler.png',
-    'neon_rider': '/img/butterfly_fade.png',
-    'neo_noir_usp': '/img/karambit_doppler.png',
-    'water_glock': '/img/butterfly_fade.png',
-    'mecha_deagle': '/img/karambit_doppler.png'
-  };
-  return localMap[img] || '/img/butterfly_fade.png';
+  return '';
 };
 
 const Admin = () => {
@@ -51,7 +58,7 @@ const Admin = () => {
   const [skinRarity, setSkinRarity] = useState('covert');
   const [skinCondition, setSkinCondition] = useState('FN');
   const [skinPrice, setSkinPrice] = useState('15000');
-  const [skinImage, setSkinImage] = useState('fade_butterfly');
+  const [skinImage, setSkinImage] = useState(''); // Početno prazno, postavlja se isključivo pretragom
   const [skinEstPrice, setSkinEstPrice] = useState('');
 
   // CS2 API i Autocomplete države
@@ -107,6 +114,18 @@ const Admin = () => {
     fetchCatalog();
   }, []);
 
+  const handleSkinNameInputChange = (val) => {
+    setSkinName(val);
+    setSelectedCatalogSkin(null);
+    // Obavezna provera 1: Resetovanje state-a pre nove pretrage
+    setSkinImage('');
+
+    if (val.trim() && skinsCatalog.length > 0) {
+      const foundImage = findSkinImage(val, skinsCatalog);
+      setSkinImage(foundImage);
+    }
+  };
+
   // Pretraga i autokomplet predlozi
   useEffect(() => {
     if (!skinName.trim() || selectedCatalogSkin?.name === skinName) {
@@ -114,24 +133,19 @@ const Admin = () => {
       return;
     }
 
-    // Uklanjanje StatTrak oznaka pre pretrage slike
-    const cleanNameForImageSearch = skinName
-      .replace('★ StatTrak™ ', '')
-      .replace('★StatTrak™ ', '')
-      .replace('StatTrak™ ', '');
-    const cleanQuery = cleanNameForImageSearch.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const cleanQuery = getCleanSkinName(skinName).toLowerCase().replace(/[^a-z0-9]/g, '');
 
     const filtered = skinsCatalog
       .filter(s => {
-        // Spajamo ime i fazu ako faza postoji na skinu
-        const fullName = s.phase ? `${s.name} (${s.phase})` : s.name;
-        const cleanName = fullName.toLowerCase().replace(/[^a-z0-9]/g, '');
-        
-        // Proveravamo poklapanje u oba smera
+        const cleanName = getCleanSkinName(s.name).toLowerCase().replace(/[^a-z0-9]/g, '');
         return cleanName.includes(cleanQuery) || cleanQuery.includes(cleanName);
       })
       .slice(0, 8);
     setSuggestions(filtered);
+
+    // Automatska provera eksplicitnog poklapanja naziva sa bazu
+    const foundImage = findSkinImage(skinName, skinsCatalog);
+    setSkinImage(foundImage);
   }, [skinName, skinsCatalog, selectedCatalogSkin]);
 
   // Pomocnik za mapiranje retkosti
@@ -196,7 +210,11 @@ const Admin = () => {
   const handleSelectSuggestion = (skin) => {
     setSelectedCatalogSkin(skin);
     setSkinName(skin.name);
-    setSkinImage(skin.image);
+    
+    // Eksplicitna pretraga slike iz ByMykel liste na osnovu unetog čistog imena
+    const foundImage = findSkinImage(skin.name, skinsCatalog) || skin.image || '';
+    setSkinImage(foundImage);
+
     setSkinRarity(mapRarity(skin.rarity));
     setSkinType(mapWeaponType(skin));
     setSuggestions([]);
@@ -218,15 +236,21 @@ const Admin = () => {
     e.preventDefault();
     if (!skinName.trim()) return;
 
+    // Obavezna provera 2: Čuvanje u Bazi - provera da li je imageUrl validan Steam CDN URL
+    const isValidSteamCdn = skinImage && (
+      skinImage.startsWith('https://community.akamai.steamstatic.com/') || 
+      skinImage.startsWith('https://community.steamstatic.com/') ||
+      skinImage.startsWith('https://steamcommunity-a.akamaihd.net/')
+    );
+
+    if (!isValidSteamCdn) {
+      alert('Kritična greška pri čuvanju: Slika skina je prazna ili nevažeća! Unesite tačan naziv skina tako da pretraga pronađe validan Steam CDN URL (https://community.akamai.steamstatic.com/...). Objavljivanje je onemogućeno.');
+      return;
+    }
+
     // Normalizacija i čišćenje imena za pretragu
     let baseName = selectedCatalogSkin ? selectedCatalogSkin.name : skinName.trim();
-    let cleanBase = baseName
-      .replace('★ StatTrak™ ', '')
-      .replace('★StatTrak™ ', '')
-      .replace('StatTrak™ ', '')
-      .replace('★ ', '')
-      .replace('★', '')
-      .trim();
+    let cleanBase = getCleanSkinName(baseName);
 
     // Utvrđujemo fazu ako postoji
     let phase = selectedCatalogSkin?.phase || null;
@@ -268,6 +292,7 @@ const Admin = () => {
 
     // Reset forme
     setSkinName('');
+    setSkinImage('');
     setIsStatTrak(false);
     setSelectedCatalogSkin(null);
     setBuffPrice(null);
@@ -308,7 +333,7 @@ const Admin = () => {
                 type="text"
                 placeholder="Počni da kucaš naziv skina (npr. Asiimov, Redline)..."
                 value={skinName}
-                onChange={(e) => setSkinName(e.target.value)}
+                onChange={(e) => handleSkinNameInputChange(e.target.value)}
                 style={styles.input}
                 required
               />
