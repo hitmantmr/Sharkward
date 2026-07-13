@@ -168,7 +168,7 @@ const Home = ({ setActiveTab }) => {
         {/* CSGO Skins Card */}
         <div className="premium-card sponsor-card-premium csgoskins-card reveal-on-scroll" style={{ ...styles.partnerCard, transitionDelay: '100ms' }}>
           <div style={styles.partnerHeader}>
-            <img src="/img/csgoskins logo.png" alt="CSGO Skins Logo" style={styles.partnerLogoImg} />
+            <img src="./img/csgoskins logo.png" alt="CSGO Skins Logo" style={styles.partnerLogoImg} />
             <span style={styles.partnerTag}>SPONZOR</span>
           </div>
 
@@ -225,7 +225,7 @@ const Home = ({ setActiveTab }) => {
         {/* Mozzart Card */}
         <div className="premium-card sponsor-card-premium mozzart-card reveal-on-scroll" style={{ ...styles.partnerCard, transitionDelay: '200ms' }}>
           <div style={styles.partnerHeader}>
-            <img src="/img/mozzart logo.png" alt="Mozzart Logo" style={styles.partnerLogoImg} />
+            <img src="./img/mozzart logo.png" alt="Mozzart Logo" style={styles.partnerLogoImg} />
             <span style={styles.partnerTag}>SPONZOR</span>
           </div>
 
@@ -390,7 +390,7 @@ const Home = ({ setActiveTab }) => {
           <div className="gw-vibe-showcase">
             <div className="skin-glow-radial-blue" style={{ width: '180px', height: '180px', background: 'radial-gradient(circle, rgba(0, 240, 255, 0.15) 0%, transparent 70%)' }}></div>
             <img 
-              src="/img/karambit_doppler.png" 
+              src="./img/karambit_doppler.png" 
               alt="★ Karambit | Doppler" 
               className="floating-skin-img-doppler" 
               style={{ width: '150px', height: 'auto', zIndex: 2 }}

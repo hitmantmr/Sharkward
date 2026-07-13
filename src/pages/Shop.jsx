@@ -142,22 +142,22 @@ const Shop = ({ setActiveTab }) => {
     }
 
     const localImages = {
-      'fade_butterfly': '/img/butterfly_fade.png',
-      'butterfly_fade': '/img/butterfly_fade.png',
-      'doppler_karambit': '/img/karambit_doppler.png',
-      'karambit_doppler': '/img/karambit_doppler.png',
-      'flip_doppler': '/img/karambit_doppler.png',
-      'gut_marble': '/img/butterfly_fade.png',
-      'shadow_ultraviolet': '/img/karambit_doppler.png',
-      'awp_asiimov': '/img/karambit_doppler.png',
-      'ak_redline': '/img/butterfly_fade.png',
-      'pandora_gloves': '/img/butterfly_fade.png',
-      'dragon_lore': '/img/karambit_doppler.png',
-      'printstream_m4': '/img/karambit_doppler.png',
-      'neon_rider': '/img/butterfly_fade.png',
-      'neo_noir_usp': '/img/karambit_doppler.png',
-      'water_glock': '/img/butterfly_fade.png',
-      'mecha_deagle': '/img/karambit_doppler.png'
+      'fade_butterfly': './img/butterfly_fade.png',
+      'butterfly_fade': './img/butterfly_fade.png',
+      'doppler_karambit': './img/karambit_doppler.png',
+      'karambit_doppler': './img/karambit_doppler.png',
+      'flip_doppler': './img/karambit_doppler.png',
+      'gut_marble': './img/butterfly_fade.png',
+      'shadow_ultraviolet': './img/karambit_doppler.png',
+      'awp_asiimov': './img/karambit_doppler.png',
+      'ak_redline': './img/butterfly_fade.png',
+      'pandora_gloves': './img/butterfly_fade.png',
+      'dragon_lore': './img/karambit_doppler.png',
+      'printstream_m4': './img/karambit_doppler.png',
+      'neon_rider': './img/butterfly_fade.png',
+      'neo_noir_usp': './img/karambit_doppler.png',
+      'water_glock': './img/butterfly_fade.png',
+      'mecha_deagle': './img/karambit_doppler.png'
     };
 
     const imageUrl = localImages[skin.image];
