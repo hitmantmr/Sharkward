@@ -2415,8 +2415,7 @@ app.get('/api/auth/discord/callback', async (req, res) => {
       writeDb(db);
     }
     
-    const avatarUrl = userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png` : '';
-    res.redirect(`http://localhost:5173/watchtime?discord_user=${userData.username}&discord_id=${userData.id}&avatar=${avatarUrl}`);
+    res.redirect(`${frontendOrigin}/watchtime?discord_user=${userData.username}&discord_id=${userData.id}&avatar=${avatarUrl}`);
   } catch (err) {
     console.error('Error during Discord login:', err.message);
     res.redirect('/api/auth/discord/simulate');
