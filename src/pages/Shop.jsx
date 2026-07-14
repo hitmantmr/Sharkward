@@ -330,25 +330,25 @@ const Shop = ({ setActiveTab }) => {
         {/* U sredini: Kategorije */}
         <div style={styles.filterTabs}>
           <button 
-            style={{ ...styles.filterTab, ...(categoryFilter === 'all' ? styles.activeFilterTab : {}) }}
+            className={`filter-tab ${categoryFilter === 'all' ? 'active' : ''}`}
             onClick={() => setCategoryFilter('all')}
           >
             <LayoutGrid size={14} /> SVE
           </button>
           <button 
-            style={{ ...styles.filterTab, ...(categoryFilter === 'giftcard' ? styles.activeFilterTab : {}) }}
+            className={`filter-tab ${categoryFilter === 'giftcard' ? 'active' : ''}`}
             onClick={() => setCategoryFilter('giftcard')}
           >
             <CreditCard size={14} /> GIFT CARD
           </button>
           <button 
-            style={{ ...styles.filterTab, ...(categoryFilter === 'skins' ? styles.activeFilterTab : {}) }}
+            className={`filter-tab ${categoryFilter === 'skins' ? 'active' : ''}`}
             onClick={() => setCategoryFilter('skins')}
           >
             <Sparkles size={14} /> SKINS
           </button>
           <button 
-            style={{ ...styles.filterTab, ...(categoryFilter === 'knives' ? styles.activeFilterTab : {}) }}
+            className={`filter-tab ${categoryFilter === 'knives' ? 'active' : ''}`}
             onClick={() => setCategoryFilter('knives')}
           >
             <Sword size={14} /> KNIFES
