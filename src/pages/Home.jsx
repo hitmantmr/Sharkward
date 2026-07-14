@@ -253,29 +253,7 @@ const Home = ({ setActiveTab }) => {
         {/* Alea Partners Card */}
         <div className="premium-card sponsor-card-premium aleapartners-card reveal-on-scroll" style={{ ...styles.partnerCard, transitionDelay: '300ms', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div style={styles.partnerHeader}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{
-                width: '30px',
-                height: '30px',
-                borderRadius: '8px',
-                background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: '900',
-                color: '#fff',
-                fontSize: '1.1rem',
-                boxShadow: '0 4px 12px rgba(29, 78, 216, 0.35)'
-              }}>A</div>
-              <span style={{ 
-                background: 'linear-gradient(135deg, #fff 0%, #93c5fd 100%)', 
-                WebkitBackgroundClip: 'text', 
-                WebkitTextFillColor: 'transparent', 
-                fontWeight: '800', 
-                fontSize: '1.1rem',
-                letterSpacing: '0.5px'
-              }}>ALEA PARTNERS</span>
-            </div>
+            <img src="./img/alea.png" alt="Alea Partners Logo" style={{ ...styles.partnerLogoImg, filter: 'drop-shadow(0 4px 12px rgba(59, 130, 246, 0.35))' }} />
             <span className="sponsor-tag-badge blue">SPONZOR</span>
           </div>
 
@@ -528,6 +506,9 @@ const Home = ({ setActiveTab }) => {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
           gap: 1.5rem;
+          max-width: 1020px;
+          margin: 0 auto;
+          width: 100%;
         }
 
         @media (max-width: 991px) {
