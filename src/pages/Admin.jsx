@@ -211,10 +211,35 @@ const Admin = () => {
   };
 
   // Preuzimanje cene sa Buff163
-  const fetchBuffPrice = async (name, wearCode) => {
+  const fetchBuffPrice = async (name, wearCode, stattrak = false) => {
+    if (!name || !name.trim()) return;
     const wearFullName = wearMap[wearCode] || 'Field-Tested';
-    const queryName = `${name} (${wearFullName})`;
-    
+    let cleanBase = getCleanSkinName(name);
+
+    // Utvrđujemo fazu ako postoji u nazivu
+    let phase = selectedCatalogSkin?.phase || null;
+    if (!phase) {
+      const phaseMatch = name.match(/\((Phase \d|Ruby|Sapphire|Black Pearl|Emerald)\)/i);
+      if (phaseMatch) {
+        phase = phaseMatch[1];
+        cleanBase = cleanBase.replace(`(${phase})`, '').trim();
+      }
+    }
+
+    let displayName = cleanBase;
+    if (phase) {
+      displayName = `${cleanBase} (${phase})`;
+    }
+
+    const isKnife = skinType === 'Knife' || cleanBase.toLowerCase().includes('knife') || cleanBase.toLowerCase().includes('bayonet') || cleanBase.toLowerCase().includes('daggers') || cleanBase.toLowerCase().includes('karambit');
+
+    let queryName = '';
+    if (stattrak) {
+      queryName = isKnife ? `★ StatTrak™ ${displayName} (${wearFullName})` : `StatTrak™ ${displayName} (${wearFullName})`;
+    } else {
+      queryName = isKnife ? `★ ${displayName} (${wearFullName})` : `${displayName} (${wearFullName})`;
+    }
+
     setFetchingPrice(true);
     setBuffPrice(null);
     try {
@@ -251,16 +276,27 @@ const Admin = () => {
     setSkinType(mapWeaponType(skin));
     setSuggestions([]);
     
-    // Dohvati cenu za izabrano stanje
-    fetchBuffPrice(skin.name, skinCondition);
+    // Dohvati cenu za izabrano stanje i StatTrak opciju
+    fetchBuffPrice(skin.name, skinCondition, isStatTrak);
+  };
+
+  // Kada admin promeni StatTrak opciju
+  const handleStatTrakToggle = (e) => {
+    const checked = e.target.checked;
+    setIsStatTrak(checked);
+    const targetName = selectedCatalogSkin ? selectedCatalogSkin.name : skinName;
+    if (targetName) {
+      fetchBuffPrice(targetName, skinCondition, checked);
+    }
   };
 
   // Kada admin promeni stanje (FN, MW...), ponovo povuci cenu
   const handleConditionChange = (e) => {
     const nextCond = e.target.value;
     setSkinCondition(nextCond);
-    if (selectedCatalogSkin) {
-      fetchBuffPrice(selectedCatalogSkin.name, nextCond);
+    const targetName = selectedCatalogSkin ? selectedCatalogSkin.name : skinName;
+    if (targetName) {
+      fetchBuffPrice(targetName, nextCond, isStatTrak);
     }
   };
 
@@ -434,7 +470,7 @@ const Admin = () => {
               type="checkbox"
               id="isStatTrak"
               checked={isStatTrak}
-              onChange={(e) => setIsStatTrak(e.target.checked)}
+              onChange={handleStatTrakToggle}
               style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: 'var(--accent-cyan)' }}
             />
             <label htmlFor="isStatTrak" style={{ ...styles.label, cursor: 'pointer', marginBottom: 0, fontSize: '0.85rem', color: '#fff' }}>
