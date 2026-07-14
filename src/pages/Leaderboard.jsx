@@ -39,70 +39,69 @@ const Leaderboard = () => {
         </div>
       ) : (
         <>
-          {/* Postolje za Top 3 */}
+          {/* Postolje za Top 3 - Modern Clean Cards */}
           <div style={styles.podiumContainer}>
             
             {/* Drugo mesto (Silver) */}
             {topThree[1] && (
-              <div style={styles.podiumCardWrapper}>
-                <div style={{ ...styles.podiumCard, borderTopColor: '#a1a1aa' }} className="glass">
-                  <div style={{ ...styles.podiumRankCircle, backgroundColor: '#71717a' }}>2</div>
-                  <h4 style={styles.podiumUsername}>@{topThree[1].kickUsername || topThree[1].username}</h4>
-                  <div style={styles.podiumStats}>
-                    <div style={styles.podiumStat}>
-                      <Clock size={12} color="var(--text-muted)" />
-                      <span>{topThree[1].hours}h</span>
-                    </div>
-                    <div style={styles.podiumStatPoints}>
-                      <Coins size={12} color="#00f0ff" />
-                      <span>{formatPoints(topThree[1].points)}</span>
-                    </div>
+              <div style={{ ...styles.podiumCard, border: '1px solid rgba(161, 161, 170, 0.3)' }} className="glass-interactive">
+                <div style={styles.rankBadgeSilver}>#2 SILVER</div>
+                <div style={styles.podiumAvatarCircle}>
+                  <User size={20} color="#a1a1aa" />
+                </div>
+                <h4 style={styles.podiumUsername}>@{topThree[1].kickUsername || topThree[1].username}</h4>
+                <div style={styles.podiumStatsRow}>
+                  <div style={styles.podiumStatPill}>
+                    <Clock size={12} color="var(--text-muted)" />
+                    <span>{topThree[1].hours}h</span>
+                  </div>
+                  <div style={styles.podiumStatPillCyan}>
+                    <Coins size={12} color="var(--accent-cyan)" />
+                    <span>{formatPoints(topThree[1].points)} PTS</span>
                   </div>
                 </div>
-                <div style={{ ...styles.podiumBase, height: '60px', backgroundColor: 'rgba(161, 161, 170, 0.1)' }}>SILVER</div>
               </div>
             )}
 
             {/* Prvo mesto (Gold) */}
             {topThree[0] && (
-              <div style={styles.podiumCardWrapper}>
-                <div style={{ ...styles.podiumCard, ...styles.goldCard, borderTopColor: '#e5c158' }} className="glass">
-                  <div style={styles.crown}>👑</div>
-                  <div style={{ ...styles.podiumRankCircle, backgroundColor: '#ca8a04' }}>1</div>
-                  <h4 style={{ ...styles.podiumUsername, fontSize: '1.25rem', color: '#fff' }}>@{topThree[0].kickUsername || topThree[0].username}</h4>
-                  <div style={styles.podiumStats}>
-                    <div style={styles.podiumStat}>
-                      <Clock size={12} color="var(--text-muted)" />
-                      <span>{topThree[0].hours}h</span>
-                    </div>
-                    <div style={styles.podiumStatPoints}>
-                      <Coins size={14} color="#00f0ff" />
-                      <span style={{ fontSize: '1.1rem', fontWeight: '800' }}>{formatPoints(topThree[0].points)}</span>
-                    </div>
+              <div style={{ ...styles.podiumCard, ...styles.goldPodiumCard }} className="glass-interactive">
+                <div style={styles.rankBadgeGold}>#1 GOLD</div>
+                <div style={styles.podiumAvatarCircleGold}>
+                  <User size={24} color="#e5c158" />
+                </div>
+                <h4 style={{ ...styles.podiumUsername, fontSize: '1.2rem', color: '#fff' }}>@{topThree[0].kickUsername || topThree[0].username}</h4>
+                <div style={styles.podiumStatsRow}>
+                  <div style={styles.podiumStatPill}>
+                    <Clock size={13} color="var(--text-muted)" />
+                    <span>{topThree[0].hours}h</span>
+                  </div>
+                  <div style={styles.podiumStatPillCyan}>
+                    <Coins size={13} color="var(--accent-cyan)" />
+                    <span style={{ fontWeight: '800' }}>{formatPoints(topThree[0].points)} PTS</span>
                   </div>
                 </div>
-                <div style={{ ...styles.podiumBase, height: '90px', backgroundColor: 'rgba(229, 193, 88, 0.15)', borderTop: '2px solid rgba(229, 193, 88, 0.3)' }}>GOLD</div>
               </div>
             )}
 
             {/* Treće mesto (Bronze) */}
             {topThree[2] && (
-              <div style={styles.podiumCardWrapper}>
-                <div style={{ ...styles.podiumCard, borderTopColor: '#b45309' }} className="glass">
-                  <div style={{ ...styles.podiumRankCircle, backgroundColor: '#92400e' }}>3</div>
-                  <h4 style={styles.podiumUsername}>@{topThree[2].kickUsername || topThree[2].username}</h4>
-                  <div style={styles.podiumStats}>
-                    <div style={styles.podiumStat}>
-                      <Clock size={12} color="var(--text-muted)" />
-                      <span>{topThree[2].hours}h</span>
-                    </div>
-                    <div style={styles.podiumStatPoints}>
-                      <Coins size={12} color="#00f0ff" />
-                      <span>{formatPoints(topThree[2].points)}</span>
-                    </div>
+              <div style={{ ...styles.podiumCard, border: '1px solid rgba(180, 83, 9, 0.3)' }} className="glass-interactive">
+                <div style={styles.rankBadgeBronze}>#3 BRONZE</div>
+                <div style={styles.podiumAvatarCircle}>
+                  <User size={20} color="#d97706" />
+                </div>
+                <h4 style={styles.podiumUsername}>@{topThree[2].kickUsername || topThree[2].username}</h4>
+                <div style={styles.podiumStatsRow}>
+                  <div style={styles.podiumStatPill}>
+                    <Clock size={12} color="var(--text-muted)" />
+                    <span>{topThree[2].hours}h</span>
+                  </div>
+                  <div style={styles.podiumStatPillCyan}>
+                    <Coins size={12} color="var(--accent-cyan)" />
+                    <span>{formatPoints(topThree[2].points)} PTS</span>
                   </div>
                 </div>
-                <div style={{ ...styles.podiumBase, height: '40px', backgroundColor: 'rgba(180, 83, 9, 0.1)' }}>BRONZE</div>
               </div>
             )}
 
@@ -227,96 +226,120 @@ const styles = {
   podiumContainer: {
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'flex-end',
-    gap: '2rem',
-    marginTop: '2rem',
-    '@media (max-width: 767px)': {
-      display: 'none', // Na mobilnom sakrij postolje, prikaži listu
-    }
-  },
-  podiumCardWrapper: {
-    display: 'flex',
-    flexDirection: 'column',
     alignItems: 'center',
-    width: '200px',
+    gap: '1.5rem',
+    marginTop: '1.5rem',
+    flexWrap: 'wrap',
   },
   podiumCard: {
-    width: '100%',
-    padding: '1.5rem 1rem',
-    textAlign: 'center',
+    width: '240px',
+    padding: '1.5rem 1.25rem',
+    borderRadius: '16px',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     gap: '12px',
-    borderTop: '5px solid',
-    borderRadius: '16px 16px 0 0',
     position: 'relative',
-    boxShadow: '0 -4px 15px rgba(0, 0, 0, 0.1)',
+    background: 'var(--bg-card)',
+    transition: 'all 0.3s ease',
   },
-  goldCard: {
-    boxShadow: '0 0 25px rgba(229, 193, 88, 0.15)',
-    zIndex: 2,
-    transform: 'scale(1.08)',
+  goldPodiumCard: {
+    width: '260px',
+    border: '1px solid rgba(229, 193, 88, 0.4)',
+    boxShadow: '0 0 25px rgba(229, 193, 88, 0.12)',
+    transform: 'scale(1.05)',
+    background: 'radial-gradient(circle at top, rgba(229, 193, 88, 0.06) 0%, var(--bg-card) 70%)',
   },
-  crown: {
-    position: 'absolute',
-    top: '-32px',
-    fontSize: '2rem',
-    animation: 'pulse 1.5s infinite',
+  rankBadgeGold: {
+    fontSize: '0.75rem',
+    fontWeight: '800',
+    color: '#e5c158',
+    backgroundColor: 'rgba(229, 193, 88, 0.12)',
+    border: '1px solid rgba(229, 193, 88, 0.3)',
+    padding: '4px 12px',
+    borderRadius: '20px',
+    letterSpacing: '1px',
   },
-  podiumRankCircle: {
-    width: '28px',
-    height: '28px',
+  rankBadgeSilver: {
+    fontSize: '0.725rem',
+    fontWeight: '800',
+    color: '#a1a1aa',
+    backgroundColor: 'rgba(161, 161, 170, 0.12)',
+    border: '1px solid rgba(161, 161, 170, 0.25)',
+    padding: '4px 12px',
+    borderRadius: '20px',
+    letterSpacing: '1px',
+  },
+  rankBadgeBronze: {
+    fontSize: '0.725rem',
+    fontWeight: '800',
+    color: '#d97706',
+    backgroundColor: 'rgba(180, 83, 9, 0.12)',
+    border: '1px solid rgba(180, 83, 9, 0.25)',
+    padding: '4px 12px',
+    borderRadius: '20px',
+    letterSpacing: '1px',
+  },
+  podiumAvatarCircleGold: {
+    width: '52px',
+    height: '52px',
     borderRadius: '50%',
+    backgroundColor: 'rgba(229, 193, 88, 0.08)',
+    border: '1.5px solid #e5c158',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#fff',
-    fontSize: '0.9rem',
-    fontWeight: '800',
+    boxShadow: '0 0 12px rgba(229, 193, 88, 0.2)',
+  },
+  podiumAvatarCircle: {
+    width: '44px',
+    height: '44px',
+    borderRadius: '50%',
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   podiumUsername: {
     fontSize: '1.05rem',
     fontWeight: '700',
-    color: 'var(--text-primary)',
+    color: '#fff',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+    maxWidth: '100%',
+    margin: '2px 0',
+  },
+  podiumStatsRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
     width: '100%',
+    justifyContent: 'center',
   },
-  podiumStats: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
-    alignItems: 'center',
-  },
-  podiumStat: {
+  podiumStatPill: {
     display: 'flex',
     alignItems: 'center',
-    gap: '4px',
-    fontSize: '0.8rem',
+    gap: '5px',
+    fontSize: '0.775rem',
     color: 'var(--text-secondary)',
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    border: '1px solid rgba(255, 255, 255, 0.06)',
+    padding: '4px 10px',
+    borderRadius: '8px',
   },
-  podiumStatPoints: {
+  podiumStatPillCyan: {
     display: 'flex',
     alignItems: 'center',
-    gap: '4px',
-    fontSize: '0.95rem',
+    gap: '5px',
+    fontSize: '0.775rem',
     fontWeight: '700',
     color: 'var(--accent-cyan)',
-  },
-  podiumBase: {
-    width: '100%',
-    border: '1px solid var(--border-color)',
-    borderTop: 'none',
-    borderBottom: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '0.85rem',
-    fontWeight: '800',
-    color: 'var(--text-muted)',
-    letterSpacing: '1px',
+    backgroundColor: 'rgba(0, 240, 255, 0.06)',
+    border: '1px solid rgba(0, 240, 255, 0.2)',
+    padding: '4px 10px',
+    borderRadius: '8px',
   },
   mobileTopThreeList: {
     display: 'flex',
