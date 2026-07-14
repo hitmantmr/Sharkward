@@ -656,23 +656,66 @@ export const AppProvider = ({ children }) => {
     });
   };
 
-  const addSkin = (skin) => {
+  const addSkin = async (skin) => {
     const newSkin = {
       ...skin,
       id: Date.now().toString(),
       status: 'available'
     };
+    // 1. Lokalno osvežavamo odmah
     setSkins(prev => [newSkin, ...prev]);
+
+    // 2. Trajno čuvamo na backendu
+    try {
+      const res = await fetch(`${API_URL}/admin/skins/add`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newSkin)
+      });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.skins)) {
+        setSkins(data.skins);
+      }
+    } catch (err) {
+      console.warn('Greška pri čuvanju skina na serveru:', err);
+    }
+
     addToast(`Skin "${skin.name}" uspešno dodat u prodavnicu!`, 'success');
   };
 
-  const deleteSkin = (skinId) => {
+  const deleteSkin = async (skinId) => {
     setSkins(prev => prev.filter(s => s.id !== skinId));
+    try {
+      const res = await fetch(`${API_URL}/admin/skins/delete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ skinId })
+      });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.skins)) {
+        setSkins(data.skins);
+      }
+    } catch (err) {
+      console.warn('Greška pri brisanju skina sa servera:', err);
+    }
     addToast('Skin uklonjen iz prodavnice.', 'info');
   };
 
-  const restockSkin = (skinId) => {
+  const restockSkin = async (skinId) => {
     setSkins(prev => prev.map(s => s.id === skinId ? { ...s, status: 'available' } : s));
+    try {
+      const res = await fetch(`${API_URL}/admin/skins/restock`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ skinId })
+      });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.skins)) {
+        setSkins(data.skins);
+      }
+    } catch (err) {
+      console.warn('Greška pri dopunjavanju skina na serveru:', err);
+    }
     addToast('Skin uspešno dopunjen (ponovo dostupan).', 'success');
   };
 

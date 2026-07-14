@@ -24,6 +24,115 @@ export function getItemImageUrl(item) {
   return imgUrl;
 }
 
+export function GiftCardVisual({ name, estPrice }) {
+  const match = name ? name.match(/\$(\d+)/) : null;
+  const amountStr = match ? `$${match[1]}` : (estPrice || '$10');
+
+  return (
+    <div style={{
+      width: '165px',
+      height: '100px',
+      borderRadius: '10px',
+      background: 'linear-gradient(135deg, #0b1a2b 0%, #06111f 100%)',
+      border: '1px solid rgba(0, 240, 255, 0.35)',
+      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6)',
+      position: 'relative',
+      overflow: 'hidden',
+      display: 'flex',
+      flexDirection: 'column',
+      justify: 'space-between',
+      padding: '8px 12px',
+      margin: '0 auto',
+      boxSizing: 'border-box'
+    }}>
+      {/* Background Curved Lines */}
+      <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0.18, pointerEvents: 'none' }}>
+        <path d="M 0 25 Q 85 75 165 15 Q 85 95 0 65 Z" fill="#00f0ff" />
+      </svg>
+
+      {/* Horizontal White Ribbon */}
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: 0,
+        width: '100%',
+        height: '22px',
+        transform: 'translateY(-50%)',
+        backgroundColor: '#ffffff',
+        boxShadow: '0 2px 6px rgba(0, 0, 0, 0.4)',
+        zIndex: 1
+      }}>
+        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', backgroundColor: 'rgba(0,0,0,0.1)' }} />
+        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '2px', backgroundColor: 'rgba(0,0,0,0.1)' }} />
+      </div>
+
+      {/* Vertical White Ribbon */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '26%',
+        width: '22px',
+        height: '100%',
+        backgroundColor: '#ffffff',
+        boxShadow: '0 2px 6px rgba(0, 0, 0, 0.4)',
+        zIndex: 1
+      }}>
+        <div style={{ position: 'absolute', top: 0, left: 0, width: '2px', height: '100%', backgroundColor: 'rgba(0,0,0,0.1)' }} />
+        <div style={{ position: 'absolute', top: 0, right: 0, width: '2px', height: '100%', backgroundColor: 'rgba(0,0,0,0.1)' }} />
+      </div>
+
+      {/* Ribbon Bow / Knot */}
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: '26%',
+        transform: 'translate(-50%, -50%)',
+        width: '24px',
+        height: '24px',
+        zIndex: 3,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{ position: 'absolute', left: '-6px', top: '2px', width: '14px', height: '10px', borderRadius: '50% 0 0 50%', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', transform: 'rotate(-25deg)' }} />
+        <div style={{ position: 'absolute', right: '-6px', top: '2px', width: '14px', height: '10px', borderRadius: '0 50% 50% 0', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', transform: 'rotate(25deg)' }} />
+        <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#f8fafc', boxShadow: '0 2px 4px rgba(0,0,0,0.3)', border: '1px solid #94a3b8', zIndex: 4 }} />
+      </div>
+
+      {/* Top Header Text (Right Aligned) */}
+      <div style={{ zIndex: 4, width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+        <span style={{ fontSize: '0.6rem', fontWeight: 900, color: '#ffffff', letterSpacing: '0.5px', fontFamily: 'system-ui, sans-serif' }}>
+          CSGO SKINS
+        </span>
+      </div>
+
+      {/* Bottom Value & Type Tag (Right Aligned) */}
+      <div style={{ zIndex: 4, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginTop: 'auto' }}>
+        <span style={{
+          fontSize: '1.35rem',
+          fontWeight: 900,
+          color: '#00f0ff',
+          textShadow: '0 0 10px rgba(0, 240, 255, 0.8), 0 0 20px rgba(0, 240, 255, 0.5)',
+          lineHeight: 1,
+          fontFamily: 'system-ui, sans-serif'
+        }}>
+          {amountStr}
+        </span>
+        <span style={{
+          fontSize: '0.5rem',
+          fontWeight: 800,
+          color: '#94a3b8',
+          letterSpacing: '1.2px',
+          marginTop: '2px',
+          fontFamily: 'system-ui, sans-serif'
+        }}>
+          GIFT CARD
+        </span>
+      </div>
+    </div>
+  );
+}
+
 const Shop = ({ setActiveTab }) => {
   const { user, skins, buySkin, saveTradeUrl } = useApp();
   const [searchTerm, setSearchTerm] = useState('');
@@ -164,7 +273,15 @@ const Shop = ({ setActiveTab }) => {
     return new Intl.NumberFormat().format(pts);
   };
 
+
+
   const renderSkinImage = (skin) => {
+    const isGiftCard = skin.type === 'Gift Card' || skin.isGiftCard || skin.category === 'giftcard' || (skin.name && skin.name.toLowerCase().includes('gift card'));
+
+    if (isGiftCard) {
+      return <GiftCardVisual name={skin.name} estPrice={skin.estPrice} />;
+    }
+
     const cardImgUrl = getItemImageUrl(skin);
     return (
       <div style={styles.imgWrapper}>
