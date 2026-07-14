@@ -125,6 +125,11 @@ const Home = ({ setActiveTab }) => {
 
       {/* 2. Prvi Red: Partnerski Sponzori (CSGO-Skins, Mozzart, Alea Partners) */}
       <div className="sponsors-viewport">
+        <div className="sponsors-header reveal-on-scroll">
+          <h2 className="sponsors-title">EKSKLUZIVNI PARTNERI</h2>
+          <p className="sponsors-subtitle">Iskoristi promo kodove i preuzmi specijalne poklone kod naših sponzora</p>
+        </div>
+
         <section className="first-row-grid" style={styles.firstRowGrid}>
         
         {/* CSGO Skins Card */}
@@ -304,6 +309,10 @@ const Home = ({ setActiveTab }) => {
         </div>
 
       </section>
+
+      <div className="sponsors-footer reveal-on-scroll">
+        <span className="sponsors-footer-text">Aktivacija kodova direktno podržava rad Sharky strima</span>
+      </div>
       </div>
 
       {/* 4. 2-Card Grid: Kako Sakupljati Poene, Aktivni Giveaway */}
@@ -429,7 +438,52 @@ const Home = ({ setActiveTab }) => {
         .sponsors-viewport {
           width: 100%;
           box-sizing: border-box;
-          padding: 2rem 0;
+          padding: 3rem 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .sponsors-header {
+          text-align: center;
+          margin-bottom: 2rem;
+          padding: 0 1rem;
+        }
+
+        .sponsors-title {
+          font-size: 2.2rem;
+          font-weight: 800;
+          color: #fff;
+          letter-spacing: 1px;
+          margin: 0 0 0.5rem 0;
+          text-transform: uppercase;
+          background: linear-gradient(90deg, #fff 0%, var(--accent-cyan) 50%, var(--accent-blue) 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+
+        .sponsors-subtitle {
+          font-size: 0.95rem;
+          color: var(--text-muted);
+          margin: 0;
+          font-weight: 500;
+        }
+
+        .sponsors-footer {
+          margin-top: 2rem;
+          text-align: center;
+          padding: 0 1rem;
+        }
+
+        .sponsors-footer-text {
+          font-size: 0.82rem;
+          color: var(--text-muted);
+          letter-spacing: 0.5px;
+          font-weight: 500;
+          opacity: 0.65;
+          border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+          padding-bottom: 4px;
         }
 
         .bottom-viewport {
@@ -440,10 +494,7 @@ const Home = ({ setActiveTab }) => {
 
         @media (min-width: 992px) {
           .sponsors-viewport {
-            min-height: calc(100vh - var(--navbar-height) - 2rem);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            min-height: calc(100vh - var(--navbar-height));
           }
           
           .bottom-viewport {
