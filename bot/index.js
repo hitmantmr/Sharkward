@@ -2405,8 +2405,16 @@ app.get('/api/auth/discord/callback', async (req, res) => {
       writeDb(db);
     }
     
+    const userDbEntry = db.users[userData.id];
     const avatarUrl = userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png` : '';
-    res.redirect(`${frontendOrigin}/watchtime?discord_user=${userData.username}&discord_id=${userData.id}&avatar=${avatarUrl}`);
+    
+    const kickUserParam = userDbEntry.kickUsername ? `&kick_user=${encodeURIComponent(userDbEntry.kickUsername)}` : '';
+    const kickIdParam = userDbEntry.kickId ? `&kick_id=${encodeURIComponent(userDbEntry.kickId)}` : '';
+    const kickAvatarParam = userDbEntry.kickAvatar ? `&kick_avatar=${encodeURIComponent(userDbEntry.kickAvatar)}` : '';
+    const pointsParam = `&points=${userDbEntry.points || 0}`;
+    const hoursParam = `&hours=${userDbEntry.hoursWatched || 0}`;
+
+    res.redirect(`${frontendOrigin}/watchtime?discord_user=${userData.username}&discord_id=${userData.id}&avatar=${avatarUrl}${kickUserParam}${kickIdParam}${kickAvatarParam}${pointsParam}${hoursParam}`);
   } catch (err) {
     console.error('Error during Discord login:', err.message);
     res.redirect(`${frontendOrigin}/watchtime?error=server_error`);
@@ -2562,7 +2570,7 @@ app.get('/api/auth/kick/callback', async (req, res) => {
     } catch (err) {}
   }
   
-  res.redirect(`${frontendOrigin}/watchtime?success=kick_linked&kick_user=${encodeURIComponent(realUsername)}&kick_id=${kickUserId}&kick_avatar=${encodeURIComponent(realAvatar)}`);
+  res.redirect(`${frontendOrigin}/watchtime?success=kick_linked&kick_user=${encodeURIComponent(realUsername)}&kick_id=${kickUserId}&kick_avatar=${encodeURIComponent(realAvatar)}&points=${user.points || 0}&hours=${user.hoursWatched || 0}`);
 });
 
 // 1. GET /api/stats -> Globalne statistike
