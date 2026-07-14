@@ -161,11 +161,11 @@ const Shop = ({ setActiveTab }) => {
     const circleGlow = (
       <div style={{
         position: 'absolute',
-        width: '95px',
-        height: '95px',
+        width: '140px',
+        height: '140px',
         borderRadius: '50%',
-        background: `radial-gradient(circle, ${glowColor}66 0%, ${glowColor}22 55%, transparent 80%)`,
-        filter: 'blur(10px)',
+        background: `radial-gradient(circle, ${glowColor}25 0%, ${glowColor}0b 50%, transparent 70%)`,
+        filter: 'blur(12px)',
         pointerEvents: 'none',
         left: '50%',
         top: '50%',
