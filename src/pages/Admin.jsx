@@ -595,52 +595,6 @@ const Admin = () => {
         </form>
       </section>
 
-      {/* Upravljanje aktivnim giveaway-ima */}
-      <section style={styles.section} className="glass">
-        <h3 style={styles.sectionTitle}>
-          <Award size={18} color="#53fc18" /> Upravljanje Aktivnim Giveaway-ima
-        </h3>
-        <div style={styles.tableWrapper}>
-          <table style={styles.table}>
-            <thead>
-              <tr>
-                <th style={styles.th}>Nagrada</th>
-                <th style={styles.th}>Sponzor</th>
-                <th style={styles.th}>Učesnici</th>
-                <th style={{ ...styles.th, textAlign: 'right' }}>Akcije</th>
-              </tr>
-            </thead>
-            <tbody>
-              {giveaways.filter(g => g.status === 'active').map((gw) => (
-                <tr key={gw.id} style={styles.tr}>
-                  <td style={styles.td}>
-                    <strong>{gw.prizeName}</strong>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{gw.condition}</div>
-                  </td>
-                  <td style={styles.td}>{gw.sponsor}</td>
-                  <td style={styles.td}>{gw.participantsCount}</td>
-                  <td style={{ ...styles.td, textAlign: 'right' }}>
-                    <button 
-                      style={styles.endGwBtn} 
-                      onClick={() => endGiveawayMock(gw.id)}
-                    >
-                      Završi i Izvuci Pobednika
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {giveaways.filter(g => g.status === 'active').length === 0 && (
-                <tr>
-                  <td colSpan="4" style={{ ...styles.td, textAlign: 'center', color: 'var(--text-secondary)' }}>
-                    Nema aktivnih giveaway-ova.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
       {/* Reset dugme */}
       <div style={styles.resetContainer}>
         <button style={styles.resetBtn} onClick={resetAllData}>
