@@ -44,7 +44,7 @@ const Leaderboard = () => {
             
             {/* Drugo mesto (Silver) */}
             {topThree[1] && (
-              <div style={styles.podiumCardWrapper} className="desktop-only">
+              <div style={styles.podiumCardWrapper}>
                 <div style={{ ...styles.podiumCard, borderTopColor: '#a1a1aa' }} className="glass">
                   <div style={{ ...styles.podiumRankCircle, backgroundColor: '#71717a' }}>2</div>
                   <h4 style={styles.podiumUsername}>@{topThree[1].kickUsername || topThree[1].username}</h4>
@@ -87,7 +87,7 @@ const Leaderboard = () => {
 
             {/* Treće mesto (Bronze) */}
             {topThree[2] && (
-              <div style={styles.podiumCardWrapper} className="desktop-only">
+              <div style={styles.podiumCardWrapper}>
                 <div style={{ ...styles.podiumCard, borderTopColor: '#b45309' }} className="glass">
                   <div style={{ ...styles.podiumRankCircle, backgroundColor: '#92400e' }}>3</div>
                   <h4 style={styles.podiumUsername}>@{topThree[2].kickUsername || topThree[2].username}</h4>
@@ -108,36 +108,19 @@ const Leaderboard = () => {
 
           </div>
 
-          {/* Mobilno podnožje - prikaz top 3 za mobilne koji nemaju levo/desno postolje */}
-          <div style={styles.mobileTopThreeList} className="mobile-only">
-            {topThree.map((user, idx) => (
-              <div key={idx} style={styles.mobileTopThreeItem} className="glass">
-                <span style={{
-                  ...styles.mobileRankBadge,
-                  backgroundColor: idx === 0 ? '#ca8a04' : idx === 1 ? '#71717a' : '#92400e'
-                }}>{idx + 1}</span>
-                <span style={{ fontWeight: '700' }}>@{user.kickUsername || user.username}</span>
-                <div style={{ marginLeft: 'auto', display: 'flex', gap: '12px' }}>
-                  <span style={{ fontSize: '0.85rem' }}>{user.hours}h</span>
-                  <span style={{ color: 'var(--accent-cyan)', fontWeight: '700' }}>{formatPoints(user.points)} pts</span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Lista ostalih korisnika */}
+          {/* Glavna Tabela sa poravnatim kolona */}
           <div style={styles.leaderboardTableWrapper} className="glass">
             <table style={styles.table}>
               <thead>
                 <tr>
-                  <th style={styles.th}>Rang</th>
-                  <th style={styles.th}>Korisnik</th>
-                  <th style={styles.th}>Sati gledanja</th>
-                  <th style={{ ...styles.th, textAlign: 'right' }}>Ukupno poena</th>
+                  <th style={{ ...styles.th, width: '90px', textAlign: 'center' }}>Rang</th>
+                  <th style={{ ...styles.th, textAlign: 'left' }}>Korisnik</th>
+                  <th style={{ ...styles.th, textAlign: 'center', width: '220px' }}>Sati gledanja</th>
+                  <th style={{ ...styles.th, textAlign: 'right', width: '220px' }}>Ukupno poena</th>
                 </tr>
               </thead>
               <tbody>
-                {restOfUsers.map((userObj) => {
+                {leaderboard.map((userObj) => {
                   const isCurrentUser = isUserOnLeaderboard(userObj);
                   return (
                     <tr 
@@ -148,20 +131,22 @@ const Leaderboard = () => {
                         borderColor: isCurrentUser ? 'rgba(0, 240, 255, 0.2)' : 'var(--border-color)'
                       }}
                     >
-                      <td style={styles.td}>
+                      <td style={{ ...styles.td, textAlign: 'center', width: '90px' }}>
                         <span style={styles.rankNum}>{userObj.rank}</span>
                       </td>
-                      <td style={{ ...styles.td, fontWeight: '600' }}>
+                      <td style={{ ...styles.td, textAlign: 'left', fontWeight: '600' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <User size={14} color={isCurrentUser ? 'var(--accent-cyan)' : 'var(--text-muted)'} />
+                          <User size={15} color={isCurrentUser ? 'var(--accent-cyan)' : 'var(--text-muted)'} />
                           <span style={{ color: isCurrentUser ? 'var(--accent-cyan)' : '#f3f4f6' }}>
                             @{userObj.kickUsername || userObj.username} {isCurrentUser && <span style={styles.youBadge}>TI</span>}
                           </span>
                         </div>
                       </td>
-                      <td style={styles.td}>{userObj.hours} sati</td>
-                      <td style={{ ...styles.td, textAlign: 'right', fontWeight: '700', color: isCurrentUser ? 'var(--accent-cyan)' : '#fff' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <td style={{ ...styles.td, textAlign: 'center', width: '220px' }}>
+                        {userObj.hours} sati
+                      </td>
+                      <td style={{ ...styles.td, textAlign: 'right', width: '220px', fontWeight: '700', color: isCurrentUser ? 'var(--accent-cyan)' : '#fff' }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end' }}>
                           <Coins size={14} color="#00f0ff" />
                           <span>{formatPoints(userObj.points)}</span>
                         </div>
@@ -177,21 +162,21 @@ const Leaderboard = () => {
                 ) && (
                   <>
                     <tr style={styles.dividerRow}>
-                      <td colSpan="4" style={{ textAlign: 'center', padding: '4px 0', color: 'var(--text-muted)' }}>•••</td>
+                      <td colSpan="4" style={{ textAlign: 'center', padding: '6px 0', color: 'var(--text-muted)' }}>•••</td>
                     </tr>
                     <tr style={{ ...styles.tr, backgroundColor: 'rgba(0, 240, 255, 0.05)', borderColor: 'rgba(0, 240, 255, 0.2)' }}>
-                      <td style={styles.td}>
+                      <td style={{ ...styles.td, textAlign: 'center', width: '90px' }}>
                         <span style={styles.rankNum}>-</span>
                       </td>
-                      <td style={{ ...styles.td, fontWeight: '600' }}>
+                      <td style={{ ...styles.td, textAlign: 'left', fontWeight: '600' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <User size={14} color="var(--accent-cyan)" />
+                          <User size={15} color="var(--accent-cyan)" />
                           <span style={{ color: 'var(--accent-cyan)' }}>
                             @{user.kickUser} <span style={styles.youBadge}>TI</span>
                           </span>
                         </div>
                       </td>
-                      <td style={styles.td}>
+                      <td style={{ ...styles.td, textAlign: 'center', width: '220px' }}>
                         {(() => {
                           const totalMinutes = Math.round((user.hoursWatched || 0) * 60);
                           const hours = Math.floor(totalMinutes / 60);
@@ -200,8 +185,8 @@ const Leaderboard = () => {
                           return `${minutes}m`;
                         })()}
                       </td>
-                      <td style={{ ...styles.td, textAlign: 'right', fontWeight: '700', color: 'var(--accent-cyan)' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <td style={{ ...styles.td, textAlign: 'right', width: '220px', fontWeight: '700', color: 'var(--accent-cyan)' }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end' }}>
                           <Coins size={14} color="#00f0ff" />
                           <span>{formatPoints(user.points)}</span>
                         </div>
