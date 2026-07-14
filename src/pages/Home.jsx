@@ -124,7 +124,8 @@ const Home = ({ setActiveTab }) => {
       </div>
 
       {/* 2. Prvi Red: Partnerski Sponzori (CSGO-Skins, Mozzart, Alea Partners) */}
-      <section className="first-row-grid" style={styles.firstRowGrid}>
+      <div className="sponsors-viewport">
+        <section className="first-row-grid" style={styles.firstRowGrid}>
         
         {/* CSGO Skins Card */}
         <div className="premium-card sponsor-card-premium csgoskins-card reveal-on-scroll" style={{ ...styles.partnerCard, transitionDelay: '100ms' }}>
@@ -303,9 +304,11 @@ const Home = ({ setActiveTab }) => {
         </div>
 
       </section>
+      </div>
 
       {/* 4. 2-Card Grid: Kako Sakupljati Poene, Aktivni Giveaway */}
-      <section className="bottom-cards-grid">
+      <div className="bottom-viewport">
+        <section className="bottom-cards-grid" style={{ width: '100%' }}>
 
         {/* Card 2: Kako Sakupljati Poene */}
         <div className="premium-card bottom-info-card reveal-on-scroll" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transitionDelay: '100ms' }}>
@@ -401,6 +404,7 @@ const Home = ({ setActiveTab }) => {
         </div>
 
       </section>
+      </div>
 
       <style>{`
         @keyframes pulse-stream {
@@ -420,6 +424,34 @@ const Home = ({ setActiveTab }) => {
           padding: 2rem 0 6rem 0;
           box-sizing: border-box;
           text-align: center;
+        }
+
+        .sponsors-viewport {
+          width: 100%;
+          box-sizing: border-box;
+          padding: 2rem 0;
+        }
+
+        .bottom-viewport {
+          width: 100%;
+          box-sizing: border-box;
+          padding: 2rem 0 4rem 0;
+        }
+
+        @media (min-width: 992px) {
+          .sponsors-viewport {
+            min-height: calc(100vh - var(--navbar-height) - 2rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          
+          .bottom-viewport {
+            min-height: calc(100vh - var(--navbar-height) - 2rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
         }
 
         .hero-centered-content {
@@ -507,7 +539,7 @@ const Home = ({ setActiveTab }) => {
           grid-template-columns: repeat(3, 1fr);
           gap: 1.5rem;
           max-width: 1020px;
-          margin: 0 auto 5.5rem auto;
+          margin: 0 auto;
           width: 100%;
         }
 
