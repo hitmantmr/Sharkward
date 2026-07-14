@@ -199,45 +199,7 @@ const initialSkins = [
   }
 ];
 
-const initialGiveaways = [
-  {
-    id: 'g1',
-    prizeName: '★ Karambit | Doppler',
-    condition: 'Factory New',
-    rarity: 'covert',
-    image: 'doppler_karambit',
-    endsIn: '2 days',
-    sponsor: 'CSGO Skins',
-    endTime: Date.now() + 1000 * 60 * 60 * 48,
-    participantsCount: 1243,
-    participants: [],
-    requiresDiscord: true,
-    requiresKick: true,
-    status: 'active',
-  },
-  {
-    id: 'g2',
-    prizeName: 'AK-47 | Vulcan',
-    condition: 'Minimal Wear',
-    rarity: 'classified',
-    image: 'vulcan_ak',
-    sponsor: 'Mozzart',
-    status: 'completed',
-    winner: 'GigaMega_Kick',
-    endedAt: 'Juče',
-  },
-  {
-    id: 'g3',
-    prizeName: 'USP-S | Kill Confirmed',
-    condition: 'Field-Tested',
-    rarity: 'classified',
-    image: 'kill_confirmed_usp',
-    sponsor: 'CSGO Skins',
-    status: 'completed',
-    winner: 'Stefan_BG',
-    endedAt: 'Pre 3 dana',
-  }
-];
+const initialGiveaways = [];
 
 const initialUsers = {
   "12345678901": { username: "kiza_csgo", points: 247200, kickUsername: "kiza_csgo", hoursWatched: 412, linkedAt: new Date().toISOString() },
@@ -289,7 +251,7 @@ function readDb() {
   
   // Ensure skins and giveaways and users are in there
   if (!data.skins || data.skins.length === 0) data.skins = initialSkins;
-  if (!data.giveaways || data.giveaways.length === 0) data.giveaways = initialGiveaways;
+  if (!data.giveaways) data.giveaways = [];
   if (!data.users || Object.keys(data.users).length === 0) data.users = initialUsers;
   
   return data;
