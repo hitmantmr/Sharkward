@@ -2562,10 +2562,11 @@ app.get('/api/stats', (req, res) => {
 app.get('/api/leaderboard', (req, res) => {
   const data = readDb();
   const sorted = Object.entries(data.users || {})
+    .filter(([id, u]) => u.kickUsername && !id.startsWith('1234567890'))
     .map(([id, u]) => ({
       username: u.username,
       kickUsername: u.kickUsername,
-      hours: u.hoursWatched || 0,
+      hours: Math.round((u.hoursWatched || 0) * 10) / 10,
       points: u.points || 0
     }))
     .sort((a, b) => b.points - a.points)

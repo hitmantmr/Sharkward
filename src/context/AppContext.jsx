@@ -151,18 +151,7 @@ const initialSkins = [
 
 const initialGiveaways = [];
 
-const initialLeaderboard = [
-  { rank: 1, username: 'kiza_csgo', hours: 412, points: 247200 },
-  { rank: 2, username: 'milosh_99', hours: 389, points: 194500 },
-  { rank: 3, username: 'sharke_brat', hours: 350, points: 175000 },
-  { rank: 4, username: 'zoki_kick', hours: 298, points: 149000 },
-  { rank: 5, username: 'nikola_k', hours: 284, points: 142000 },
-  { rank: 6, username: 'csgo_king', hours: 251, points: 125500 },
-  { rank: 7, username: 'luka_kick', hours: 220, points: 110000 },
-  { rank: 8, username: 'sone_brat', hours: 195, points: 97500 },
-  { rank: 9, username: 'mare_moz', hours: 182, points: 91000 },
-  { rank: 10, username: 'kick_watcher', hours: 170, points: 85000 },
-];
+const initialLeaderboard = [];
 
 export const AppProvider = ({ children }) => {
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -309,17 +298,33 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  // --- Učitavanje rang liste sa API-ja ---
+  const fetchLeaderboardFromApi = async () => {
+    try {
+      const res = await fetch(`${API_URL}/leaderboard`);
+      if (res.ok) {
+        const data = await res.json();
+        setLeaderboard(data);
+      }
+    } catch (err) {
+      console.warn('Greška pri povlačenju rang liste sa API-ja:', err.message);
+    }
+  };
+
   useEffect(() => {
     fetchSkinsFromApi();
     fetchGiveawaysFromApi();
+    fetchLeaderboardFromApi();
     
-    // Sinhronizuj podatke na svakih 5 minuta za skinove i 2 minuta za giveaway-e
+    // Sinhronizuj podatke na svakih 5 minuta za skinove, 2 minuta za giveaway-e, i 1 minut za rang listu
     const skinsInterval = setInterval(fetchSkinsFromApi, 5 * 60 * 1000);
     const gwInterval = setInterval(fetchGiveawaysFromApi, 2 * 60 * 1000);
+    const lbInterval = setInterval(fetchLeaderboardFromApi, 60 * 1000);
     
     return () => {
       clearInterval(skinsInterval);
       clearInterval(gwInterval);
+      clearInterval(lbInterval);
     };
   }, []);
 

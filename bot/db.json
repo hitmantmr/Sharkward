@@ -1,75 +1,5 @@
 {
   "users": {
-    "12345678901": {
-      "username": "kiza_csgo",
-      "points": 247200,
-      "kickUsername": "kiza_csgo",
-      "hoursWatched": 412,
-      "linkedAt": "2026-07-11T16:26:31.482Z"
-    },
-    "12345678902": {
-      "username": "milosh_99",
-      "points": 194500,
-      "kickUsername": "milosh_99",
-      "hoursWatched": 389,
-      "linkedAt": "2026-07-11T16:26:31.482Z"
-    },
-    "12345678903": {
-      "username": "sharke_brat",
-      "points": 175000,
-      "kickUsername": "sharke_brat",
-      "hoursWatched": 350,
-      "linkedAt": "2026-07-11T16:26:31.482Z"
-    },
-    "12345678904": {
-      "username": "zoki_kick",
-      "points": 149000,
-      "kickUsername": "zoki_kick",
-      "hoursWatched": 298,
-      "linkedAt": "2026-07-11T16:26:31.482Z"
-    },
-    "12345678905": {
-      "username": "nikola_k",
-      "points": 142000,
-      "kickUsername": "nikola_k",
-      "hoursWatched": 284,
-      "linkedAt": "2026-07-11T16:26:31.482Z"
-    },
-    "12345678906": {
-      "username": "csgo_king",
-      "points": 125500,
-      "kickUsername": "csgo_king",
-      "hoursWatched": 251,
-      "linkedAt": "2026-07-11T16:26:31.482Z"
-    },
-    "12345678907": {
-      "username": "luka_kick",
-      "points": 110000,
-      "kickUsername": "luka_kick",
-      "hoursWatched": 220,
-      "linkedAt": "2026-07-11T16:26:31.482Z"
-    },
-    "12345678908": {
-      "username": "sone_brat",
-      "points": 97500,
-      "kickUsername": "sone_brat",
-      "hoursWatched": 195,
-      "linkedAt": "2026-07-11T16:26:31.482Z"
-    },
-    "12345678909": {
-      "username": "mare_moz",
-      "points": 91000,
-      "kickUsername": "mare_moz",
-      "hoursWatched": 182,
-      "linkedAt": "2026-07-11T16:26:31.482Z"
-    },
-    "12345678910": {
-      "username": "kick_watcher",
-      "points": 85000,
-      "kickUsername": "kick_watcher",
-      "hoursWatched": 170,
-      "linkedAt": "2026-07-11T16:26:31.482Z"
-    },
     "436295751543554050": {
       "username": "hitmaan25",
       "points": 1270,
@@ -88,6 +18,15 @@
       "kickUsername": "sharke_brat",
       "kickAvatar": "",
       "kickId": ""
+    },
+    "1441516036846260246": {
+      "username": "arcanebsts",
+      "points": 250,
+      "hoursWatched": 0,
+      "linkedAt": "2026-07-14T09:56:34.682Z",
+      "kickUsername": null,
+      "kickAvatar": "https://files.kick.com/images/user/238639/profile_image/conversion/a3f2a63b-9f74-486b-8847-ef508dd71256-medium.webp",
+      "kickId": "238639"
     }
   },
   "linkingCodes": {
@@ -106,9 +45,9 @@
   },
   "stats": {
     "youtube": 264000,
-    "tiktok": 146000,
-    "kick": 6499,
-    "registered": 103
+    "tiktok": 146100,
+    "kick": 6511,
+    "registered": 94
   },
   "skins": [
     {
@@ -236,7 +175,99 @@
       "status": "available"
     }
   ],
-  "giveaways": [],
+  "giveaways": [
+    {
+      "id": "gw_stiletto_knife___tiger_tooth__minimal_wear__10_16_2025__12_54_00_AM",
+      "prize": "Stiletto Knife | Tiger Tooth (Minimal Wear)",
+      "value": "$714.25",
+      "minDeposit": "$25.00",
+      "ticketCost": 25,
+      "availableFrom": "10/16/2025, 12:54:00 AM",
+      "status": "ACTIVE",
+      "imageUrl": "https://items.csgo-skins.com/images/2903b4b382566bbb191fa712a69da6aa3c4cad2f12a708b88878a8bb05599a75.webp",
+      "winnerName": null,
+      "winnerAvatar": null,
+      "wonAt": null
+    },
+    {
+      "id": "gw_paracord_knife___doppler__factory_new__9_2_2025__5_46_00_PM",
+      "prize": "Paracord Knife | Doppler (Factory New)",
+      "value": "$552.66",
+      "minDeposit": "$15.00",
+      "ticketCost": 15,
+      "availableFrom": "9/2/2025, 5:46:00 PM",
+      "status": "ACTIVE",
+      "imageUrl": "https://items.csgo-skins.com/images/cf341a69c5c7d429b19ea6e72ebd4a8003a53906dd21a9ec3f8152befa633d74.webp",
+      "winnerName": null,
+      "winnerAvatar": null,
+      "wonAt": null
+    },
+    {
+      "id": "gw_falchion_knife___gamma_doppler__factory_new__10_6_2025__11_46_00_AM",
+      "prize": "Falchion Knife | Gamma Doppler (Factory New)",
+      "value": "$597.29",
+      "minDeposit": "$15.00",
+      "ticketCost": 15,
+      "availableFrom": "10/6/2025, 11:46:00 AM",
+      "status": "COMPLETED",
+      "imageUrl": "https://items.csgo-skins.com/images/4824caef8a9526e700f86ac509168cc22a4ea703a7ae8455876d63903632eda3.webp",
+      "winnerName": "Grcko",
+      "winnerAvatar": "https://avatars.akamai.steamstatic.com/f841e8b91de3c23d46ca127eeea1c37dd1842720_medium.jpg",
+      "wonAt": "2/5/2026, 11:08:53 AM"
+    },
+    {
+      "id": "gw_m4a1_s___vaporwave__minimal_wear__10_22_2025__5_13_00_PM",
+      "prize": "M4A1-S | Vaporwave (Minimal Wear)",
+      "value": "$241.53",
+      "minDeposit": "$15.00",
+      "ticketCost": 15,
+      "availableFrom": "10/22/2025, 5:13:00 PM",
+      "status": "COMPLETED",
+      "imageUrl": "https://items.csgo-skins.com/images/0071ef7502835a3dba73069fb1f7093f8bd8ccc5ae3167bd3af23178d16170c4.webp",
+      "winnerName": "nejc.bozic0007",
+      "winnerAvatar": "https://avatars.akamai.steamstatic.com/988445e8232cdfd384350f3fa57be63e3db6c352_medium.jpg",
+      "wonAt": "1/28/2026, 12:43:19 PM"
+    },
+    {
+      "id": "gw_falchion_knife___slaughter__field_tested__8_14_2025__9_19_00_PM",
+      "prize": "Falchion Knife | Slaughter (Field-Tested)",
+      "value": "$369.22",
+      "minDeposit": "$10.00",
+      "ticketCost": 10,
+      "availableFrom": "8/14/2025, 9:19:00 PM",
+      "status": "COMPLETED",
+      "imageUrl": "https://items.csgo-skins.com/images/76f8954ee7098c40c5605f63e82628bc5367ed2ac897abb7a4fa4064beb0c8ee.webp",
+      "winnerName": "nejc.bozic0007",
+      "winnerAvatar": "https://avatars.akamai.steamstatic.com/988445e8232cdfd384350f3fa57be63e3db6c352_medium.jpg",
+      "wonAt": "1/12/2026, 9:47:23 AM"
+    },
+    {
+      "id": "gw_ak_47___inheritance__minimal_wear__10_17_2025__1_21_00_AM",
+      "prize": "AK-47 | Inheritance (Minimal Wear)",
+      "value": "$154.22",
+      "minDeposit": "$5.00",
+      "ticketCost": 5,
+      "availableFrom": "10/17/2025, 1:21:00 AM",
+      "status": "COMPLETED",
+      "imageUrl": "https://items.csgo-skins.com/images/1cd4975a6e449ed9c5497fc0c0308c48ef4e1afe674b1efcd6374d8eca68c66b.webp",
+      "winnerName": "nejc.bozic0007",
+      "winnerAvatar": "https://avatars.akamai.steamstatic.com/988445e8232cdfd384350f3fa57be63e3db6c352_medium.jpg",
+      "wonAt": "1/11/2026, 9:07:50 AM"
+    },
+    {
+      "id": "gw_usp_s___jawbreaker__factory_new__10_17_2025__1_19_00_AM",
+      "prize": "USP-S | Jawbreaker (Factory New)",
+      "value": "$38.59",
+      "minDeposit": "$3.00",
+      "ticketCost": 3,
+      "availableFrom": "10/17/2025, 1:19:00 AM",
+      "status": "COMPLETED",
+      "imageUrl": "https://items.csgo-skins.com/images/e8b89ca1dbf08056a167fde37ea933980a3f06d73bc2fb71025a501fd77b051f.webp",
+      "winnerName": "Peppa Pig skins",
+      "winnerAvatar": "https://avatars.akamai.steamstatic.com/070c1423677cc9ca51b9885a089dd27b634a36b8_medium.jpg",
+      "wonAt": "11/22/2025, 12:39:39 PM"
+    }
+  ],
   "lastVideoId": "12syCSGAW8g",
   "liveState": {
     "youtube": {
