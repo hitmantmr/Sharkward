@@ -574,9 +574,10 @@ export const AppProvider = ({ children }) => {
     if (skinIndex === -1) return false;
 
     const skin = skins[skinIndex];
+    const currentStock = typeof skin.stock === 'number' ? skin.stock : 1;
 
-    if (skin.status === 'sold') {
-      addToast('Ovaj skin je već rasprodat!', 'error');
+    if (skin.status === 'sold' || currentStock <= 0) {
+      addToast('Ovaj artikal je rasprodat!', 'error');
       return false;
     }
 
@@ -590,14 +591,35 @@ export const AppProvider = ({ children }) => {
       return false;
     }
 
-    // Uspešna kupovina
+    // Izvlačimo kod ako postoji u nizu kodova
+    const codes = Array.isArray(skin.codes) ? [...skin.codes] : [];
+    const assignedCode = codes.shift(); // Uzimamo prvi dostupan kod
+
+    // Uspešna kupovina poena
     setUser(prev => ({
       ...prev,
       points: prev.points - skin.price
     }));
 
-    setSkins(prev => prev.map(s => s.id === skinId ? { ...s, status: 'sold' } : s));
-    addToast(`Uspešno si kupio ${skin.name}! Skin ti šaljemo na Discord.`, 'success');
+    const nextStock = currentStock - 1;
+
+    setSkins(prev => prev.map(s => {
+      if (s.id === skinId) {
+        return {
+          ...s,
+          stock: nextStock,
+          codes: codes,
+          status: nextStock <= 0 ? 'sold' : 'available'
+        };
+      }
+      return s;
+    }));
+
+    if (assignedCode) {
+      addToast(`Uspešno si kupio ${skin.name}! Tvoj kod: ${assignedCode}`, 'success');
+    } else {
+      addToast(`Uspešno si kupio ${skin.name}! Artikal ti šaljemo na Discord.`, 'success');
+    }
     return true;
   };
 
