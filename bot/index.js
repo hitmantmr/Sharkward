@@ -2624,22 +2624,28 @@ app.get('/api/admin/skin-price', (req, res) => {
   if (!name) return res.status(400).json({ error: 'Name is required' });
 
   // Pazi na Doppler / Gamma Doppler phase logic!
-  // Npr. "★ Flip Knife | Doppler (Phase 4) (Factory New)"
   let item = buffPrices[name];
-  
+
+  // Fallback 1: Provera sa ili bez ★ zvezdice (potrebno za Rukavice i Noževe koji imaju ★ na Buff163)
   if (!item) {
-    // Proveri da li je u pitanju Doppler sa fazom
+    if (name.startsWith('★ ')) {
+      item = buffPrices[name.replace(/^★\s*/, '')];
+    } else {
+      item = buffPrices[`★ ${name}`];
+    }
+  }
+
+  // Fallback 2: Doppler / Gamma Doppler sa fazama
+  if (!item) {
     const phaseMatch = name.match(/\((Phase \d|Ruby|Sapphire|Black Pearl|Emerald)\)/i);
     if (phaseMatch) {
       const phase = phaseMatch[1];
       const nameWithoutPhase = name.replace(` (${phase})`, '');
-      const baseItem = buffPrices[nameWithoutPhase];
+      const baseItem = buffPrices[nameWithoutPhase] || buffPrices[`★ ${nameWithoutPhase}`] || buffPrices[nameWithoutPhase.replace(/^★\s*/, '')];
       if (baseItem && baseItem.starting_at) {
-        // Pogledaj u doppler pod-objekat pod starting_at
         if (baseItem.starting_at.doppler && baseItem.starting_at.doppler[phase]) {
           return res.json({ price: baseItem.starting_at.doppler[phase] });
         }
-        // Vrati osnovnu cenu ako nema cene za fazu
         return res.json({ price: baseItem.starting_at.price });
       }
     }

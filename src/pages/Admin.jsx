@@ -253,17 +253,17 @@ const Admin = () => {
     return 'Pistol';
   };
 
-  // Pomoćna provera da li je oružje nož (Noževi uvek imaju ★ u nazivu na trzistu)
-  const checkIsKnife = (name, type) => {
+  // Pomoćna provera da li je predmet nož ili rukavica (Na Steam/Buff tržnici uvek imaju ★ u nazivu)
+  const checkIsStarItem = (name, type) => {
     if (!name) return false;
     const lower = name.toLowerCase();
-    // Oružja koja NISU noževi ne smeju se pretraživati sa ★ zvezdicom
+    // Oružja koja NISU noževi ni rukavice ne smeju se pretraživati sa ★ zvezdicom
     if (lower.includes('ak-47') || lower.includes('m4a4') || lower.includes('m4a1') || lower.includes('awp') || lower.includes('glock') || lower.includes('usp') || lower.includes('desert eagle') || lower.includes('deagle') || lower.includes('mp9') || lower.includes('mac-10') || lower.includes('p250') || lower.includes('cz75') || lower.includes('five-seven') || lower.includes('tec-9') || lower.includes('ssg 08') || lower.includes('galil') || lower.includes('famas') || lower.includes('sg 553') || lower.includes('aug') || lower.includes('g3sg1') || lower.includes('scar-20') || lower.includes('ump-45') || lower.includes('p90') || lower.includes('bizon') || lower.includes('mp7') || lower.includes('mp5') || lower.includes('mag-7') || lower.includes('nova') || lower.includes('sawed-off') || lower.includes('xm1014') || lower.includes('m249') || lower.includes('negev')) {
       return false;
     }
-    if (type === 'Knife') return true;
-    const knifeKeywords = ['knife', 'bayonet', 'daggers', 'karambit', 'stiletto', 'ursus', 'navaja', 'talon', 'classic', 'survival', 'nomad', 'skeleton', 'paracord', 'kukri', 'bowie', 'huntsman', 'falchion', 'gut'];
-    return knifeKeywords.some(k => lower.includes(k));
+    if (type === 'Knife' || type === 'Gloves') return true;
+    const starKeywords = ['knife', 'bayonet', 'daggers', 'karambit', 'stiletto', 'ursus', 'navaja', 'talon', 'classic', 'survival', 'nomad', 'skeleton', 'paracord', 'kukri', 'bowie', 'huntsman', 'falchion', 'gut', 'gloves', 'wraps'];
+    return starKeywords.some(k => lower.includes(k));
   };
 
   // Preuzimanje cene sa Buff163
@@ -288,7 +288,7 @@ const Admin = () => {
     }
 
     const currentType = typeOverride || skinType;
-    const isKnife = checkIsKnife(cleanBase, currentType);
+    const isKnife = checkIsStarItem(cleanBase, currentType);
 
     let queryName = '';
     if (stattrak) {
