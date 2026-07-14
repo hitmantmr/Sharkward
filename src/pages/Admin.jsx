@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { ShieldCheck, Plus, Trash2, RotateCcw, Award, Coins, Play, Search, Loader, HelpCircle, Users, UserCheck, UserPlus, UserMinus } from 'lucide-react';
+import { ShieldCheck, Plus, Trash2, RotateCcw, Award, Coins, Play, Search, Loader, HelpCircle, Users, UserCheck, UserPlus, UserMinus, Gift } from 'lucide-react';
 
 // 1. Pomoćna funkcija za čišćenje naziva od wear-a, zvezdica i StatTrak oznaka
 function getCleanSkinName(fullName) {
@@ -361,16 +361,34 @@ const Admin = () => {
     }
   };
 
+  const handleSelectGiftCardPreset = (amount) => {
+    const cardName = `CSGO-Skins $${amount} Gift Card`;
+    const cardImage = 'https://community.steamstatic.com/economy/image/fWFc82js0fmoRAP-qOIPu5nNDJGjg8qkNuhikAqClcWJV0WRBwU2yW4-UiWeVAR80RzSrhFf1uT1ufh_C-c_gN0-690-3mFsxwF4aOHmZmU2c13PBeJdV6Fvp168XnFn65RjAdSj9usDK1_mt4XDYbh0NoxOSZTWXfCGbgio7084g_cLfpyP8iq72Svu3G19bA';
+    setSkinName(cardName);
+    setSkinType('Gift Card');
+    setSkinCondition('FN');
+    setSkinRarity('covert');
+    setIsStatTrak(false);
+    setSkinImage(cardImage);
+    setSkinPrice((amount * 130).toString());
+    setSkinEstPrice('$' + amount.toFixed(2));
+    setSelectedCatalogSkin({
+      name: cardName,
+      image: cardImage
+    });
+    setBuffPrice(amount);
+  };
+
   const handleAddSkinSubmit = (e) => {
     e.preventDefault();
     if (!skinName.trim()) return;
 
-    // Obavezna provera 2: Čuvanje u Bazi - provera da li je imageUrl validan Steam CDN URL
-    const isValidSteamCdn = skinImage && (
+    // Obavezna provera 2: Čuvanje u Bazi - provera da li je imageUrl validan Steam CDN URL ili Gift Card
+    const isValidSteamCdn = (skinImage && (
       skinImage.startsWith('https://community.akamai.steamstatic.com/') || 
       skinImage.startsWith('https://community.steamstatic.com/') ||
       skinImage.startsWith('https://steamcommunity-a.akamaihd.net/')
-    );
+    )) || skinType === 'Gift Card' || skinName.includes('Gift Card');
 
     if (!isValidSteamCdn) {
       alert('Kritična greška pri čuvanju: Slika skina je prazna ili nevažeća! Unesite tačan naziv skina tako da pretraga pronađe validan Steam CDN URL (https://community.akamai.steamstatic.com/...). Objavljivanje je onemogućeno.');
@@ -379,11 +397,11 @@ const Admin = () => {
 
     // Normalizacija i čišćenje imena za pretragu
     let baseName = selectedCatalogSkin ? selectedCatalogSkin.name : skinName.trim();
-    let cleanBase = getCleanSkinName(baseName);
+    let cleanBase = skinType === 'Gift Card' ? baseName : getCleanSkinName(baseName);
 
     // Utvrđujemo fazu ako postoji
     let phase = selectedCatalogSkin?.phase || null;
-    if (!phase) {
+    if (!phase && skinType !== 'Gift Card') {
       const phaseMatch = skinName.match(/\((Phase \d|Ruby|Sapphire|Black Pearl|Emerald)\)/i);
       if (phaseMatch) {
         phase = phaseMatch[1];
@@ -397,11 +415,11 @@ const Admin = () => {
     }
 
     // Provera da li je u pitanju nož
-    const isKnife = skinType === 'Knife' || cleanBase.toLowerCase().includes('knife') || cleanBase.toLowerCase().includes('bayonet') || cleanBase.toLowerCase().includes('daggers') || cleanBase.toLowerCase().includes('karambit');
+    const isKnife = skinType === 'Gift Card' ? false : checkIsStarItem(cleanBase, skinType);
 
     // StatTrak formiranje naziva (Pravilo 3: zvezdica ★ pre prefiksa za noževe)
     let finalName = '';
-    if (isStatTrak) {
+    if (isStatTrak && skinType !== 'Gift Card') {
       finalName = isKnife ? `★ StatTrak™ ${displayName}` : `StatTrak™ ${displayName}`;
     } else {
       finalName = isKnife ? `★ ${displayName}` : displayName;
@@ -413,7 +431,7 @@ const Admin = () => {
       rarity: skinRarity,
       condition: skinCondition,
       price: parseInt(skinPrice) || 1000,
-      image: skinImage, // Steam CDN Link
+      image: skinImage, // Steam CDN Link ili Gift Card Slika
       imageUrl: skinImage, // Upisuje se u bazu pod poljem imageUrl kao u specifikaciji
       estPrice: skinEstPrice || null,
       stock: 1
@@ -456,8 +474,43 @@ const Admin = () => {
           </h3>
           
           <form onSubmit={handleAddSkinSubmit} style={styles.form}>
+
+            {/* Brzi uvoz CSGO-Skins Gift Kartica ($5 - $50) */}
+            <div style={{ padding: '0.85rem', borderRadius: '10px', backgroundColor: 'rgba(0, 240, 255, 0.05)', border: '1px solid rgba(0, 240, 255, 0.15)', display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--accent-cyan)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Gift size={16} /> CSGO-Skins Gift Kartice (Brzi Izbor)
+                </span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>1 USD = 130 PTS</span>
+              </div>
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                {[5, 10, 15, 20, 25, 50].map((amount) => (
+                  <button
+                    key={amount}
+                    type="button"
+                    onClick={() => handleSelectGiftCardPreset(amount)}
+                    style={{
+                      flex: 1,
+                      minWidth: '55px',
+                      padding: '6px 10px',
+                      borderRadius: '8px',
+                      backgroundColor: skinName === `CSGO-Skins $${amount} Gift Card` ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.06)',
+                      border: skinName === `CSGO-Skins $${amount} Gift Card` ? 'none' : '1px solid rgba(255, 255, 255, 0.12)',
+                      color: skinName === `CSGO-Skins $${amount} Gift Card` ? '#000' : '#fff',
+                      fontWeight: '800',
+                      fontSize: '0.85rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    ${amount}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div style={{ ...styles.formGroup, position: 'relative' }}>
-              <label style={styles.label}>Pretraži i Izaberi Skin (CS2 API Autocomplete)</label>
+              <label style={styles.label}>Pretraži i Izaberi Skin ili Unesi Proizvoljan Skin</label>
               <div style={styles.inputSearchWrapper}>
                 <input
                   type="text"
@@ -485,7 +538,7 @@ const Admin = () => {
                   ))}
                 </div>
               )}
-              {/* Vizuelni prikaz selektovanog skina sa CS2 API-ja */}
+              {/* Vizuelni prikaz selektovanog skina ili gift kartice */}
               {selectedCatalogSkin && (
                 <div style={styles.selectedSkinPreview}>
                   <img 
@@ -516,8 +569,9 @@ const Admin = () => {
               </div>
 
               <div style={styles.formGroup}>
-                <label style={styles.label}>Tip oružja</label>
+                <label style={styles.label}>Tip predmeta</label>
                 <select value={skinType} onChange={(e) => setSkinType(e.target.value)} style={styles.select}>
+                  <option value="Gift Card">Gift Kartica (Gift Card)</option>
                   <option value="Knife">Nož (Knife)</option>
                   <option value="Gloves">Rukavice (Gloves)</option>
                   <option value="Rifle">Puška (Rifle)</option>
