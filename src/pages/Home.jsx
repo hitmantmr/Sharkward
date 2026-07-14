@@ -116,55 +116,16 @@ const Home = ({ setActiveTab }) => {
 
         {/* Indikator za skrolovanje */}
         <div className={`scroll-indicator ${showScrollIndicator ? 'visible' : 'hidden'}`}>
-          <span>SKROLUJ DO DOLE ZA STRIM & SPONZORE</span>
+          <span>SKROLUJ ZA SPONZORE & NAGRADNE IGRE</span>
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="scroll-chevron">
             <polyline points="6 9 12 15 18 9"></polyline>
           </svg>
         </div>
       </div>
 
-      {/* 2. Prvi Red: Kick Stream i Partnerski Kodovi */}
+      {/* 2. Prvi Red: Partnerski Sponzori (CSGO-Skins, Mozzart, Alea Partners) */}
       <section className="first-row-grid" style={styles.firstRowGrid}>
         
-        {/* Kick Stream Window */}
-        <div className="premium-card stream-card-premium reveal-on-scroll" style={styles.streamCard}>
-          <div style={styles.streamHeader}>
-            <div style={styles.streamStatusGroup}>
-              <span style={{ 
-                ...styles.liveDot, 
-                backgroundColor: isLive ? '#53fc18' : '#6b7280',
-                animation: isLive ? 'pulse-stream 1.5s infinite' : 'none' 
-              }}></span>
-              <span style={{ color: isLive ? '#53fc18' : 'var(--text-secondary)', fontWeight: '700', fontSize: '0.8rem' }}>
-                KICK STRIM: {isLive ? 'ONLINE' : 'OFFLINE'}
-              </span>
-            </div>
-            <a 
-              href="https://kick.com/sharke" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              style={styles.channelLink}
-            >
-              kick.com/sharke <ExternalLink size={12} />
-            </a>
-          </div>
-
-          <div style={styles.playerContainer}>
-            <iframe
-              src="https://player.kick.com/sharke?muted=true&autoplay=true"
-              frameBorder="0"
-              scrolling="no"
-              allowFullScreen={true}
-              style={{
-                ...styles.iframe,
-                transform: isLive ? 'none' : 'scale(1.35)',
-                transformOrigin: 'center',
-              }}
-              title="Sharke Kick Live Stream"
-            ></iframe>
-          </div>
-        </div>
-
         {/* CSGO Skins Card */}
         <div className="premium-card sponsor-card-premium csgoskins-card reveal-on-scroll" style={{ ...styles.partnerCard, transitionDelay: '100ms' }}>
           <div style={styles.partnerHeader}>
@@ -285,6 +246,80 @@ const Home = ({ setActiveTab }) => {
               style={{ margin: 0 }}
             >
               Aktiviraj Kod <ExternalLink size={14} />
+            </a>
+          </div>
+        </div>
+
+        {/* Alea Partners Card */}
+        <div className="premium-card sponsor-card-premium aleapartners-card reveal-on-scroll" style={{ ...styles.partnerCard, transitionDelay: '300ms', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div style={styles.partnerHeader}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{
+                width: '30px',
+                height: '30px',
+                borderRadius: '8px',
+                background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: '900',
+                color: '#fff',
+                fontSize: '1.1rem',
+                boxShadow: '0 4px 12px rgba(29, 78, 216, 0.35)'
+              }}>A</div>
+              <span style={{ 
+                background: 'linear-gradient(135deg, #fff 0%, #93c5fd 100%)', 
+                WebkitBackgroundClip: 'text', 
+                WebkitTextFillColor: 'transparent', 
+                fontWeight: '800', 
+                fontSize: '1.1rem',
+                letterSpacing: '0.5px'
+              }}>ALEA PARTNERS</span>
+            </div>
+            <span className="sponsor-tag-badge blue">SPONZOR</span>
+          </div>
+
+          <div className="sponsor-benefits-list" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div className="sponsor-benefit-row">
+              <div className="sponsor-benefit-icon-box blue">
+                <Gift size={14} color="#3b82f6" style={{ filter: 'drop-shadow(0 0 4px rgba(59, 130, 246, 0.5))' }} />
+              </div>
+              <div className="sponsor-benefit-content">
+                <span className="sponsor-benefit-title">iGaming & Betting</span>
+                <span className="sponsor-benefit-sub">Najsavremenija rešenja</span>
+              </div>
+            </div>
+
+            <div className="sponsor-benefit-row">
+              <div className="sponsor-benefit-icon-box blue">
+                <Award size={14} color="#3b82f6" style={{ filter: 'drop-shadow(0 0 4px rgba(59, 130, 246, 0.5))' }} />
+              </div>
+              <div className="sponsor-benefit-content">
+                <span className="sponsor-benefit-title">16,000+ Premium Igara</span>
+                <span className="sponsor-benefit-sub">Najveći svetski provajderi</span>
+              </div>
+            </div>
+
+            <div className="sponsor-benefit-row">
+              <div className="sponsor-benefit-icon-box blue">
+                <Play size={14} color="#3b82f6" style={{ filter: 'drop-shadow(0 0 4px rgba(59, 130, 246, 0.5))' }} />
+              </div>
+              <div className="sponsor-benefit-content">
+                <span className="sponsor-benefit-title">Inovativni Softveri</span>
+                <span className="sponsor-benefit-sub">Pouzdani B2B sistemi</span>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ width: '100%', marginTop: '1rem' }}>
+            <a 
+              href="https://www.aleapartners.io/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="sponsor-activation-btn blue-theme" 
+              style={{ margin: 0, background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)', color: '#fff', border: 'none', boxShadow: '0 4px 15px rgba(29, 78, 216, 0.4)' }}
+            >
+              Poseti Alea Partners <ExternalLink size={14} />
             </a>
           </div>
         </div>
@@ -491,7 +526,7 @@ const Home = ({ setActiveTab }) => {
 
         .first-row-grid {
           display: grid;
-          grid-template-columns: 2fr 1fr 1fr;
+          grid-template-columns: repeat(3, 1fr);
           gap: 1.5rem;
         }
 
@@ -990,6 +1025,12 @@ const Home = ({ setActiveTab }) => {
           color: #e5c158;
         }
 
+        .sponsor-tag-badge.blue {
+          background: rgba(59, 130, 246, 0.1);
+          border: 1px solid rgba(59, 130, 246, 0.3);
+          color: #3b82f6;
+        }
+
         .sponsor-benefits-list {
           display: flex;
           flex-direction: column;
@@ -1033,6 +1074,11 @@ const Home = ({ setActiveTab }) => {
         .sponsor-benefit-icon-box.gold {
           background: rgba(229, 193, 88, 0.1);
           border: 1px solid rgba(229, 193, 88, 0.2);
+        }
+
+        .sponsor-benefit-icon-box.blue {
+          background: rgba(59, 130, 246, 0.1);
+          border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
         .sponsor-benefit-content {
