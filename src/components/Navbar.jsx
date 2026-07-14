@@ -18,8 +18,8 @@ const Navbar = ({ activeTab, setActiveTab }) => {
       <div style={styles.container}>
         {/* Logo */}
         <div style={styles.logo} onClick={() => handleTabClick('home')}>
-          <span style={styles.logoText}>SHARKE</span>
-          <span style={styles.logoSubtext}>SHOP</span>
+          <span style={styles.logoText}>SHARK</span>
+          <span style={styles.logoSubtext}>WARD</span>
           <div style={{
             ...styles.liveIndicator,
             backgroundColor: isLive ? 'rgba(83, 252, 24, 0.1)' : 'rgba(156, 163, 175, 0.1)',

@@ -107,8 +107,8 @@ const AppContent = () => {
             {/* 1. Levo: Ime Sajta */}
             <div style={styles.footerLeft}>
               <div style={{ ...styles.footerLogo, cursor: 'pointer' }} onClick={() => setActiveTab('home')}>
-                <span>SHARKE</span>
-                <span style={styles.logoBlue}>SHOP</span>
+                <span>SHARK</span>
+                <span style={styles.logoBlue}>WARD</span>
               </div>
             </div>
 
@@ -191,7 +191,7 @@ const AppContent = () => {
         </div>
 
         <div style={styles.footerBottom}>
-          <p>© 2026 SHARKE SHOP. Sva prava zadržana. Sajt je napravljen u promotivne svrhe.</p>
+          <p>© 2026 SHARKWARD. Sva prava zadržana. Sajt je napravljen u promotivne svrhe.</p>
           <div style={styles.footerAdminToggle} onClick={toggleAdminMode}>
             <ShieldCheck size={14} color={isAdmin ? '#e5c158' : 'var(--text-muted)'} />
             <span>Admin status: {isAdmin ? 'Aktivan' : 'Neaktivan'}</span>
