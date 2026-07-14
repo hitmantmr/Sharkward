@@ -106,7 +106,20 @@ const AppContent = () => {
             
             {/* 1. Levo: Ime Sajta */}
             <div style={styles.footerLeft}>
-              <div style={{ ...styles.footerLogo, cursor: 'pointer' }} onClick={() => setActiveTab('home')}>
+              <div style={{ ...styles.footerLogo, cursor: 'pointer', display: 'flex', alignItems: 'center' }} onClick={() => setActiveTab('home')}>
+                <img 
+                  src="./img/logo sharkward.png" 
+                  alt="Sharkward Logo" 
+                  style={{ 
+                    height: '32px', 
+                    width: '32px', 
+                    borderRadius: '50%', 
+                    objectFit: 'cover', 
+                    marginRight: '10px',
+                    border: '1.5px solid var(--accent-cyan)',
+                    boxShadow: '0 0 10px rgba(0, 240, 255, 0.25)' 
+                  }} 
+                />
                 <span>SHARK</span>
                 <span style={styles.logoBlue}>WARD</span>
               </div>

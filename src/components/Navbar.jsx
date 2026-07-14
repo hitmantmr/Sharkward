@@ -18,6 +18,19 @@ const Navbar = ({ activeTab, setActiveTab }) => {
       <div style={styles.container}>
         {/* Logo */}
         <div style={styles.logo} onClick={() => handleTabClick('home')}>
+          <img 
+            src="./img/logo sharkward.png" 
+            alt="Sharkward Logo" 
+            style={{ 
+              height: '32px', 
+              width: '32px', 
+              borderRadius: '50%', 
+              objectFit: 'cover', 
+              marginRight: '10px',
+              border: '1.5px solid var(--accent-cyan)',
+              boxShadow: '0 0 10px rgba(0, 240, 255, 0.25)' 
+            }} 
+          />
           <span style={styles.logoText}>SHARK</span>
           <span style={styles.logoSubtext}>WARD</span>
           <div style={{
