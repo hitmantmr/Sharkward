@@ -294,8 +294,8 @@ const Home = ({ setActiveTab }) => {
               href="https://www.aleapartners.io/" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="sponsor-activation-btn blue-theme" 
-              style={{ margin: 0, background: 'linear-gradient(135deg, #00dfc6 0%, #008f84 100%)', color: '#000', fontWeight: '800', border: 'none', boxShadow: '0 4px 15px rgba(0, 210, 196, 0.4)' }}
+              className="sponsor-activation-btn teal-theme" 
+              style={{ margin: 0 }}
             >
               Poseti Alea Partners <ExternalLink size={14} />
             </a>
@@ -1199,6 +1199,18 @@ const Home = ({ setActiveTab }) => {
 
         .sponsor-activation-btn.blue-theme:hover {
           box-shadow: 0 6px 22px rgba(0, 92, 255, 0.55) !important;
+          transform: translateY(-2px);
+        }
+
+        /* Teal Button Theme (Alea Partners) */
+        .sponsor-activation-btn.teal-theme {
+          background: linear-gradient(135deg, #00dfc6 0%, #008f84 100%) !important;
+          color: #000 !important;
+          box-shadow: 0 4px 15px rgba(0, 210, 196, 0.3) !important;
+        }
+
+        .sponsor-activation-btn.teal-theme:hover {
+          box-shadow: 0 6px 22px rgba(0, 210, 196, 0.55) !important;
           transform: translateY(-2px);
         }
 
