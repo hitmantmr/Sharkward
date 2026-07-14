@@ -34,7 +34,10 @@ const Shop = ({ setActiveTab }) => {
 
   // Mapiranje stilizovanih gradijenata za skinove
   const getSkinGradient = (imageName) => {
-    if (imageName.startsWith('gift_card')) {
+    if (!imageName || typeof imageName !== 'string') {
+      return 'radial-gradient(circle at center, #1e293b 0%, #0f172a 100%)';
+    }
+    if (imageName.startsWith('gift_card') || imageName.includes('giftcards')) {
       return 'linear-gradient(135deg, #1f2937 0%, #111827 100%)';
     }
     switch (imageName) {
@@ -340,7 +343,7 @@ const Shop = ({ setActiveTab }) => {
                 {/* Skin vizuelni prikaz */}
                 <div style={{ ...styles.skinVisual, background: 'radial-gradient(circle, rgba(0, 240, 255, 0.04) 0%, rgba(0, 0, 0, 0) 70%)' }}>
                   <div style={styles.radialGlow} />
-                  <RenderSkinImage skin={skin} />
+                  {renderSkinImage(skin)}
                 </div>
 
                 {/* Skin Info */}
