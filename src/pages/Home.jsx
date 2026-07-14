@@ -253,14 +253,14 @@ const Home = ({ setActiveTab }) => {
         {/* Alea Partners Card */}
         <div className="premium-card sponsor-card-premium aleapartners-card reveal-on-scroll" style={{ ...styles.partnerCard, transitionDelay: '300ms', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div style={styles.partnerHeader}>
-            <img src="./img/alea.png" alt="Alea Partners Logo" style={{ ...styles.partnerLogoImg, filter: 'drop-shadow(0 4px 12px rgba(59, 130, 246, 0.35))' }} />
+            <img src="./img/alea.png" alt="Alea Partners Logo" style={{ ...styles.partnerLogoImg, filter: 'drop-shadow(0 4px 12px rgba(0, 210, 196, 0.35))' }} />
             <span className="sponsor-tag-badge blue">SPONZOR</span>
           </div>
 
           <div className="sponsor-benefits-list" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <div className="sponsor-benefit-row">
               <div className="sponsor-benefit-icon-box blue">
-                <Gift size={14} color="#3b82f6" style={{ filter: 'drop-shadow(0 0 4px rgba(59, 130, 246, 0.5))' }} />
+                <Gift size={14} color="#00d2c4" style={{ filter: 'drop-shadow(0 0 4px rgba(0, 210, 196, 0.5))' }} />
               </div>
               <div className="sponsor-benefit-content">
                 <span className="sponsor-benefit-title">iGaming & Betting</span>
@@ -270,7 +270,7 @@ const Home = ({ setActiveTab }) => {
 
             <div className="sponsor-benefit-row">
               <div className="sponsor-benefit-icon-box blue">
-                <Award size={14} color="#3b82f6" style={{ filter: 'drop-shadow(0 0 4px rgba(59, 130, 246, 0.5))' }} />
+                <Award size={14} color="#00d2c4" style={{ filter: 'drop-shadow(0 0 4px rgba(0, 210, 196, 0.5))' }} />
               </div>
               <div className="sponsor-benefit-content">
                 <span className="sponsor-benefit-title">16,000+ Premium Igara</span>
@@ -280,7 +280,7 @@ const Home = ({ setActiveTab }) => {
 
             <div className="sponsor-benefit-row">
               <div className="sponsor-benefit-icon-box blue">
-                <Play size={14} color="#3b82f6" style={{ filter: 'drop-shadow(0 0 4px rgba(59, 130, 246, 0.5))' }} />
+                <Play size={14} color="#00d2c4" style={{ filter: 'drop-shadow(0 0 4px rgba(0, 210, 196, 0.5))' }} />
               </div>
               <div className="sponsor-benefit-content">
                 <span className="sponsor-benefit-title">Inovativni Softveri</span>
@@ -295,7 +295,7 @@ const Home = ({ setActiveTab }) => {
               target="_blank" 
               rel="noopener noreferrer" 
               className="sponsor-activation-btn blue-theme" 
-              style={{ margin: 0, background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)', color: '#fff', border: 'none', boxShadow: '0 4px 15px rgba(29, 78, 216, 0.4)' }}
+              style={{ margin: 0, background: 'linear-gradient(135deg, #00dfc6 0%, #008f84 100%)', color: '#000', fontWeight: '800', border: 'none', boxShadow: '0 4px 15px rgba(0, 210, 196, 0.4)' }}
             >
               Poseti Alea Partners <ExternalLink size={14} />
             </a>
@@ -507,7 +507,7 @@ const Home = ({ setActiveTab }) => {
           grid-template-columns: repeat(3, 1fr);
           gap: 1.5rem;
           max-width: 1020px;
-          margin: 0 auto;
+          margin: 0 auto 5.5rem auto;
           width: 100%;
         }
 
@@ -984,6 +984,18 @@ const Home = ({ setActiveTab }) => {
           box-shadow: 0 15px 35px rgba(229, 193, 88, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
         }
 
+        .aleapartners-card {
+          background: linear-gradient(180deg, rgba(0, 210, 196, 0.06) 0%, rgba(10, 15, 26, 0.85) 100%) !important;
+          border: 1px solid rgba(0, 210, 196, 0.22) !important;
+          box-shadow: 0 10px 30px rgba(0, 210, 196, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+          transition: all 0.3s ease !important;
+        }
+
+        .aleapartners-card:hover {
+          border-color: rgba(0, 210, 196, 0.45) !important;
+          box-shadow: 0 15px 35px rgba(0, 210, 196, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+        }
+
         .sponsor-tag-badge {
           font-size: 0.65rem;
           font-weight: 800;
@@ -1007,9 +1019,9 @@ const Home = ({ setActiveTab }) => {
         }
 
         .sponsor-tag-badge.blue {
-          background: rgba(59, 130, 246, 0.1);
-          border: 1px solid rgba(59, 130, 246, 0.3);
-          color: #3b82f6;
+          background: rgba(0, 210, 196, 0.1);
+          border: 1px solid rgba(0, 210, 196, 0.3);
+          color: #00d2c4;
         }
 
         .sponsor-benefits-list {
@@ -1058,8 +1070,8 @@ const Home = ({ setActiveTab }) => {
         }
 
         .sponsor-benefit-icon-box.blue {
-          background: rgba(59, 130, 246, 0.1);
-          border: 1px solid rgba(59, 130, 246, 0.2);
+          background: rgba(0, 210, 196, 0.1);
+          border: 1px solid rgba(0, 210, 196, 0.2);
         }
 
         .sponsor-benefit-content {
