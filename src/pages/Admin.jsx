@@ -39,6 +39,7 @@ const getAdminSkinImage = (img) => {
 const Admin = () => {
   const { 
     user, 
+    API_URL,
     skins, 
     giveaways, 
     addSkin, 
@@ -300,7 +301,7 @@ const Admin = () => {
     setFetchingPrice(true);
     setBuffPrice(null);
     try {
-      const res = await fetch(`http://localhost:5000/api/admin/skin-price?name=${encodeURIComponent(queryName)}`);
+      const res = await fetch(`${API_URL}/admin/skin-price?name=${encodeURIComponent(queryName)}`);
       if (res.ok) {
         const data = await res.json();
         if (data.price) {
@@ -581,12 +582,12 @@ const Admin = () => {
         </div>
 
         {/* DESNA KOLONA: Upravljanje Članovima & Permisijama */}
-        <div style={{ ...styles.card, width: '100%', margin: 0 }} className="glass">
+        <div style={{ ...styles.card, width: '100%', margin: 0, height: '100%', display: 'flex', flexDirection: 'column' }} className="glass">
           <h3 style={styles.cardTitle}>
             <Users size={18} color="var(--accent-cyan)" /> Upravljanje Članovima & Permisijama
           </h3>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', flex: 1 }}>
             {/* Pretraga Članova */}
             <div style={{ ...styles.inputSearchWrapper, width: '100%' }}>
               <Search size={16} color="var(--text-muted)" style={{ position: 'absolute', left: '12px' }} />
@@ -876,7 +877,7 @@ const styles = {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
     gap: '1.5rem',
-    alignItems: 'start',
+    alignItems: 'stretch',
     width: '100%',
   },
   container: {
