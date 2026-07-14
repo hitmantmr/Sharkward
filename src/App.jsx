@@ -38,11 +38,16 @@ const AppContent = () => {
   const { isAdmin, toggleAdminMode } = useApp();
 
   const setActiveTab = (tab) => {
+    if (tab === activeTab) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     setActiveTabState(tab);
     localStorage.setItem('activeTab', tab);
     const base = getSubpathBase();
     const newPath = tab === 'home' ? (base ? `${base}/` : '/') : `${base}/${tab}`;
     window.history.pushState({}, '', newPath);
+    window.scrollTo(0, 0);
   };
 
   React.useEffect(() => {
