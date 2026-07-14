@@ -536,9 +536,11 @@ const Shop = ({ setActiveTab }) => {
                 </div>
                 <div style={{ textAlign: 'left' }}>
                   <h4 style={{ color: '#fff', fontSize: '1rem', fontWeight: 700 }}>{selectedSkin.name}</h4>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginTop: '2px' }}>
-                    Kvalitet: <span style={{ color: '#53fc18', fontWeight: 600 }}>{selectedSkin.condition}</span>
-                  </p>
+                  {selectedSkin.condition && selectedSkin.type !== 'Gift Card' && !selectedSkin.name.toLowerCase().includes('gift card') && (
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginTop: '2px' }}>
+                      Kvalitet: <span style={{ color: '#53fc18', fontWeight: 600 }}>{selectedSkin.condition}</span>
+                    </p>
+                  )}
                 </div>
               </div>
 

@@ -57,7 +57,8 @@ const Admin = () => {
     setIsLive
   } = useApp();
 
-  // Država forme za skin
+  // Država forme za skin / gift karticu
+  const [adminModeType, setAdminModeType] = useState('skin'); // 'skin' ili 'giftcard'
   const [skinName, setSkinName] = useState('');
   const [isStatTrak, setIsStatTrak] = useState(false);
   const [skinType, setSkinType] = useState('Knife');
@@ -385,11 +386,12 @@ const Admin = () => {
     const cardImage = `/img/giftcards/${amount}usd.svg`;
     setSkinName(cardName);
     setSkinType('Gift Card');
-    setSkinCondition('FN');
+    setSkinCondition('');
     setSkinRarity('covert');
     setIsStatTrak(false);
     setSkinImage(cardImage);
-    setSkinPrice((amount * 130).toString());
+    const pts = amount * 130;
+    setSkinPrice(pts.toString());
     setSkinEstPrice('$' + amount.toFixed(2));
     setSelectedCatalogSkin({
       name: cardName,
@@ -444,17 +446,18 @@ const Admin = () => {
       finalName = isKnife ? `★ ${displayName}` : displayName;
     }
 
+    const isGift = adminModeType === 'giftcard' || skinType === 'Gift Card';
     const parsedCodes = giftCodesText.split('\n').map(l => l.trim()).filter(Boolean);
     const finalStock = parsedCodes.length > 0 ? parsedCodes.length : (parseInt(skinStock) || 1);
 
     addSkin({
-      name: finalName,
-      type: skinType,
-      rarity: skinRarity,
-      condition: skinCondition,
-      price: parseInt(skinPrice) || 1000,
-      image: skinImage, // Steam CDN Link ili Gift Card Slika
-      imageUrl: skinImage, // Upisuje se u bazu pod poljem imageUrl kao u specifikaciji
+      name: isGift ? skinName.trim() : finalName,
+      type: isGift ? 'Gift Card' : skinType,
+      rarity: isGift ? 'covert' : skinRarity,
+      condition: isGift ? '' : skinCondition,
+      price: parseInt(skinPrice) || (isGift ? 1300 : 1000),
+      image: isGift ? (skinImage || `/img/giftcards/${skinEstPrice.replace('$', '') || '10'}usd.svg`) : skinImage,
+      imageUrl: isGift ? (skinImage || `/img/giftcards/${skinEstPrice.replace('$', '') || '10'}usd.svg`) : skinImage,
       estPrice: skinEstPrice || null,
       stock: finalStock,
       codes: parsedCodes
@@ -500,186 +503,244 @@ const Admin = () => {
           
           <form onSubmit={handleAddSkinSubmit} style={styles.form}>
 
-            {/* Brzi uvoz CSGO-Skins Gift Kartica ($5 - $50) */}
-            <div style={{ padding: '0.85rem', borderRadius: '10px', backgroundColor: 'rgba(0, 240, 255, 0.05)', border: '1px solid rgba(0, 240, 255, 0.15)', display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '8px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--accent-cyan)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Gift size={16} /> CSGO-Skins Gift Kartice (Brzi Izbor)
-                </span>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>1 USD = 130 PTS</span>
-              </div>
-              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                {[5, 10, 15, 20, 25, 50].map((amount) => (
-                  <button
-                    key={amount}
-                    type="button"
-                    onClick={() => handleSelectGiftCardPreset(amount)}
-                    style={{
-                      flex: 1,
-                      minWidth: '55px',
-                      padding: '6px 10px',
-                      borderRadius: '8px',
-                      backgroundColor: skinName === `CSGO-Skins $${amount} Gift Card` ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.06)',
-                      border: skinName === `CSGO-Skins $${amount} Gift Card` ? 'none' : '1px solid rgba(255, 255, 255, 0.12)',
-                      color: skinName === `CSGO-Skins $${amount} Gift Card` ? '#000' : '#fff',
-                      fontWeight: '800',
-                      fontSize: '0.85rem',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
-                  >
-                    ${amount}
-                  </button>
-                ))}
-              </div>
+            {/* Izbor Režima: CS2 Skinovi ili Gift Kartice */}
+            <div style={{ display: 'flex', gap: '1.25rem', marginBottom: '1.25rem', padding: '10px 14px', backgroundColor: 'rgba(0, 240, 255, 0.04)', borderRadius: '10px', border: '1px solid rgba(0, 240, 255, 0.15)' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', color: adminModeType === 'skin' ? 'var(--accent-cyan)' : '#94a3b8', fontWeight: '800', fontSize: '0.9rem' }}>
+                <input
+                  type="radio"
+                  name="adminModeType"
+                  value="skin"
+                  checked={adminModeType === 'skin'}
+                  onChange={() => {
+                    setAdminModeType('skin');
+                    setSkinType('Knife');
+                    setSkinName('');
+                    setSelectedCatalogSkin(null);
+                    setSkinCondition('FN');
+                  }}
+                  style={{ accentColor: 'var(--accent-cyan)', cursor: 'pointer', width: '16px', height: '16px' }}
+                />
+                🔫 CS2 Skinovi
+              </label>
+
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', color: adminModeType === 'giftcard' ? 'var(--accent-cyan)' : '#94a3b8', fontWeight: '800', fontSize: '0.9rem' }}>
+                <input
+                  type="radio"
+                  name="adminModeType"
+                  value="giftcard"
+                  checked={adminModeType === 'giftcard'}
+                  onChange={() => {
+                    setAdminModeType('giftcard');
+                    handleSelectGiftCardPreset(10);
+                  }}
+                  style={{ accentColor: 'var(--accent-cyan)', cursor: 'pointer', width: '16px', height: '16px' }}
+                />
+                🎁 CSGO-Skins Gift Kartice
+              </label>
             </div>
 
-            {/* Pretraga po CS2 skinitu (Sakrivena za Gift Card) */}
-            {skinType !== 'Gift Card' && (
-              <div style={{ ...styles.formGroup, position: 'relative' }}>
-                <label style={styles.label}>Pretraži i Izaberi CS2 Skin (CS2 API Autocomplete)</label>
-                <div style={styles.inputSearchWrapper}>
-                  <input
-                    type="text"
-                    placeholder="Počni da kucaš naziv skina (npr. Asiimov, Redline)..."
-                    value={skinName}
-                    onChange={(e) => handleSkinNameInputChange(e.target.value)}
-                    style={styles.input}
-                    required={skinType !== 'Gift Card'}
-                  />
-                  {loadingCatalog && <Loader size={16} className="animate-spin" style={styles.searchLoader} />}
-                </div>
-
-                {/* Autocomplete predlozi */}
-                {suggestions.length > 0 && (
-                  <div style={styles.suggestionsDropdown} className="glass">
-                    {suggestions.map(s => (
-                      <div 
-                        key={s.id} 
-                        style={styles.suggestionItem}
-                        onClick={() => handleSelectSuggestion(s)}
+            {adminModeType === 'giftcard' ? (
+              <>
+                {/* Izbor iznosa Gift Kartice */}
+                <div style={{ padding: '0.85rem', borderRadius: '10px', backgroundColor: 'rgba(0, 240, 255, 0.05)', border: '1px solid rgba(0, 240, 255, 0.15)', display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--accent-cyan)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Gift size={16} /> Izaberi Vrednost Gift Kartice (USD)
+                    </span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>1 USD = 130 PTS</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                    {[5, 10, 15, 20, 25, 50].map((amount) => (
+                      <button
+                        key={amount}
+                        type="button"
+                        onClick={() => handleSelectGiftCardPreset(amount)}
+                        style={{
+                          flex: 1,
+                          minWidth: '55px',
+                          padding: '8px 10px',
+                          borderRadius: '8px',
+                          backgroundColor: skinPrice === (amount * 130).toString() ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.06)',
+                          border: skinPrice === (amount * 130).toString() ? 'none' : '1px solid rgba(255, 255, 255, 0.12)',
+                          color: skinPrice === (amount * 130).toString() ? '#000' : '#fff',
+                          fontWeight: '800',
+                          fontSize: '0.85rem',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease'
+                        }}
                       >
-                        <img src={s.image ? s.image.replace('community.akamai.steamstatic.com', 'community.steamstatic.com') : ''} alt={s.name} style={styles.suggestionImg} />
-                        <span>{s.name}</span>
-                      </div>
+                        ${amount}
+                      </button>
                     ))}
                   </div>
-                )}
-              </div>
-            )}
-
-            {/* Vizuelni prikaz selektovanog skina ili gift kartice */}
-            {selectedCatalogSkin && (
-              <div style={styles.selectedSkinPreview}>
-                {skinType === 'Gift Card' || (selectedCatalogSkin.name && selectedCatalogSkin.name.toLowerCase().includes('gift card')) ? (
-                  <div style={{ transform: 'scale(0.85)', transformOrigin: 'left center', marginRight: '-15px' }}>
-                    <GiftCardVisual name={selectedCatalogSkin.name} estPrice={skinEstPrice} />
-                  </div>
-                ) : (
-                  <img 
-                    src={selectedCatalogSkin.image ? selectedCatalogSkin.image.replace('community.akamai.steamstatic.com', 'community.steamstatic.com') : ''} 
-                    alt={selectedCatalogSkin.name} 
-                    style={styles.previewImg} 
-                  />
-                )}
-                <div style={styles.previewInfo}>
-                  <span style={styles.previewName}>{selectedCatalogSkin.name}</span>
-                  <span style={styles.previewType}>
-                    {skinType} • {skinRarity.toUpperCase()}
-                  </span>
                 </div>
-              </div>
-            )}
 
-            <div style={styles.formRow}>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Kvalitet (Condition)</label>
-                <select value={skinCondition} onChange={handleConditionChange} style={styles.select}>
-                  <option value="FN">Factory New (FN)</option>
-                  <option value="MW">Minimal Wear (MW)</option>
-                  <option value="FT">Field-Tested (FT)</option>
-                  <option value="WW">Well-Worn (WW)</option>
-                  <option value="BS">Battle-Scarred (BS)</option>
-                </select>
-              </div>
+                {/* Prelepi vizuelni prikaz Gift kartice */}
+                <div style={{ display: 'flex', justifyContent: 'center', margin: '0.5rem 0 1.25rem 0' }}>
+                  <GiftCardVisual name={skinName} estPrice={skinEstPrice} />
+                </div>
 
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Tip predmeta</label>
-                <select value={skinType} onChange={handleWeaponTypeChange} style={styles.select}>
-                  <option value="Gift Card">Gift Kartica (Gift Card)</option>
-                  <option value="Knife">Nož (Knife)</option>
-                  <option value="Gloves">Rukavice (Gloves)</option>
-                  <option value="Rifle">Puška (Rifle)</option>
-                  <option value="Sniper Rifle">Snajper (Sniper Rifle)</option>
-                  <option value="Pistol">Pištolj (Pistol)</option>
-                </select>
-              </div>
-            </div>
+                <div style={styles.formRow}>
+                  <div style={styles.formGroup}>
+                    <label style={styles.label}>Cena u poenima (1 USD = 130 PTS)</label>
+                    <input
+                      type="number"
+                      value={skinPrice}
+                      onChange={(e) => setSkinPrice(e.target.value)}
+                      style={styles.input}
+                      required
+                    />
+                  </div>
 
-            {skinType !== 'Gift Card' && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: '4px 0' }}>
-                <input
-                  type="checkbox"
-                  id="isStatTrak"
-                  checked={isStatTrak}
-                  onChange={handleStatTrakToggle}
-                  style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: 'var(--accent-cyan)' }}
-                />
-                <label htmlFor="isStatTrak" style={{ ...styles.label, cursor: 'pointer', marginBottom: 0, fontSize: '0.85rem', color: '#fff' }}>
-                  StatTrak™ Verzija Skina
-                </label>
-              </div>
-            )}
+                  <div style={styles.formGroup}>
+                    <label style={styles.label}>Količina na lageru (Lager)</label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={skinStock}
+                      onChange={(e) => setSkinStock(e.target.value)}
+                      style={styles.input}
+                      required
+                    />
+                  </div>
+                </div>
 
-            <div style={styles.formRow}>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Cena u poenima (Automatski se preračunava)</label>
-                <input
-                  type="number"
-                  value={skinPrice}
-                  onChange={(e) => setSkinPrice(e.target.value)}
-                  style={styles.input}
-                  required
-                />
-              </div>
+                <div style={styles.formGroup}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                    <label style={styles.label}>Kodovi za Aktivaciju (Zaseban kod u svakom redu)</label>
+                    {giftCodesText.split('\n').filter(l => l.trim()).length > 0 && (
+                      <span style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', fontWeight: 700 }}>
+                        Izbrojano kodova: {giftCodesText.split('\n').filter(l => l.trim()).length} kom
+                      </span>
+                    )}
+                  </div>
+                  <textarea
+                    rows={4}
+                    placeholder={`Unesi kodove za gift karticu (jedan po redu):\nCSGO-CARD-10USD-CODE1\nCSGO-CARD-10USD-CODE2\nCSGO-CARD-10USD-CODE3`}
+                    value={giftCodesText}
+                    onChange={(e) => handleGiftCodesTextChange(e.target.value)}
+                    style={{
+                      ...styles.input,
+                      fontFamily: 'monospace',
+                      fontSize: '0.85rem',
+                      resize: 'vertical',
+                      padding: '10px'
+                    }}
+                  />
+                </div>
+              </>
+            ) : (
+              /* CS2 SKINOVI REŽIM */
+              <>
+                <div style={{ ...styles.formGroup, position: 'relative' }}>
+                  <label style={styles.label}>Pretraži i Izaberi CS2 Skin (CS2 API Autocomplete)</label>
+                  <div style={styles.inputSearchWrapper}>
+                    <input
+                      type="text"
+                      placeholder="Počni da kucaš naziv skina (npr. Asiimov, Redline)..."
+                      value={skinName}
+                      onChange={(e) => handleSkinNameInputChange(e.target.value)}
+                      style={styles.input}
+                      required
+                    />
+                    {loadingCatalog && <Loader size={16} className="animate-spin" style={styles.searchLoader} />}
+                  </div>
 
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Količina na lageru (Lager)</label>
-                <input
-                  type="number"
-                  min="1"
-                  value={skinStock}
-                  onChange={(e) => setSkinStock(e.target.value)}
-                  style={styles.input}
-                  required
-                />
-              </div>
-            </div>
+                  {suggestions.length > 0 && (
+                    <div style={styles.suggestionsDropdown} className="glass">
+                      {suggestions.map(s => (
+                        <div 
+                          key={s.id} 
+                          style={styles.suggestionItem}
+                          onClick={() => handleSelectSuggestion(s)}
+                        >
+                          <img src={s.image ? s.image.replace('community.akamai.steamstatic.com', 'community.steamstatic.com') : ''} alt={s.name} style={styles.suggestionImg} />
+                          <span>{s.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
-            {/* Polje za kodove (npr. Gift kartice ili digitalne artikle) */}
-            <div style={styles.formGroup}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-                <label style={styles.label}>Kodovi za Aktivaciju (Zaseban kod u svakom redu)</label>
-                {giftCodesText.split('\n').filter(l => l.trim()).length > 0 && (
-                  <span style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', fontWeight: 700 }}>
-                    Izbrojano kodova: {giftCodesText.split('\n').filter(l => l.trim()).length} kom (Lager automatski podešen)
-                  </span>
+                {selectedCatalogSkin && (
+                  <div style={styles.selectedSkinPreview}>
+                    <img 
+                      src={selectedCatalogSkin.image ? selectedCatalogSkin.image.replace('community.akamai.steamstatic.com', 'community.steamstatic.com') : ''} 
+                      alt={selectedCatalogSkin.name} 
+                      style={styles.previewImg} 
+                    />
+                    <div style={styles.previewInfo}>
+                      <span style={styles.previewName}>{selectedCatalogSkin.name}</span>
+                      <span style={styles.previewType}>
+                        {skinType} • {skinRarity.toUpperCase()}
+                      </span>
+                    </div>
+                  </div>
                 )}
-              </div>
-              <textarea
-                rows={3}
-                placeholder={`Unesi kodove po redu (npr):\nCSGO-CARD-10USD-CODE1\nCSGO-CARD-10USD-CODE2\nCSGO-CARD-10USD-CODE3`}
-                value={giftCodesText}
-                onChange={(e) => handleGiftCodesTextChange(e.target.value)}
-                style={{
-                  ...styles.input,
-                  fontFamily: 'monospace',
-                  fontSize: '0.85rem',
-                  resize: 'vertical',
-                  padding: '10px'
-                }}
-              />
-            </div>
+
+                <div style={styles.formRow}>
+                  <div style={styles.formGroup}>
+                    <label style={styles.label}>Kvalitet (Condition)</label>
+                    <select value={skinCondition} onChange={handleConditionChange} style={styles.select}>
+                      <option value="FN">Factory New (FN)</option>
+                      <option value="MW">Minimal Wear (MW)</option>
+                      <option value="FT">Field-Tested (FT)</option>
+                      <option value="WW">Well-Worn (WW)</option>
+                      <option value="BS">Battle-Scarred (BS)</option>
+                    </select>
+                  </div>
+
+                  <div style={styles.formGroup}>
+                    <label style={styles.label}>Tip oružja</label>
+                    <select value={skinType} onChange={(e) => setSkinType(e.target.value)} style={styles.select}>
+                      <option value="Knife">Nož (Knife)</option>
+                      <option value="Gloves">Rukavice (Gloves)</option>
+                      <option value="Rifle">Puška (Rifle)</option>
+                      <option value="Sniper Rifle">Snajper (Sniper Rifle)</option>
+                      <option value="Pistol">Pištolj (Pistol)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: '4px 0' }}>
+                  <input
+                    type="checkbox"
+                    id="isStatTrak"
+                    checked={isStatTrak}
+                    onChange={handleStatTrakToggle}
+                    style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: 'var(--accent-cyan)' }}
+                  />
+                  <label htmlFor="isStatTrak" style={{ ...styles.label, cursor: 'pointer', marginBottom: 0, fontSize: '0.85rem', color: '#fff' }}>
+                    StatTrak™ Verzija Skina
+                  </label>
+                </div>
+
+                <div style={styles.formRow}>
+                  <div style={styles.formGroup}>
+                    <label style={styles.label}>Cena u poenima (Automatski se preračunava)</label>
+                    <input
+                      type="number"
+                      value={skinPrice}
+                      onChange={(e) => setSkinPrice(e.target.value)}
+                      style={styles.input}
+                      required
+                    />
+                  </div>
+
+                  <div style={styles.formGroup}>
+                    <label style={styles.label}>Količina na lageru (Lager)</label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={skinStock}
+                      onChange={(e) => setSkinStock(e.target.value)}
+                      style={styles.input}
+                      required
+                    />
+                  </div>
+                </div>
+              </>
+            )}
 
             {/* Informacije o ceni */}
             {selectedCatalogSkin && (
