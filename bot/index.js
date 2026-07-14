@@ -2871,6 +2871,21 @@ app.post('/api/update-giveaways', (req, res) => {
   res.json({ success: true, count: list.length });
 });
 
+// 10c. POST /api/admin/clear-giveaways -> Brisanje svih giveaway-a sa servera
+app.post('/api/admin/clear-giveaways', (req, res) => {
+  const token = req.headers['x-giveaways-token'];
+  const expectedToken = process.env.GIVEAWAYS_SYNC_TOKEN || 'sharke-sync-token-2026';
+  
+  if (token !== expectedToken) {
+    return res.status(401).json({ error: 'Unauthorized.' });
+  }
+
+  const data = readDb();
+  data.giveaways = [];
+  writeDb(data);
+  res.json({ success: true, message: 'Sve nagradne igre su uspešno obrisane sa servera.' });
+});
+
 // 11. POST /api/enter-giveaway -> Prijava na giveaway
 app.post('/api/enter-giveaway', (req, res) => {
   const { discordId, giveawayId } = req.body;

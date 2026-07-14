@@ -235,7 +235,10 @@ export const AppProvider = ({ children }) => {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        return Array.isArray(parsed) ? parsed : initialGiveaways;
+        if (Array.isArray(parsed)) {
+          return parsed.filter(g => g && g.id !== 'g1' && g.id !== 'g2' && g.id !== 'g3');
+        }
+        return initialGiveaways;
       } catch (e) {
         return initialGiveaways;
       }
@@ -711,6 +714,29 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const clearAllGiveaways = async () => {
+    try {
+      const res = await fetch(`${API_URL}/admin/clear-giveaways`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Giveaways-Token': 'sharke-sync-token-2026'
+        }
+      });
+      if (res.ok) {
+        setGiveaways([]);
+        addToast('Sve nagradne igre su uspešno obrisane sa servera i klijenta!', 'success');
+        return { success: true };
+      } else {
+        addToast('Greška pri brisanju nagradnih igara sa servera.', 'error');
+        return { success: false };
+      }
+    } catch (err) {
+      addToast(`Greška: ${err.message}`, 'error');
+      return { success: false };
+    }
+  };
+
   const resetAllData = () => {
     localStorage.removeItem('sharke_user');
     localStorage.removeItem('sharke_skins');
@@ -775,6 +801,7 @@ export const AppProvider = ({ children }) => {
       addGiveaway,
       endGiveawayMock,
       syncGiveaways,
+      clearAllGiveaways,
       resetAllData,
       saveTradeUrl
     }}>

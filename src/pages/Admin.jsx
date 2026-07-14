@@ -47,6 +47,7 @@ const Admin = () => {
     updateUserPoints, 
     endGiveawayMock,
     syncGiveaways,
+    clearAllGiveaways,
     resetAllData,
     isLive,
     setIsLive
@@ -574,14 +575,23 @@ const Admin = () => {
             style={styles.textarea}
             required
           />
-          <button 
-            type="submit" 
-            className="glow-btn-cyan" 
-            style={{ backgroundColor: 'var(--accent-cyan)', color: '#000', width: '100%', fontWeight: '800', border: 'none', padding: '0.85rem', borderRadius: '10px', cursor: 'pointer' }}
-            disabled={isSyncing}
-          >
-            {isSyncing ? 'Sinhronizujem...' : 'UVEZI PARTNERSKE GIVEAWAY-E'}
-          </button>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button 
+              type="submit" 
+              className="glow-btn-cyan" 
+              style={{ flex: 2, backgroundColor: 'var(--accent-cyan)', color: '#000', fontWeight: '800', border: 'none', padding: '0.85rem', borderRadius: '10px', cursor: 'pointer' }}
+              disabled={isSyncing}
+            >
+              {isSyncing ? 'Sinhronizujem...' : 'UVEZI PARTNERSKE GIVEAWAY-E'}
+            </button>
+            <button 
+              type="button" 
+              onClick={clearAllGiveaways}
+              style={{ flex: 1, backgroundColor: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgb(239, 68, 68)', color: 'rgb(239, 68, 68)', fontWeight: '700', padding: '0.85rem', borderRadius: '10px', cursor: 'pointer' }}
+            >
+              OBRIŠI SVE GW SA SERVERA
+            </button>
+          </div>
         </form>
       </section>
 
