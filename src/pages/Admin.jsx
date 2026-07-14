@@ -46,6 +46,7 @@ const Admin = () => {
     restockSkin, 
     updateUserPoints, 
     endGiveawayMock,
+    syncGiveaways,
     resetAllData,
     isLive,
     setIsLive
@@ -60,6 +61,36 @@ const Admin = () => {
   const [skinPrice, setSkinPrice] = useState('15000');
   const [skinImage, setSkinImage] = useState(''); // Početno prazno, postavlja se isključivo pretragom
   const [skinEstPrice, setSkinEstPrice] = useState('');
+
+  // Države za uvoz partnerskih giveaway-a
+  const [giveawaysJsonInput, setGiveawaysJsonInput] = useState('');
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const handleImportGiveaways = async (e) => {
+    e.preventDefault();
+    if (!giveawaysJsonInput.trim()) {
+      alert('Molimo te unesi JSON kod u polje!');
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(giveawaysJsonInput.trim());
+      if (!Array.isArray(parsed)) {
+        alert('Format nije ispravan! Očekuje se niz (array) sa giveaway podacima.');
+        return;
+      }
+
+      setIsSyncing(true);
+      const res = await syncGiveaways(parsed);
+      setIsSyncing(false);
+
+      if (res.success) {
+        setGiveawaysJsonInput('');
+      }
+    } catch (err) {
+      alert('Greška pri parsiranju JSON koda: ' + err.message);
+    }
+  };
 
   // CS2 API i Autocomplete države
   const [skinsCatalog, setSkinsCatalog] = useState([]);
@@ -527,6 +558,33 @@ const Admin = () => {
         </div>
       </section>
 
+      {/* Uvoz i Sinhronizacija partnerskih giveaway-a */}
+      <section style={styles.section} className="glass">
+        <h3 style={styles.sectionTitle}>
+          <Award size={18} color="var(--accent-cyan)" /> Uvoz i Sinhronizacija partnerskih Giveaway-a
+        </h3>
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: '1.5', margin: 0 }}>
+          Ako ti pretraživač blokira automatsko slanje skripte sa CSGO-Skins stranice na tvoj server, kopirani JSON kod iz konzole nalepi u polje ispod i klikni na dugme za uvoz.
+        </p>
+        <form onSubmit={handleImportGiveaways} style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+          <textarea
+            placeholder='Nalepi JSON kopiran iz konzole ovde...'
+            value={giveawaysJsonInput}
+            onChange={(e) => setGiveawaysJsonInput(e.target.value)}
+            style={styles.textarea}
+            required
+          />
+          <button 
+            type="submit" 
+            className="glow-btn-cyan" 
+            style={{ backgroundColor: 'var(--accent-cyan)', color: '#000', width: '100%', fontWeight: '800', border: 'none', padding: '0.85rem', borderRadius: '10px', cursor: 'pointer' }}
+            disabled={isSyncing}
+          >
+            {isSyncing ? 'Sinhronizujem...' : 'UVEZI PARTNERSKE GIVEAWAY-E'}
+          </button>
+        </form>
+      </section>
+
       {/* Upravljanje aktivnim giveaway-ima */}
       <section style={styles.section} className="glass">
         <h3 style={styles.sectionTitle}>
@@ -618,6 +676,21 @@ const styles = {
     gap: '8px',
     borderBottom: '1px solid var(--border-color)',
     paddingBottom: '10px',
+  },
+  textarea: {
+    width: '100%',
+    minHeight: '120px',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    border: '1px solid var(--border-color)',
+    borderRadius: '10px',
+    color: '#fff',
+    padding: '0.75rem',
+    fontFamily: 'monospace',
+    fontSize: '0.8rem',
+    outline: 'none',
+    boxSizing: 'border-box',
+    marginBottom: '1rem',
+    resize: 'vertical',
   },
   btnGroup: {
     display: 'flex',

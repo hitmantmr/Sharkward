@@ -723,6 +723,32 @@ export const AppProvider = ({ children }) => {
     }));
   };
 
+  const syncGiveaways = async (list) => {
+    try {
+      const res = await fetch(`${API_URL}/update-giveaways`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Giveaways-Token': 'sharke-sync-token-2026'
+        },
+        body: JSON.stringify(list)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        await fetchGiveawaysFromApi();
+        addToast(`Uspešno sinhronizovano ${list.length} nagradnih igara!`, 'success');
+        return { success: true };
+      } else {
+        const err = await res.json();
+        addToast(`Greška pri sinhronizaciji: ${err.error || 'Nepoznata greška'}`, 'error');
+        return { success: false, error: err.error };
+      }
+    } catch (err) {
+      addToast(`Mrežna greška pri sinhronizaciji: ${err.message}`, 'error');
+      return { success: false, error: err.message };
+    }
+  };
+
   const resetAllData = () => {
     localStorage.removeItem('sharke_user');
     localStorage.removeItem('sharke_skins');
@@ -786,6 +812,7 @@ export const AppProvider = ({ children }) => {
       updateUserPoints,
       addGiveaway,
       endGiveawayMock,
+      syncGiveaways,
       resetAllData,
       saveTradeUrl
     }}>
