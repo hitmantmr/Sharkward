@@ -317,6 +317,11 @@ const Home = ({ setActiveTab }) => {
 
       {/* 4. 2-Card Grid: Kako Sakupljati Poene, Aktivni Giveaway */}
       <div className="bottom-viewport">
+        <div className="bottom-header reveal-on-scroll">
+          <h2 className="bottom-title">LOYALTY & NAGRADE</h2>
+          <p className="bottom-subtitle">Sakupljaj poene gledajući strim i osvajaj vredne CS2 skinove</p>
+        </div>
+
         <section className="bottom-cards-grid" style={{ width: '100%' }}>
 
         {/* Card 2: Kako Sakupljati Poene */}
@@ -413,6 +418,10 @@ const Home = ({ setActiveTab }) => {
         </div>
 
       </section>
+
+      <div className="bottom-footer reveal-on-scroll">
+        <span className="bottom-footer-text">Sve nagradne igre se izvlače automatski uživo na strimu</span>
+      </div>
       </div>
 
       <style>{`
@@ -489,7 +498,52 @@ const Home = ({ setActiveTab }) => {
         .bottom-viewport {
           width: 100%;
           box-sizing: border-box;
-          padding: 2rem 0 4rem 0;
+          padding: 3rem 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .bottom-header {
+          text-align: center;
+          margin-bottom: 2rem;
+          padding: 0 1rem;
+        }
+
+        .bottom-title {
+          font-size: 2.2rem;
+          font-weight: 800;
+          color: #fff;
+          letter-spacing: 1px;
+          margin: 0 0 0.5rem 0;
+          text-transform: uppercase;
+          background: linear-gradient(90deg, #fff 0%, var(--accent-cyan) 50%, var(--accent-blue) 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+
+        .bottom-subtitle {
+          font-size: 0.95rem;
+          color: var(--text-muted);
+          margin: 0;
+          font-weight: 500;
+        }
+
+        .bottom-footer {
+          margin-top: 2rem;
+          text-align: center;
+          padding: 0 1rem;
+        }
+
+        .bottom-footer-text {
+          font-size: 0.82rem;
+          color: var(--text-muted);
+          letter-spacing: 0.5px;
+          font-weight: 500;
+          opacity: 0.65;
+          border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+          padding-bottom: 4px;
         }
 
         @media (min-width: 992px) {
@@ -498,10 +552,7 @@ const Home = ({ setActiveTab }) => {
           }
           
           .bottom-viewport {
-            min-height: calc(100vh - var(--navbar-height) - 2rem);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            min-height: calc(100vh - var(--navbar-height));
           }
         }
 
