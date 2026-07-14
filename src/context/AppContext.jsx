@@ -451,8 +451,8 @@ export const AppProvider = ({ children }) => {
         discordUser: discordUser,
         discordId: discordId,
         discordAvatar: discordAvatar || '',
-        points: urlPoints > 0 ? urlPoints : prev.points,
-        hoursWatched: urlHours > 0 ? urlHours : prev.hoursWatched,
+        points: params.has('points') ? urlPoints : prev.points,
+        hoursWatched: params.has('hours') ? urlHours : prev.hoursWatched,
         kickLinked: urlKickUser ? true : prev.kickLinked,
         kickUser: urlKickUser || prev.kickUser,
         kickId: urlKickId || prev.kickId,
@@ -474,8 +474,8 @@ export const AppProvider = ({ children }) => {
         kickId: kickId || null,
         kickAvatar: kickAvatar || null,
         isLoggedIn: true,
-        points: urlPoints > 0 ? urlPoints : prev.points,
-        hoursWatched: urlHours > 0 ? urlHours : prev.hoursWatched,
+        points: params.has('points') ? urlPoints : prev.points,
+        hoursWatched: params.has('hours') ? urlHours : prev.hoursWatched,
       }));
       window.history.replaceState({}, document.title, window.location.pathname);
       addToast(`Kick nalog @${kickUser} uspešno povezan! Dobio si ulogu na Discordu.`, 'success');
