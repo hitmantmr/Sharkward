@@ -3130,14 +3130,14 @@ function connectToKickWS() {
         }
       } 
       else if (eventName === 'App\\Events\\SubscriptionEvent') {
-        const kickUsername = eventData.username || eventData.user?.username;
+        const kickUsername = eventData.username || eventData.user?.username || eventData.subscriber?.username;
         if (kickUsername) {
           await handleKickSubscription(kickUsername);
         }
       } 
-      else if (eventName === 'App\\Events\\GiftedSubscriptionsEvent') {
-        const gifterUsername = eventData.gifterUsername;
-        const giftedCount = parseInt(eventData.giftedCount || 0, 10);
+      else if (eventName === 'App\\Events\\GiftedSubscriptionsEvent' || eventName === 'App\\Events\\GiftsLeaderboardUpdated') {
+        const gifterUsername = eventData.gifterUsername || eventData.gifter_username || eventData.gifter?.username || eventData.user?.username;
+        const giftedCount = parseInt(eventData.giftedCount || eventData.gifted_count || eventData.gifts_count || (Array.isArray(eventData.subscriptions) ? eventData.subscriptions.length : 1), 10);
         if (gifterUsername && giftedCount > 0) {
           await handleKickGiftedSubscriptions(gifterUsername, giftedCount);
         }
