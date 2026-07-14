@@ -149,61 +149,7 @@ const initialSkins = [
   }
 ];
 
-const initialGiveaways = [
-  {
-    id: 'g1',
-    prize: '★ Karambit | Doppler',
-    prizeName: '★ Karambit | Doppler',
-    condition: 'Factory New',
-    value: '$850.00',
-    minDeposit: '$5.00',
-    rarity: 'covert',
-    imageUrl: 'https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1Q7uCvZaZkNM-SH1ifyOJztN5lRi67gVNz5DvUmdj4eXuWOFAhAsF4RLFc5BC4xtbuY7yx7wDbgo9CzSj2h3xK8G81tB_XeHWq',
-    image: 'https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1Q7uCvZaZkNM-SH1ifyOJztN5lRi67gVNz5DvUmdj4eXuWOFAhAsF4RLFc5BC4xtbuY7yx7wDbgo9CzSj2h3xK8G81tB_XeHWq',
-    endsIn: '2 days',
-    sponsor: 'CSGO-Skins',
-    endTime: Date.now() + 1000 * 60 * 60 * 48,
-    participantsCount: 1243,
-    requiresDiscord: true,
-    requiresKick: true,
-    status: 'ACTIVE',
-    entered: false,
-  },
-  {
-    id: 'g2',
-    prize: 'AK-47 | Vulcan',
-    prizeName: 'AK-47 | Vulcan',
-    condition: 'Minimal Wear',
-    value: '$250.00',
-    minDeposit: '$5.00',
-    rarity: 'classified',
-    imageUrl: 'https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLwiYbf_jdk7uW-V7JkMPWBMWuZxuZi_rZsS3zgzU8isW3dnIr6eHKfPVAhDpojEe9YsUW4xta1Nuzm5FDci4NbjXKpmWVQppo',
-    image: 'vulcan_ak',
-    sponsor: 'Mozzart',
-    status: 'COMPLETED',
-    winner: 'GigaMega_Kick',
-    winnerName: 'GigaMega_Kick',
-    endedAt: 'Juče',
-    wonAt: 'Juče',
-  },
-  {
-    id: 'g3',
-    prize: 'USP-S | Kill Confirmed',
-    prizeName: 'USP-S | Kill Confirmed',
-    condition: 'Field-Tested',
-    value: '$65.00',
-    minDeposit: '$2.00',
-    rarity: 'classified',
-    imageUrl: 'https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL1m5fn8Sdk6OGRbKFsJ_yWMWqVwuZ3j-1gSCGn20h042vSyY2tdyjCZwIlXJBxQeNe4EWxxoHkMOq0sQGIid5Fnyr42HtXrnE8p4gbgvE',
-    image: 'kill_confirmed_usp',
-    sponsor: 'CSGO-Skins',
-    status: 'COMPLETED',
-    winner: 'Stefan_BG',
-    winnerName: 'Stefan_BG',
-    endedAt: 'Pre 3 dana',
-    wonAt: 'Pre 3 dana',
-  }
-];
+const initialGiveaways = [];
 
 const initialLeaderboard = [
   { rank: 1, username: 'kiza_csgo', hours: 412, points: 247200 },
@@ -489,6 +435,12 @@ export const AppProvider = ({ children }) => {
     const kickUser = params.get('kick_user');
 
     if (discordUser && discordId) {
+      const urlPoints = parseInt(params.get('points')) || 0;
+      const urlHours = parseFloat(params.get('hours')) || 0;
+      const urlKickUser = params.get('kick_user') || null;
+      const urlKickId = params.get('kick_id') || null;
+      const urlKickAvatar = params.get('kick_avatar') || null;
+
       setUser(prev => ({
         ...prev,
         isLoggedIn: true,
@@ -496,6 +448,12 @@ export const AppProvider = ({ children }) => {
         discordUser: discordUser,
         discordId: discordId,
         discordAvatar: discordAvatar || '',
+        points: urlPoints > 0 ? urlPoints : prev.points,
+        hoursWatched: urlHours > 0 ? urlHours : prev.hoursWatched,
+        kickLinked: urlKickUser ? true : prev.kickLinked,
+        kickUser: urlKickUser || prev.kickUser,
+        kickId: urlKickId || prev.kickId,
+        kickAvatar: urlKickAvatar || prev.kickAvatar,
       }));
       window.history.replaceState({}, document.title, window.location.pathname);
       addToast(`Discord nalog @${discordUser} uspešno prijavljen!`, 'success');
@@ -504,6 +462,8 @@ export const AppProvider = ({ children }) => {
     if (success === 'kick_linked' && kickUser) {
       const kickId = params.get('kick_id');
       const kickAvatar = params.get('kick_avatar');
+      const urlPoints = parseInt(params.get('points')) || 0;
+      const urlHours = parseFloat(params.get('hours')) || 0;
       setUser(prev => ({
         ...prev,
         kickLinked: true,
@@ -511,6 +471,8 @@ export const AppProvider = ({ children }) => {
         kickId: kickId || null,
         kickAvatar: kickAvatar || null,
         isLoggedIn: true,
+        points: urlPoints > 0 ? urlPoints : prev.points,
+        hoursWatched: urlHours > 0 ? urlHours : prev.hoursWatched,
       }));
       window.history.replaceState({}, document.title, window.location.pathname);
       addToast(`Kick nalog @${kickUser} uspešno povezan! Dobio si ulogu na Discordu.`, 'success');
