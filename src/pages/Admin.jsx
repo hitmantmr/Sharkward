@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { ShieldCheck, Plus, Trash2, RotateCcw, Award, Coins, Play, Search, Loader, HelpCircle, Users, UserCheck, UserPlus, UserMinus, Gift } from 'lucide-react';
+import { ShieldCheck, Plus, Trash2, RotateCcw, Award, Coins, Play, Search, Loader, HelpCircle, Users, UserCheck, UserPlus, UserMinus, Gift, Crosshair, Sparkles, AlertTriangle } from 'lucide-react';
 import { GiftCardVisual } from './Shop';
 
 // 1. Pomoćna funkcija za čišćenje naziva od wear-a, zvezdica i StatTrak oznaka
@@ -520,7 +520,7 @@ const Admin = () => {
                   }}
                   style={{ accentColor: 'var(--accent-cyan)', cursor: 'pointer', width: '16px', height: '16px' }}
                 />
-                🔫 CS2 Skinovi
+                <Crosshair size={16} color={adminModeType === 'skin' ? 'var(--accent-cyan)' : '#94a3b8'} /> CS2 Skinovi
               </label>
 
               <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', color: adminModeType === 'giftcard' ? 'var(--accent-cyan)' : '#94a3b8', fontWeight: '800', fontSize: '0.9rem' }}>
@@ -535,7 +535,7 @@ const Admin = () => {
                   }}
                   style={{ accentColor: 'var(--accent-cyan)', cursor: 'pointer', width: '16px', height: '16px' }}
                 />
-                🎁 CSGO-Skins Gift Kartice
+                <Gift size={16} color={adminModeType === 'giftcard' ? 'var(--accent-cyan)' : '#94a3b8'} /> CSGO-Skins Gift Kartice
               </label>
             </div>
 
@@ -750,15 +750,15 @@ const Admin = () => {
                     <Loader size={14} className="animate-spin" /> Tražim najnoviju tržišnu cenu...
                   </div>
                 ) : buffPrice ? (
-                  <div style={styles.priceFoundText}>
-                    🎉 Pronađena tržišna cena: <strong>${buffPrice.toFixed(2)}</strong>
+                  <div style={{ ...styles.priceFoundText, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Sparkles size={14} color="var(--accent-cyan)" /> Pronađena tržišna cena: <strong>${buffPrice.toFixed(2)}</strong>
                     <span style={styles.priceSubText}>
                       (Predložena cena u poenima: {formatPoints(Math.round(buffPrice * 130))} pts)
                     </span>
                   </div>
                 ) : (
-                  <div style={styles.priceNotFoundText}>
-                    ⚠️ Nije pronađena tačna tržišna cena za ovaj kvalitet. Upotrebite ručni unos.
+                  <div style={{ ...styles.priceNotFoundText, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <AlertTriangle size={14} color="#eab308" /> Nije pronađena tačna tržišna cena za ovaj kvalitet. Upotrebite ručni unos.
                   </div>
                 )}
               </div>
@@ -959,17 +959,23 @@ const Admin = () => {
                 <tr key={skin.id} style={styles.tr}>
                   <td style={styles.td}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      {skin.image && (
-                        <img 
-                          src={getAdminSkinImage(skin.imageUrl || skin.image)} 
-                          alt={skin.name} 
-                          style={{ width: '40px', height: 'auto', maxHeight: '30px', objectFit: 'contain' }} 
-                        />
+                      {skin.type === 'Gift Card' || (skin.name && skin.name.toLowerCase().includes('gift card')) ? (
+                        <div style={{ transform: 'scale(0.32)', transformOrigin: 'left center', width: '52px', height: '32px', margin: '-10px 0' }}>
+                          <GiftCardVisual name={skin.name} estPrice={skin.estPrice} />
+                        </div>
+                      ) : (
+                        (skin.imageUrl || skin.image) && (
+                          <img 
+                            src={getAdminSkinImage(skin.imageUrl || skin.image)} 
+                            alt={skin.name} 
+                            style={{ width: '40px', height: 'auto', maxHeight: '30px', objectFit: 'contain' }} 
+                          />
+                        )
                       )}
                       <div>
                         <strong>{skin.name}</strong>
                         <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                          {skin.type} | {skin.condition} | {skin.rarity} {skin.estPrice && `| Est: ${skin.estPrice}`}
+                          {skin.type}{skin.condition ? ` | ${skin.condition}` : ''} | {skin.rarity.toUpperCase()} {skin.estPrice && `| Est: ${skin.estPrice}`}
                         </div>
                       </div>
                     </div>

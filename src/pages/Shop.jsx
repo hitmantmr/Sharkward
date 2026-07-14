@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Coins, Filter, Search, ShieldAlert, ArrowRight, Sparkles, Truck, CreditCard, LayoutGrid, Sword, Info } from 'lucide-react';
+import { Coins, Filter, Search, ShieldAlert, ArrowRight, Sparkles, Truck, CreditCard, LayoutGrid, Sword, Info, Lock, AlertTriangle } from 'lucide-react';
 
 // Pomoćna funkcija za dobijanje slike artikla prema specifikaciji
 export function getItemImageUrl(item) {
@@ -298,8 +298,8 @@ const Shop = ({ setActiveTab }) => {
         <div className="discord-lock-banner">
           <ShieldAlert size={22} color="#00f0ff" style={{ flexShrink: 0 }} />
           <div>
-            <div style={{ fontWeight: '800', color: '#00f0ff', marginBottom: '2px', fontSize: '0.95rem' }}>
-              🔒 PRODAVNICA SKINOVA JE ZAKLJUČANA
+            <div style={{ fontWeight: '800', color: '#00f0ff', marginBottom: '2px', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Lock size={16} /> PRODAVNICA SKINOVA JE ZAKLJUČANA
             </div>
             <span>
               {!user.discordLinked ? (
@@ -546,8 +546,8 @@ const Shop = ({ setActiveTab }) => {
 
               {/* Provera Steam Trade URL-a */}
               {!selectedSkin.name.includes('Gift Card') && !user.tradeUrl && (
-                <div style={styles.modalUrlWarning}>
-                  ⚠️ Moraš uneti Steam Trade URL na vrhu stranice pre nego što kupiš ovaj skin kako bismo ti ga poslali!
+                <div style={{ ...styles.modalUrlWarning, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <AlertTriangle size={14} color="#eab308" /> Moraš uneti Steam Trade URL na vrhu stranice pre nego što kupiš ovaj skin kako bismo ti ga poslali!
                 </div>
               )}
 
@@ -560,8 +560,8 @@ const Shop = ({ setActiveTab }) => {
               </div>
 
               {(!user.kickLinked || !user.discordLinked) && (
-                <div style={styles.modalWarning}>
-                  ⚠️ Moraš povezati i Kick i Discord nalog pre kupovine!
+                <div style={{ ...styles.modalWarning, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <AlertTriangle size={14} color="#eab308" /> Moraš povezati i Kick i Discord nalog pre kupovine!
                 </div>
               )}
             </div>
