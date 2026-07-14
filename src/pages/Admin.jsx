@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { ShieldCheck, Plus, Trash2, RotateCcw, Award, Coins, Play, Search, Loader, HelpCircle, Users, UserCheck, UserPlus, UserMinus, Gift } from 'lucide-react';
+import { GiftCardVisual } from './Shop';
 
 // 1. Pomoćna funkcija za čišćenje naziva od wear-a, zvezdica i StatTrak oznaka
 function getCleanSkinName(fullName) {
@@ -570,11 +571,17 @@ const Admin = () => {
             {/* Vizuelni prikaz selektovanog skina ili gift kartice */}
             {selectedCatalogSkin && (
               <div style={styles.selectedSkinPreview}>
-                <img 
-                  src={selectedCatalogSkin.image ? selectedCatalogSkin.image.replace('community.akamai.steamstatic.com', 'community.steamstatic.com') : ''} 
-                  alt={selectedCatalogSkin.name} 
-                  style={styles.previewImg} 
-                />
+                {skinType === 'Gift Card' || (selectedCatalogSkin.name && selectedCatalogSkin.name.toLowerCase().includes('gift card')) ? (
+                  <div style={{ transform: 'scale(0.85)', transformOrigin: 'left center', marginRight: '-15px' }}>
+                    <GiftCardVisual name={selectedCatalogSkin.name} estPrice={skinEstPrice} />
+                  </div>
+                ) : (
+                  <img 
+                    src={selectedCatalogSkin.image ? selectedCatalogSkin.image.replace('community.akamai.steamstatic.com', 'community.steamstatic.com') : ''} 
+                    alt={selectedCatalogSkin.name} 
+                    style={styles.previewImg} 
+                  />
+                )}
                 <div style={styles.previewInfo}>
                   <span style={styles.previewName}>{selectedCatalogSkin.name}</span>
                   <span style={styles.previewType}>
