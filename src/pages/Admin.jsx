@@ -370,8 +370,8 @@ const Admin = () => {
   };
 
   const handleSelectGiftCardPreset = (amount) => {
-    const cardName = `CSGO-Skins $${amount} Gift Card`;
-    const cardImage = 'https://community.steamstatic.com/economy/image/fWFc82js0fmoRAP-qOIPu5nNDJGjg8qkNuhikAqClcWJV0WRBwU2yW4-UiWeVAR80RzSrhFf1uT1ufh_C-c_gN0-690-3mFsxwF4aOHmZmU2c13PBeJdV6Fvp168XnFn65RjAdSj9usDK1_mt4XDYbh0NoxOSZTWXfCGbgio7084g_cLfpyP8iq72Svu3G19bA';
+    const cardName = `CSGO SKINS - Gift Card $${amount}`;
+    const cardImage = `/img/giftcards/${amount}usd.svg`;
     setSkinName(cardName);
     setSkinType('Gift Card');
     setSkinCondition('FN');
@@ -517,52 +517,74 @@ const Admin = () => {
               </div>
             </div>
 
-            <div style={{ ...styles.formGroup, position: 'relative' }}>
-              <label style={styles.label}>Pretraži i Izaberi Skin ili Unesi Proizvoljan Skin</label>
-              <div style={styles.inputSearchWrapper}>
-                <input
-                  type="text"
-                  placeholder="Počni da kucaš naziv skina (npr. Asiimov, Redline)..."
-                  value={skinName}
-                  onChange={(e) => handleSkinNameInputChange(e.target.value)}
-                  style={styles.input}
-                  required
-                />
-                {loadingCatalog && <Loader size={16} className="animate-spin" style={styles.searchLoader} />}
+            {/* Kontrola za Gift Kartice vs CS2 Skinovi */}
+            {skinType === 'Gift Card' ? (
+              <div style={{ ...styles.formGroup, marginBottom: '1.25rem' }}>
+                <label style={styles.label}>Izaberi Vrednost Gift Kartice (USD)</label>
+                <select
+                  value={skinEstPrice.replace('$', '') || '10'}
+                  onChange={(e) => handleSelectGiftCardPreset(parseInt(e.target.value, 10))}
+                  style={{ ...styles.select, borderColor: 'var(--accent-cyan)', backgroundColor: 'rgba(0, 240, 255, 0.05)' }}
+                >
+                  <option value="5">$5 Gift Kartica (650 PTS)</option>
+                  <option value="10">$10 Gift Kartica (1,300 PTS)</option>
+                  <option value="15">$15 Gift Kartica (1,950 PTS)</option>
+                  <option value="20">$20 Gift Kartica (2,600 PTS)</option>
+                  <option value="25">$25 Gift Kartica (3,250 PTS)</option>
+                  <option value="50">$50 Gift Kartica (6,500 PTS)</option>
+                </select>
+                <div style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', marginTop: '6px' }}>
+                  ℹ️ Za Gift kartice se slika povlači iz lokalnog `/img/giftcards/` skladišta i onemogućena je pretraga po Steam CS2 bazi.
+                </div>
               </div>
-
-              {/* Autocomplete predlozi */}
-              {suggestions.length > 0 && (
-                <div style={styles.suggestionsDropdown} className="glass">
-                  {suggestions.map(s => (
-                    <div 
-                      key={s.id} 
-                      style={styles.suggestionItem}
-                      onClick={() => handleSelectSuggestion(s)}
-                    >
-                      <img src={s.image ? s.image.replace('community.akamai.steamstatic.com', 'community.steamstatic.com') : ''} alt={s.name} style={styles.suggestionImg} />
-                      <span>{s.name}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {/* Vizuelni prikaz selektovanog skina ili gift kartice */}
-              {selectedCatalogSkin && (
-                <div style={styles.selectedSkinPreview}>
-                  <img 
-                    src={selectedCatalogSkin.image ? selectedCatalogSkin.image.replace('community.akamai.steamstatic.com', 'community.steamstatic.com') : ''} 
-                    alt={selectedCatalogSkin.name} 
-                    style={styles.previewImg} 
+            ) : (
+              <div style={{ ...styles.formGroup, position: 'relative' }}>
+                <label style={styles.label}>Pretraži i Izaberi CS2 Skin (CS2 API Autocomplete)</label>
+                <div style={styles.inputSearchWrapper}>
+                  <input
+                    type="text"
+                    placeholder="Počni da kucaš naziv skina (npr. Asiimov, Redline)..."
+                    value={skinName}
+                    onChange={(e) => handleSkinNameInputChange(e.target.value)}
+                    style={styles.input}
+                    required
                   />
-                  <div style={styles.previewInfo}>
-                    <span style={styles.previewName}>{selectedCatalogSkin.name}</span>
-                    <span style={styles.previewType}>
-                      {skinType} • {skinRarity.toUpperCase()}
-                    </span>
-                  </div>
+                  {loadingCatalog && <Loader size={16} className="animate-spin" style={styles.searchLoader} />}
                 </div>
-              )}
-            </div>
+
+                {/* Autocomplete predlozi */}
+                {suggestions.length > 0 && (
+                  <div style={styles.suggestionsDropdown} className="glass">
+                    {suggestions.map(s => (
+                      <div 
+                        key={s.id} 
+                        style={styles.suggestionItem}
+                        onClick={() => handleSelectSuggestion(s)}
+                      >
+                        <img src={s.image ? s.image.replace('community.akamai.steamstatic.com', 'community.steamstatic.com') : ''} alt={s.name} style={styles.suggestionImg} />
+                        <span>{s.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {/* Vizuelni prikaz selektovanog skina */}
+                {selectedCatalogSkin && (
+                  <div style={styles.selectedSkinPreview}>
+                    <img 
+                      src={selectedCatalogSkin.image ? selectedCatalogSkin.image.replace('community.akamai.steamstatic.com', 'community.steamstatic.com') : ''} 
+                      alt={selectedCatalogSkin.name} 
+                      style={styles.previewImg} 
+                    />
+                    <div style={styles.previewInfo}>
+                      <span style={styles.previewName}>{selectedCatalogSkin.name}</span>
+                      <span style={styles.previewType}>
+                        {skinType} • {skinRarity.toUpperCase()}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             <div style={styles.formRow}>
               <div style={styles.formGroup}>

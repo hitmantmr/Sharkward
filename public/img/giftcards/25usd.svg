@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="cyanGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00f0ff"/>
+      <stop offset="100%" stop-color="#53fc18"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <rect x="5" y="5" width="390" height="240" rx="16" fill="url(#bg)" stroke="rgba(0, 240, 255, 0.4)" stroke-width="2"/>
+  <path d="M 0 50 Q 200 20 400 70 L 400 250 L 0 250 Z" fill="rgba(0, 240, 255, 0.03)"/>
+  <circle cx="350" cy="50" r="100" fill="rgba(83, 252, 24, 0.04)"/>
+  
+  <text x="30" y="50" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="20" fill="#00f0ff" letter-spacing="2" filter="url(#glow)">CSGO-SKINS</text>
+  <text x="30" y="72" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="11" fill="#94a3b8" letter-spacing="3">DIGITAL GIFT CARD</text>
+  
+  <rect x="30" y="95" width="45" height="35" rx="6" fill="#1e293b" stroke="#00f0ff" stroke-width="1.5"/>
+  <line x1="30" y1="112" x2="75" y2="112" stroke="#00f0ff" stroke-width="1"/>
+  <line x1="52.5" y1="95" x2="52.5" y2="130" stroke="#00f0ff" stroke-width="1"/>
+  
+  <text x="370" y="165" text-anchor="end" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="68" fill="url(#cyanGlow)" filter="url(#glow)">$25</text>
+  
+  <line x1="30" y1="190" x2="370" y2="190" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1"/>
+  <text x="30" y="218" font-family="monospace" font-size="12" fill="#64748b" letter-spacing="2">CSGO-SKINS-25USD-GIFT</text>
+  <rect x="290" y="200" width="80" height="24" rx="12" fill="rgba(0, 240, 255, 0.15)" stroke="#00f0ff" stroke-width="1"/>
+  <text x="330" y="216" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="11" fill="#00f0ff">ACTIVE</text>
+</svg>

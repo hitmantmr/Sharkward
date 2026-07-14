@@ -2,6 +2,28 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Coins, Filter, Search, ShieldAlert, ArrowRight, Sparkles, Truck, CreditCard, LayoutGrid, Sword, Info } from 'lucide-react';
 
+// Pomoćna funkcija za dobijanje slike artikla prema specifikaciji
+export function getItemImageUrl(item) {
+  if (!item) return '';
+  const isGiftCard = item.isGiftCard || item.category === 'giftcard' || item.type === 'Gift Card' || (item.name && item.name.toLowerCase().includes('gift card'));
+
+  if (isGiftCard) {
+    // Izvlačimo iznos iz imena (npr. iz "$10" izvlačimo broj 10)
+    const match = item.name ? item.name.match(/\$(\d+)/) : null;
+    const amount = match ? match[1] : '5'; // Podrazumevano 5 ako ne nađe broj
+    
+    // Vraćamo lokalnu sliku ili CSGO-Skins CDN link
+    return `/img/giftcards/${amount}usd.svg`;
+  }
+
+  // Ako je običan CS2 skin, vraćamo sačuvani Steam CDN URL iz baze
+  const imgUrl = item.imageUrl || item.image || '';
+  if (imgUrl.startsWith('http://') || imgUrl.startsWith('https://')) {
+    return imgUrl.replace('community.akamai.steamstatic.com', 'community.steamstatic.com');
+  }
+  return imgUrl;
+}
+
 const Shop = ({ setActiveTab }) => {
   const { user, skins, buySkin, saveTradeUrl } = useApp();
   const [searchTerm, setSearchTerm] = useState('');
@@ -139,71 +161,11 @@ const Shop = ({ setActiveTab }) => {
     return new Intl.NumberFormat().format(pts);
   };
 
-  // Pomoćna komponenta za prikaz slike/vizuelnog dela skina
-  const RenderSkinImage = ({ skin }) => {
-    const isGiftCard = skin.type === 'GiftCard';
-    
-    if (isGiftCard) {
-      const valueText = skin.estPrice || '$10';
-      return (
-        <div style={styles.giftCardVisual}>
-          <div style={styles.giftCardLineHorizontal} />
-          <div style={styles.giftCardLineVertical} />
-          <div style={styles.giftCardTextWrapper}>
-            <span style={styles.giftCardBrand}>CSGO SKINS</span>
-            <span style={styles.giftCardValue}>{valueText}</span>
-            <span style={styles.giftCardTypeTag}>GIFT CARD</span>
-          </div>
-        </div>
-      );
-    }
-
-    const imgUrl = skin.imageUrl || skin.image;
-    // Ako slika počinje sa http/https, renderujemo je direktno sa CDN-a (ByMykel API)
-    if (imgUrl && (imgUrl.startsWith('http://') || imgUrl.startsWith('https://'))) {
-      const fixedUrl = imgUrl.replace('community.akamai.steamstatic.com', 'community.steamstatic.com');
-      return (
-        <div style={styles.imgWrapper}>
-          <img src={fixedUrl} alt={skin.name} style={styles.skinImg} />
-        </div>
-      );
-    }
-
-    const localImages = {
-      'fade_butterfly': './img/butterfly_fade.png',
-      'butterfly_fade': './img/butterfly_fade.png',
-      'doppler_karambit': './img/karambit_doppler.png',
-      'karambit_doppler': './img/karambit_doppler.png',
-      'flip_doppler': './img/karambit_doppler.png',
-      'gut_marble': './img/butterfly_fade.png',
-      'shadow_ultraviolet': './img/karambit_doppler.png',
-      'awp_asiimov': './img/karambit_doppler.png',
-      'ak_redline': './img/butterfly_fade.png',
-      'pandora_gloves': './img/butterfly_fade.png',
-      'dragon_lore': './img/karambit_doppler.png',
-      'printstream_m4': './img/karambit_doppler.png',
-      'neon_rider': './img/butterfly_fade.png',
-      'neo_noir_usp': './img/karambit_doppler.png',
-      'water_glock': './img/butterfly_fade.png',
-      'mecha_deagle': './img/karambit_doppler.png'
-    };
-
-    const imageUrl = localImages[skin.image];
-
-    if (imageUrl) {
-      return (
-        <div style={styles.imgWrapper}>
-          <img src={imageUrl} alt={skin.name} style={styles.skinImg} />
-        </div>
-      );
-    }
-
-    // Default CSS fallback
+  const renderSkinImage = (skin) => {
+    const cardImgUrl = getItemImageUrl(skin);
     return (
-      <div style={styles.fallbackVisual}>
-        <span style={styles.fallbackEmoji}>
-          {skin.type === 'Knife' ? '🔪' : skin.type === 'Gloves' ? '🧤' : '🔫'}
-        </span>
+      <div style={styles.imgWrapper}>
+        <img src={cardImgUrl} alt={skin.name} style={styles.skinImg} />
       </div>
     );
   };
@@ -450,7 +412,7 @@ const Shop = ({ setActiveTab }) => {
               {/* Prikaz skina u modalu */}
               <div style={styles.modalSkinPreview}>
                 <div style={{ ...styles.modalSkinVisual, background: 'radial-gradient(circle, rgba(0, 240, 255, 0.04) 0%, rgba(0, 0, 0, 0) 70%)' }}>
-                  <RenderSkinImage skin={selectedSkin} />
+                  {renderSkinImage(selectedSkin)}
                 </div>
                 <div style={{ textAlign: 'left' }}>
                   <h4 style={{ color: '#fff', fontSize: '1rem', fontWeight: 700 }}>{selectedSkin.name}</h4>
