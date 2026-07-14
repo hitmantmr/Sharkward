@@ -2963,11 +2963,41 @@ app.post('/api/admin/giveaways/end', (req, res) => {
   res.json({ success: true, giveaways: data.giveaways });
 });
 
+// GET /api/admin/users -> Lista svih korisnika i permisija
+app.get('/api/admin/users', (req, res) => {
+  const data = readDb();
+  const list = Object.entries(data.users || {}).map(([id, u]) => ({
+    discordId: id,
+    username: u.username || 'Neko',
+    kickUsername: u.kickUsername || null,
+    kickAvatar: u.kickAvatar || '',
+    points: u.points || 0,
+    hoursWatched: Math.round((u.hoursWatched || 0) * 10) / 10,
+    role: u.role || (id === '436295751543554050' ? 'Admin' : 'Korisnik'),
+    linkedAt: u.linkedAt || null
+  }));
+  res.json(list);
+});
+
+// POST /api/admin/points/modify -> Dodavanje ili oduzimanje poena
 app.post('/api/admin/points/modify', (req, res) => {
   const { discordId, amount } = req.body;
   const data = readDb();
   if (data.users?.[discordId]) {
-    data.users[discordId].points = Math.max(0, (data.users[discordId].points || 0) + amount);
+    data.users[discordId].points = Math.max(0, (data.users[discordId].points || 0) + parseInt(amount || 0, 10));
+    writeDb(data);
+    res.json({ success: true, user: data.users[discordId] });
+  } else {
+    res.status(404).json({ error: 'Korisnik nije pronađen.' });
+  }
+});
+
+// POST /api/admin/users/role -> Izmena permisije korisnika (Admin / Moderator / Korisnik)
+app.post('/api/admin/users/role', (req, res) => {
+  const { discordId, role } = req.body;
+  const data = readDb();
+  if (data.users?.[discordId]) {
+    data.users[discordId].role = role || 'Korisnik';
     writeDb(data);
     res.json({ success: true, user: data.users[discordId] });
   } else {

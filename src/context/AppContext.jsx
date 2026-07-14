@@ -662,6 +662,53 @@ export const AppProvider = ({ children }) => {
     addToast(`Poeni izmenjeni za ${amount > 0 ? '+' : ''}${amount}.`, 'info');
   };
 
+  const fetchAdminUsers = async () => {
+    try {
+      const res = await fetch(`${API_URL}/admin/users`);
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (err) {
+      console.warn('Greška pri učitavanju liste članova:', err);
+    }
+    return [];
+  };
+
+  const modifyAdminUserPoints = async (discordId, amount) => {
+    try {
+      const res = await fetch(`${API_URL}/admin/points/modify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ discordId, amount: parseInt(amount, 10) })
+      });
+      if (res.ok) {
+        addToast(`Uspešno promenjeni poeni članu (${amount > 0 ? '+' : ''}${amount} pts)!`, 'success');
+        fetchLeaderboardFromApi();
+        return true;
+      }
+    } catch (err) {
+      addToast('Greška pri izmeni poena člana.', 'error');
+    }
+    return false;
+  };
+
+  const updateAdminUserRole = async (discordId, role) => {
+    try {
+      const res = await fetch(`${API_URL}/admin/users/role`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ discordId, role })
+      });
+      if (res.ok) {
+        addToast(`Permisija člana uspešno azurirana na: ${role}!`, 'success');
+        return true;
+      }
+    } catch (err) {
+      addToast('Greška pri izmeni permisije člana.', 'error');
+    }
+    return false;
+  };
+
   const addGiveaway = (giveaway) => {
     const newGw = {
       ...giveaway,
@@ -803,6 +850,9 @@ export const AppProvider = ({ children }) => {
       deleteSkin,
       restockSkin,
       updateUserPoints,
+      fetchAdminUsers,
+      modifyAdminUserPoints,
+      updateAdminUserRole,
       addGiveaway,
       endGiveawayMock,
       syncGiveaways,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { ShieldCheck, Plus, Trash2, RotateCcw, Award, Coins, Play, Search, Loader, HelpCircle } from 'lucide-react';
+import { ShieldCheck, Plus, Trash2, RotateCcw, Award, Coins, Play, Search, Loader, HelpCircle, Users, UserCheck, UserPlus, UserMinus } from 'lucide-react';
 
 // 1. Pomoćna funkcija za čišćenje naziva od wear-a, zvezdica i StatTrak oznaka
 function getCleanSkinName(fullName) {
@@ -45,7 +45,9 @@ const Admin = () => {
     deleteSkin, 
     restockSkin, 
     updateUserPoints, 
-    endGiveawayMock,
+    fetchAdminUsers,
+    modifyAdminUserPoints,
+    updateAdminUserRole,
     syncGiveaways,
     clearAllGiveaways,
     resetAllData,
@@ -66,6 +68,47 @@ const Admin = () => {
   // Države za uvoz partnerskih giveaway-a
   const [giveawaysJsonInput, setGiveawaysJsonInput] = useState('');
   const [isSyncing, setIsSyncing] = useState(false);
+
+  // Države za upravljanje članovima i permisijama
+  const [adminUsersList, setAdminUsersList] = useState([]);
+  const [adminPointsDelta, setAdminPointsDelta] = useState('500');
+  const [userSearchQuery, setUserSearchQuery] = useState('');
+  const [loadingAdminUsers, setLoadingAdminUsers] = useState(false);
+
+  const loadAdminUsers = async () => {
+    setLoadingAdminUsers(true);
+    const users = await fetchAdminUsers();
+    setAdminUsersList(users);
+    setLoadingAdminUsers(false);
+  };
+
+  useEffect(() => {
+    loadAdminUsers();
+  }, []);
+
+  const handleModifyPointsAction = async (discordId, amount) => {
+    const ok = await modifyAdminUserPoints(discordId, amount);
+    if (ok) {
+      loadAdminUsers();
+    }
+  };
+
+  const handleUpdateRoleAction = async (discordId, role) => {
+    const ok = await updateAdminUserRole(discordId, role);
+    if (ok) {
+      loadAdminUsers();
+    }
+  };
+
+  const filteredAdminUsers = adminUsersList.filter(u => {
+    if (!userSearchQuery.trim()) return true;
+    const q = userSearchQuery.toLowerCase();
+    return (
+      (u.username && u.username.toLowerCase().includes(q)) ||
+      (u.kickUsername && u.kickUsername.toLowerCase().includes(q)) ||
+      (u.discordId && u.discordId.includes(q))
+    );
+  });
 
   const handleImportGiveaways = async (e) => {
     e.preventDefault();
@@ -397,143 +440,313 @@ const Admin = () => {
           <ShieldCheck size={32} color="#53fc18" />
           <div>
             <h2 style={styles.title}>Sharke Admin Dashboard</h2>
-            <p style={styles.subtitle}>Upravljaj skinovima sa tržišnim cenama, giveaway-ima i profilom</p>
+            <p style={styles.subtitle}>Upravljaj skinovima sa tržišnim cenama, permisijama i profilima članova</p>
           </div>
         </div>
       </div>
 
-
-
-      {/* Dodaj Skin Formu sa autocomplete pretragom i tržišnim cenama */}
-      <div style={{ ...styles.card, width: '100%', marginTop: '1.5rem' }} className="glass">
-        <h3 style={styles.cardTitle}>
-          <Plus size={18} color="var(--accent-cyan)" /> Dodaj Novi Skin (Automatske Cene)
-        </h3>
+      {/* 2-Kolonski Raspored: Dodaj Skin (Levo) & Upravljanje Članovima (Desno) */}
+      <div style={styles.gridTwoCols}>
         
-        <form onSubmit={handleAddSkinSubmit} style={styles.form}>
-          <div style={{ ...styles.formGroup, position: 'relative' }}>
-            <label style={styles.label}>Pretraži i Izaberi Skin (CS2 API Autocomplete)</label>
-            <div style={styles.inputSearchWrapper}>
-              <input
-                type="text"
-                placeholder="Počni da kucaš naziv skina (npr. Asiimov, Redline)..."
-                value={skinName}
-                onChange={(e) => handleSkinNameInputChange(e.target.value)}
-                style={styles.input}
-                required
-              />
-              {loadingCatalog && <Loader size={16} className="animate-spin" style={styles.searchLoader} />}
-            </div>
-
-            {/* Autocomplete predlozi */}
-            {suggestions.length > 0 && (
-              <div style={styles.suggestionsDropdown} className="glass">
-                {suggestions.map(s => (
-                  <div 
-                    key={s.id} 
-                    style={styles.suggestionItem}
-                    onClick={() => handleSelectSuggestion(s)}
-                  >
-                    <img src={s.image ? s.image.replace('community.akamai.steamstatic.com', 'community.steamstatic.com') : ''} alt={s.name} style={styles.suggestionImg} />
-                    <span>{s.name}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-            {/* Vizuelni prikaz selektovanog skina sa CS2 API-ja */}
-            {selectedCatalogSkin && (
-              <div style={styles.selectedSkinPreview}>
-                <img 
-                  src={selectedCatalogSkin.image ? selectedCatalogSkin.image.replace('community.akamai.steamstatic.com', 'community.steamstatic.com') : ''} 
-                  alt={selectedCatalogSkin.name} 
-                  style={styles.previewImg} 
+        {/* LEVA KOLONA: Dodaj Skin Formu */}
+        <div style={{ ...styles.card, width: '100%', margin: 0 }} className="glass">
+          <h3 style={styles.cardTitle}>
+            <Plus size={18} color="var(--accent-cyan)" /> Dodaj Novi Skin (Automatske Cene)
+          </h3>
+          
+          <form onSubmit={handleAddSkinSubmit} style={styles.form}>
+            <div style={{ ...styles.formGroup, position: 'relative' }}>
+              <label style={styles.label}>Pretraži i Izaberi Skin (CS2 API Autocomplete)</label>
+              <div style={styles.inputSearchWrapper}>
+                <input
+                  type="text"
+                  placeholder="Počni da kucaš naziv skina (npr. Asiimov, Redline)..."
+                  value={skinName}
+                  onChange={(e) => handleSkinNameInputChange(e.target.value)}
+                  style={styles.input}
+                  required
                 />
-                <div style={styles.previewInfo}>
-                  <span style={styles.previewName}>{selectedCatalogSkin.name}</span>
-                  <span style={styles.previewType}>
-                    {skinType} • {skinRarity.toUpperCase()}
-                  </span>
-                </div>
+                {loadingCatalog && <Loader size={16} className="animate-spin" style={styles.searchLoader} />}
               </div>
-            )}
-          </div>
 
-          <div style={styles.formRow}>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Kvalitet (Condition)</label>
-              <select value={skinCondition} onChange={handleConditionChange} style={styles.select}>
-                <option value="FN">Factory New (FN)</option>
-                <option value="MW">Minimal Wear (MW)</option>
-                <option value="FT">Field-Tested (FT)</option>
-                <option value="WW">Well-Worn (WW)</option>
-                <option value="BS">Battle-Scarred (BS)</option>
-              </select>
-            </div>
-
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Tip oružja</label>
-              <select value={skinType} onChange={(e) => setSkinType(e.target.value)} style={styles.select}>
-                <option value="Knife">Nož (Knife)</option>
-                <option value="Gloves">Rukavice (Gloves)</option>
-                <option value="Rifle">Puška (Rifle)</option>
-                <option value="Sniper Rifle">Snajper (Sniper Rifle)</option>
-                <option value="Pistol">Pištolj (Pistol)</option>
-              </select>
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: '4px 0' }}>
-            <input
-              type="checkbox"
-              id="isStatTrak"
-              checked={isStatTrak}
-              onChange={handleStatTrakToggle}
-              style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: 'var(--accent-cyan)' }}
-            />
-            <label htmlFor="isStatTrak" style={{ ...styles.label, cursor: 'pointer', marginBottom: 0, fontSize: '0.85rem', color: '#fff' }}>
-              StatTrak™ Verzija Skina
-            </label>
-          </div>
-
-          <div style={styles.formRow}>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Cena u poenima (Automatski se preračunava)</label>
-              <input
-                type="number"
-                value={skinPrice}
-                onChange={(e) => setSkinPrice(e.target.value)}
-                style={styles.input}
-                required
-              />
-            </div>
-          </div>
-
-          {/* Informacije o ceni */}
-          {selectedCatalogSkin && (
-            <div style={styles.priceInfoPanel}>
-              {fetchingPrice ? (
-                <div style={styles.fetchingPriceText}>
-                  <Loader size={14} className="animate-spin" /> Tražim najnoviju tržišnu cenu...
+              {/* Autocomplete predlozi */}
+              {suggestions.length > 0 && (
+                <div style={styles.suggestionsDropdown} className="glass">
+                  {suggestions.map(s => (
+                    <div 
+                      key={s.id} 
+                      style={styles.suggestionItem}
+                      onClick={() => handleSelectSuggestion(s)}
+                    >
+                      <img src={s.image ? s.image.replace('community.akamai.steamstatic.com', 'community.steamstatic.com') : ''} alt={s.name} style={styles.suggestionImg} />
+                      <span>{s.name}</span>
+                    </div>
+                  ))}
                 </div>
-              ) : buffPrice ? (
-                <div style={styles.priceFoundText}>
-                  🎉 Pronađena tržišna cena: <strong>${buffPrice.toFixed(2)}</strong>
-                  <span style={styles.priceSubText}>
-                    (Predložena cena u poenima: {formatPoints(Math.round(buffPrice * 130))} pts)
-                  </span>
-                </div>
-              ) : (
-                <div style={styles.priceNotFoundText}>
-                  ⚠️ Nije pronađena tačna tržišna cena za ovaj kvalitet. Upotrebite ručni unos.
+              )}
+              {/* Vizuelni prikaz selektovanog skina sa CS2 API-ja */}
+              {selectedCatalogSkin && (
+                <div style={styles.selectedSkinPreview}>
+                  <img 
+                    src={selectedCatalogSkin.image ? selectedCatalogSkin.image.replace('community.akamai.steamstatic.com', 'community.steamstatic.com') : ''} 
+                    alt={selectedCatalogSkin.name} 
+                    style={styles.previewImg} 
+                  />
+                  <div style={styles.previewInfo}>
+                    <span style={styles.previewName}>{selectedCatalogSkin.name}</span>
+                    <span style={styles.previewType}>
+                      {skinType} • {skinRarity.toUpperCase()}
+                    </span>
+                  </div>
                 </div>
               )}
             </div>
-          )}
 
-          <button type="submit" className="glow-btn-cyan" style={{ backgroundColor: 'var(--accent-cyan)', color: '#000', width: '100%', fontWeight: '800' }}>
-            DODAJ U PRODAVNICU
-          </button>
-        </form>
+            <div style={styles.formRow}>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Kvalitet (Condition)</label>
+                <select value={skinCondition} onChange={handleConditionChange} style={styles.select}>
+                  <option value="FN">Factory New (FN)</option>
+                  <option value="MW">Minimal Wear (MW)</option>
+                  <option value="FT">Field-Tested (FT)</option>
+                  <option value="WW">Well-Worn (WW)</option>
+                  <option value="BS">Battle-Scarred (BS)</option>
+                </select>
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Tip oružja</label>
+                <select value={skinType} onChange={(e) => setSkinType(e.target.value)} style={styles.select}>
+                  <option value="Knife">Nož (Knife)</option>
+                  <option value="Gloves">Rukavice (Gloves)</option>
+                  <option value="Rifle">Puška (Rifle)</option>
+                  <option value="Sniper Rifle">Snajper (Sniper Rifle)</option>
+                  <option value="Pistol">Pištolj (Pistol)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: '4px 0' }}>
+              <input
+                type="checkbox"
+                id="isStatTrak"
+                checked={isStatTrak}
+                onChange={handleStatTrakToggle}
+                style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: 'var(--accent-cyan)' }}
+              />
+              <label htmlFor="isStatTrak" style={{ ...styles.label, cursor: 'pointer', marginBottom: 0, fontSize: '0.85rem', color: '#fff' }}>
+                StatTrak™ Verzija Skina
+              </label>
+            </div>
+
+            <div style={styles.formRow}>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Cena u poenima (Automatski se preračunava)</label>
+                <input
+                  type="number"
+                  value={skinPrice}
+                  onChange={(e) => setSkinPrice(e.target.value)}
+                  style={styles.input}
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Informacije o ceni */}
+            {selectedCatalogSkin && (
+              <div style={styles.priceInfoPanel}>
+                {fetchingPrice ? (
+                  <div style={styles.fetchingPriceText}>
+                    <Loader size={14} className="animate-spin" /> Tražim najnoviju tržišnu cenu...
+                  </div>
+                ) : buffPrice ? (
+                  <div style={styles.priceFoundText}>
+                    🎉 Pronađena tržišna cena: <strong>${buffPrice.toFixed(2)}</strong>
+                    <span style={styles.priceSubText}>
+                      (Predložena cena u poenima: {formatPoints(Math.round(buffPrice * 130))} pts)
+                    </span>
+                  </div>
+                ) : (
+                  <div style={styles.priceNotFoundText}>
+                    ⚠️ Nije pronađena tačna tržišna cena za ovaj kvalitet. Upotrebite ručni unos.
+                  </div>
+                )}
+              </div>
+            )}
+
+            <button type="submit" className="glow-btn-cyan" style={{ backgroundColor: 'var(--accent-cyan)', color: '#000', width: '100%', fontWeight: '800' }}>
+              DODAJ U PRODAVNICU
+            </button>
+          </form>
+        </div>
+
+        {/* DESNA KOLONA: Upravljanje Članovima & Permisijama */}
+        <div style={{ ...styles.card, width: '100%', margin: 0 }} className="glass">
+          <h3 style={styles.cardTitle}>
+            <Users size={18} color="var(--accent-cyan)" /> Upravljanje Članovima & Permisijama
+          </h3>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%' }}>
+            {/* Pretraga Članova */}
+            <div style={{ ...styles.inputSearchWrapper, width: '100%' }}>
+              <Search size={16} color="var(--text-muted)" style={{ position: 'absolute', left: '12px' }} />
+              <input
+                type="text"
+                placeholder="Pretraži člana po Discord ili Kick imenu..."
+                value={userSearchQuery}
+                onChange={(e) => setUserSearchQuery(e.target.value)}
+                style={{ ...styles.input, paddingLeft: '38px', width: '100%' }}
+              />
+            </div>
+
+            {/* Unos iznosa poena za brzu promenu */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>Iznos poena:</span>
+              <input
+                type="number"
+                value={adminPointsDelta}
+                onChange={(e) => setAdminPointsDelta(e.target.value)}
+                style={{ ...styles.input, width: '110px', textAlign: 'center', padding: '0.4rem' }}
+                placeholder="Npr. 500"
+              />
+              <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                {[100, 500, 1000, 5000].map(val => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => setAdminPointsDelta(val.toString())}
+                    style={{
+                      padding: '4px 8px',
+                      fontSize: '0.75rem',
+                      borderRadius: '6px',
+                      backgroundColor: adminPointsDelta === val.toString() ? 'rgba(0, 240, 255, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                      border: adminPointsDelta === val.toString() ? '1px solid var(--accent-cyan)' : '1px solid rgba(255, 255, 255, 0.1)',
+                      color: adminPointsDelta === val.toString() ? 'var(--accent-cyan)' : '#ccc',
+                      cursor: 'pointer',
+                      fontWeight: '700'
+                    }}
+                  >
+                    +{val}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Lista Članova sa upravljanjem */}
+            <div style={{ maxHeight: '420px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', paddingRight: '4px' }}>
+              {loadingAdminUsers ? (
+                <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>
+                  <Loader size={20} className="animate-spin" /> Učitavam članove...
+                </div>
+              ) : filteredAdminUsers.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+                  Nema pronađenih članova.
+                </div>
+              ) : (
+                filteredAdminUsers.map(u => (
+                  <div key={u.discordId} style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '0.85rem 1rem', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)', backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+                    {/* User Info Row */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        {u.kickAvatar ? (
+                          <img src={u.kickAvatar} alt={u.username} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(0, 240, 255, 0.3)' }} />
+                        ) : (
+                          <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255, 255, 255, 0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888' }}>
+                            <UserCheck size={16} />
+                          </div>
+                        )}
+                        <div>
+                          <div style={{ fontWeight: '700', fontSize: '0.9rem', color: '#fff' }}>
+                            @{u.username} {u.kickUsername && <span style={{ color: 'var(--accent-cyan)', fontSize: '0.8rem' }}>(Kick: @{u.kickUsername})</span>}
+                          </div>
+                          <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)' }}>
+                            ID: {u.discordId} • {u.hoursWatched}h gledanja
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Points badge */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: 'rgba(0, 240, 255, 0.1)', padding: '3px 8px', borderRadius: '20px', border: '1px solid rgba(0, 240, 255, 0.2)' }}>
+                        <Coins size={12} color="var(--accent-cyan)" />
+                        <span style={{ fontSize: '0.8rem', fontWeight: '800', color: 'var(--accent-cyan)' }}>{formatPoints(u.points)} pts</span>
+                      </div>
+                    </div>
+
+                    {/* Controls Row */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '4px', paddingTop: '8px', borderTop: '1px dashed rgba(255, 255, 255, 0.06)', flexWrap: 'wrap', gap: '8px' }}>
+                      {/* Permisija / Uloga */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Permisija:</span>
+                        <select
+                          value={u.role || 'Korisnik'}
+                          onChange={(e) => handleUpdateRoleAction(u.discordId, e.target.value)}
+                          style={{
+                            padding: '3px 8px',
+                            fontSize: '0.75rem',
+                            borderRadius: '6px',
+                            backgroundColor: u.role === 'Admin' ? 'rgba(83, 252, 24, 0.15)' : u.role === 'Moderator' ? 'rgba(0, 240, 255, 0.15)' : '#0c0f17',
+                            border: u.role === 'Admin' ? '1px solid #53fc18' : u.role === 'Moderator' ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+                            color: u.role === 'Admin' ? '#53fc18' : u.role === 'Moderator' ? 'var(--accent-cyan)' : '#ccc',
+                            fontWeight: '700',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <option value="Korisnik">Korisnik</option>
+                          <option value="Moderator">Moderator</option>
+                          <option value="Admin">Admin</option>
+                        </select>
+                      </div>
+
+                      {/* Dugmići za Poene */}
+                      <div style={{ display: 'flex', gap: '6px' }}>
+                        <button
+                          type="button"
+                          onClick={() => handleModifyPointsAction(u.discordId, parseInt(adminPointsDelta, 10) || 500)}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            padding: '4px 10px',
+                            fontSize: '0.75rem',
+                            fontWeight: '800',
+                            borderRadius: '6px',
+                            backgroundColor: 'rgba(83, 252, 24, 0.15)',
+                            border: '1px solid #53fc18',
+                            color: '#53fc18',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <UserPlus size={12} /> +{adminPointsDelta || 500}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleModifyPointsAction(u.discordId, -(parseInt(adminPointsDelta, 10) || 500))}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            padding: '4px 10px',
+                            fontSize: '0.75rem',
+                            fontWeight: '800',
+                            borderRadius: '6px',
+                            backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                            border: '1px solid rgb(239, 68, 68)',
+                            color: 'rgb(239, 68, 68)',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <UserMinus size={12} /> -{adminPointsDelta || 500}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+
       </div>
 
       {/* Upravljanje skinovima */}
@@ -659,6 +872,13 @@ const Admin = () => {
 };
 
 const styles = {
+  gridTwoCols: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
+    gap: '1.5rem',
+    alignItems: 'start',
+    width: '100%',
+  },
   container: {
     display: 'flex',
     flexDirection: 'column',
