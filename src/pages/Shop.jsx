@@ -140,7 +140,7 @@ const Shop = ({ setActiveTab }) => {
   };
 
   // Pomoćna komponenta za prikaz slike/vizuelnog dela skina
-  const RenderSkinImage = ({ skin, glowColor = '#8b5cf6' }) => {
+  const RenderSkinImage = ({ skin }) => {
     const isGiftCard = skin.type === 'GiftCard';
     
     if (isGiftCard) {
@@ -158,30 +158,13 @@ const Shop = ({ setActiveTab }) => {
       );
     }
 
-    const circleGlow = (
-      <div style={{
-        position: 'absolute',
-        width: '140px',
-        height: '140px',
-        borderRadius: '50%',
-        background: `radial-gradient(circle, ${glowColor}25 0%, ${glowColor}0b 50%, transparent 70%)`,
-        filter: 'blur(12px)',
-        pointerEvents: 'none',
-        left: '50%',
-        top: '50%',
-        transform: 'translate(-50%, -50%)',
-        zIndex: 1,
-      }} />
-    );
-
     const imgUrl = skin.imageUrl || skin.image;
     // Ako slika počinje sa http/https, renderujemo je direktno sa CDN-a (ByMykel API)
     if (imgUrl && (imgUrl.startsWith('http://') || imgUrl.startsWith('https://'))) {
       const fixedUrl = imgUrl.replace('community.akamai.steamstatic.com', 'community.steamstatic.com');
       return (
-        <div style={{ ...styles.imgWrapper, position: 'relative' }}>
-          {circleGlow}
-          <img src={fixedUrl} alt={skin.name} style={{ ...styles.skinImg, position: 'relative', zIndex: 2 }} />
+        <div style={styles.imgWrapper}>
+          <img src={fixedUrl} alt={skin.name} style={styles.skinImg} />
         </div>
       );
     }
@@ -209,18 +192,16 @@ const Shop = ({ setActiveTab }) => {
 
     if (imageUrl) {
       return (
-        <div style={{ ...styles.imgWrapper, position: 'relative' }}>
-          {circleGlow}
-          <img src={imageUrl} alt={skin.name} style={{ ...styles.skinImg, position: 'relative', zIndex: 2 }} />
+        <div style={styles.imgWrapper}>
+          <img src={imageUrl} alt={skin.name} style={styles.skinImg} />
         </div>
       );
     }
 
     // Default CSS fallback
     return (
-      <div style={{ ...styles.fallbackVisual, position: 'relative' }}>
-        {circleGlow}
-        <span style={{ ...styles.fallbackEmoji, position: 'relative', zIndex: 2 }}>
+      <div style={styles.fallbackVisual}>
+        <span style={styles.fallbackEmoji}>
           {skin.type === 'Knife' ? '🔪' : skin.type === 'Gloves' ? '🧤' : '🔫'}
         </span>
       </div>
@@ -383,7 +364,6 @@ const Shop = ({ setActiveTab }) => {
                 style={{ 
                   ...styles.skinCard,
                   borderColor: isSold ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.07)',
-                  borderTop: `3px solid ${glowColor}`,
                   boxShadow: isSold ? 'none' : `0 8px 30px rgba(0, 0, 0, 0.4)`
                 }} 
                 className="glass-interactive"
@@ -396,9 +376,9 @@ const Shop = ({ setActiveTab }) => {
                 </div>
 
                 {/* Skin vizuelni prikaz */}
-                <div style={{ ...styles.skinVisual, background: getSkinGradient(skin.image) }}>
+                <div style={{ ...styles.skinVisual, background: 'radial-gradient(circle, rgba(0, 240, 255, 0.04) 0%, rgba(0, 0, 0, 0) 70%)' }}>
                   <div style={styles.radialGlow} />
-                  <RenderSkinImage skin={skin} glowColor={glowColor} />
+                  <RenderSkinImage skin={skin} />
                 </div>
 
                 {/* Skin Info */}
@@ -469,7 +449,7 @@ const Shop = ({ setActiveTab }) => {
               
               {/* Prikaz skina u modalu */}
               <div style={styles.modalSkinPreview}>
-                <div style={{ ...styles.modalSkinVisual, background: getSkinGradient(selectedSkin.image) }}>
+                <div style={{ ...styles.modalSkinVisual, background: 'radial-gradient(circle, rgba(0, 240, 255, 0.04) 0%, rgba(0, 0, 0, 0) 70%)' }}>
                   <RenderSkinImage skin={selectedSkin} />
                 </div>
                 <div style={{ textAlign: 'left' }}>
