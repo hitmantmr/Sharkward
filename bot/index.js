@@ -2499,6 +2499,16 @@ app.get('/api/auth/kick/callback', async (req, res) => {
   }
   
   const db = readDb();
+  
+  // Provera da li je ovaj Kick nalog već povezan na nekog drugog Discord korisnika
+  const alreadyLinkedUser = Object.entries(db.users).find(([discId, u]) => 
+    discId !== resolvedDiscordId && u.kickUsername?.toLowerCase() === realUsername.toLowerCase()
+  );
+  if (alreadyLinkedUser) {
+    console.warn(`⚠️ [KICK LINK] Pokušaj povezivanja već povezanog Kick naloga @${realUsername} na Discord ID ${resolvedDiscordId}`);
+    return res.redirect(`${frontendOrigin}/watchtime?error=kick_already_linked&kick_user=${encodeURIComponent(realUsername)}`);
+  }
+
   let user = db.users[resolvedDiscordId];
   if (!user) {
     // Ako korisnik nije u bazi, kreiramo ga automatski
