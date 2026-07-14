@@ -2575,6 +2575,7 @@ app.get('/api/leaderboard', (req, res) => {
     .map(([id, u]) => ({
       username: u.username,
       kickUsername: u.kickUsername,
+      kickAvatar: u.kickAvatar || '',
       hours: Math.round((u.hoursWatched || 0) * 10) / 10,
       points: u.points || 0
     }))

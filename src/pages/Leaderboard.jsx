@@ -47,7 +47,15 @@ const Leaderboard = () => {
               <div style={{ ...styles.podiumCard, border: '1px solid rgba(161, 161, 170, 0.3)' }} className="glass-interactive">
                 <div style={styles.rankBadgeSilver}>#2 SILVER</div>
                 <div style={styles.podiumAvatarCircle}>
-                  <User size={20} color="#a1a1aa" />
+                  {topThree[1].kickAvatar ? (
+                    <img 
+                      src={topThree[1].kickAvatar} 
+                      alt={topThree[1].kickUsername} 
+                      style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} 
+                    />
+                  ) : (
+                    <User size={20} color="#a1a1aa" />
+                  )}
                 </div>
                 <h4 style={styles.podiumUsername}>@{topThree[1].kickUsername || topThree[1].username}</h4>
                 <div style={styles.podiumStatsRow}>
@@ -68,7 +76,15 @@ const Leaderboard = () => {
               <div style={{ ...styles.podiumCard, ...styles.goldPodiumCard }} className="glass-interactive">
                 <div style={styles.rankBadgeGold}>#1 GOLD</div>
                 <div style={styles.podiumAvatarCircleGold}>
-                  <User size={24} color="#e5c158" />
+                  {topThree[0].kickAvatar ? (
+                    <img 
+                      src={topThree[0].kickAvatar} 
+                      alt={topThree[0].kickUsername} 
+                      style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} 
+                    />
+                  ) : (
+                    <User size={24} color="#e5c158" />
+                  )}
                 </div>
                 <h4 style={{ ...styles.podiumUsername, fontSize: '1.2rem', color: '#fff' }}>@{topThree[0].kickUsername || topThree[0].username}</h4>
                 <div style={styles.podiumStatsRow}>
@@ -89,7 +105,15 @@ const Leaderboard = () => {
               <div style={{ ...styles.podiumCard, border: '1px solid rgba(180, 83, 9, 0.3)' }} className="glass-interactive">
                 <div style={styles.rankBadgeBronze}>#3 BRONZE</div>
                 <div style={styles.podiumAvatarCircle}>
-                  <User size={20} color="#d97706" />
+                  {topThree[2].kickAvatar ? (
+                    <img 
+                      src={topThree[2].kickAvatar} 
+                      alt={topThree[2].kickUsername} 
+                      style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} 
+                    />
+                  ) : (
+                    <User size={20} color="#d97706" />
+                  )}
                 </div>
                 <h4 style={styles.podiumUsername}>@{topThree[2].kickUsername || topThree[2].username}</h4>
                 <div style={styles.podiumStatsRow}>
@@ -134,8 +158,16 @@ const Leaderboard = () => {
                         <span style={styles.rankNum}>{userObj.rank}</span>
                       </td>
                       <td style={{ ...styles.td, textAlign: 'left', fontWeight: '600' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <User size={15} color={isCurrentUser ? 'var(--accent-cyan)' : 'var(--text-muted)'} />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          {userObj.kickAvatar ? (
+                            <img 
+                              src={userObj.kickAvatar} 
+                              alt={userObj.kickUsername} 
+                              style={{ width: '26px', height: '26px', borderRadius: '50%', objectFit: 'cover', border: isCurrentUser ? '1px solid var(--accent-cyan)' : '1px solid rgba(255, 255, 255, 0.15)' }} 
+                            />
+                          ) : (
+                            <User size={15} color={isCurrentUser ? 'var(--accent-cyan)' : 'var(--text-muted)'} />
+                          )}
                           <span style={{ color: isCurrentUser ? 'var(--accent-cyan)' : '#f3f4f6' }}>
                             @{userObj.kickUsername || userObj.username} {isCurrentUser && <span style={styles.youBadge}>TI</span>}
                           </span>
@@ -168,8 +200,16 @@ const Leaderboard = () => {
                         <span style={styles.rankNum}>-</span>
                       </td>
                       <td style={{ ...styles.td, textAlign: 'left', fontWeight: '600' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <User size={15} color="var(--accent-cyan)" />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          {user.kickAvatar ? (
+                            <img 
+                              src={user.kickAvatar} 
+                              alt={user.kickUser} 
+                              style={{ width: '26px', height: '26px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--accent-cyan)' }} 
+                            />
+                          ) : (
+                            <User size={15} color="var(--accent-cyan)" />
+                          )}
                           <span style={{ color: 'var(--accent-cyan)' }}>
                             @{user.kickUser} <span style={styles.youBadge}>TI</span>
                           </span>
