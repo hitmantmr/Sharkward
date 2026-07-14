@@ -420,7 +420,7 @@ const Home = ({ setActiveTab }) => {
       </section>
 
       <div className="bottom-footer reveal-on-scroll">
-        <span className="bottom-footer-text">Sve nagradne igre se izvlače automatski uživo na strimu</span>
+        <span className="bottom-footer-text">Sve nagradne igre se izvlače automatski na CSGO-Skins sajtu</span>
       </div>
       </div>
 
