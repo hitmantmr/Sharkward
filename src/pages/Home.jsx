@@ -73,20 +73,27 @@ const Home = ({ setActiveTab }) => {
       {/* 1. Centrirana Landing Sekcija (Tekst i dugmići preko celog prvog ekrana) */}
       <div className="landing-viewport">
         <div className="hero-centered-content">
-          <div style={{ 
-            ...styles.liveBadge, 
-            margin: '0 auto',
-            backgroundColor: isLive ? 'rgba(83, 252, 24, 0.1)' : 'rgba(156, 163, 175, 0.08)',
-            borderColor: isLive ? 'rgba(83, 252, 24, 0.25)' : 'rgba(156, 163, 175, 0.2)',
-            color: isLive ? '#53fc18' : '#9ca3af'
-          }}>
+          <a 
+            href="https://kick.com/sharke" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="live-status-badge-link"
+            style={{ 
+              ...styles.liveBadge, 
+              margin: '0 auto',
+              backgroundColor: isLive ? 'rgba(83, 252, 24, 0.1)' : 'rgba(156, 163, 175, 0.08)',
+              borderColor: isLive ? 'rgba(83, 252, 24, 0.25)' : 'rgba(156, 163, 175, 0.2)',
+              color: isLive ? '#53fc18' : '#9ca3af',
+              textDecoration: 'none'
+            }}
+          >
             <span style={{ 
               ...styles.liveDot, 
               backgroundColor: isLive ? '#53fc18' : '#9ca3af',
               animation: isLive ? 'pulse-stream 1.5s infinite' : 'none' 
             }}></span>
-            <span>{isLive ? 'SHARKE JE UŽIVO NA KICKU' : 'SHARKE JE TRENUTNO OFFLINE'}</span>
-          </div>
+            <span>{isLive ? 'SHARKE JE UŽIVO NA KICKU ↗' : 'SHARKE JE TRENUTNO OFFLINE'}</span>
+          </a>
           
           <h1 className="landing-title">
             Gledaj Live, <span className="neon-text-blue">Skupljaj Poene</span> & Uzmi CS:GO Skinove
@@ -429,6 +436,16 @@ const Home = ({ setActiveTab }) => {
           0% { opacity: 0.5; transform: scale(1); }
           50% { opacity: 1; transform: scale(1.1); }
           100% { opacity: 0.5; transform: scale(1); }
+        }
+
+        .live-status-badge-link {
+          transition: all 0.3s ease;
+        }
+
+        .live-status-badge-link:hover {
+          transform: translateY(-2px);
+          filter: brightness(1.2);
+          box-shadow: 0 4px 15px rgba(83, 252, 24, 0.15);
         }
         
         .landing-viewport {
