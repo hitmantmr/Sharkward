@@ -361,6 +361,14 @@ const Admin = () => {
     }
   };
 
+  const handleWeaponTypeChange = (e) => {
+    const newType = e.target.value;
+    setSkinType(newType);
+    if (newType === 'Gift Card' && (!skinName || !skinName.includes('Gift Card'))) {
+      handleSelectGiftCardPreset(10);
+    }
+  };
+
   const handleSelectGiftCardPreset = (amount) => {
     const cardName = `CSGO-Skins $${amount} Gift Card`;
     const cardImage = 'https://community.steamstatic.com/economy/image/fWFc82js0fmoRAP-qOIPu5nNDJGjg8qkNuhikAqClcWJV0WRBwU2yW4-UiWeVAR80RzSrhFf1uT1ufh_C-c_gN0-690-3mFsxwF4aOHmZmU2c13PBeJdV6Fvp168XnFn65RjAdSj9usDK1_mt4XDYbh0NoxOSZTWXfCGbgio7084g_cLfpyP8iq72Svu3G19bA';
@@ -570,7 +578,7 @@ const Admin = () => {
 
               <div style={styles.formGroup}>
                 <label style={styles.label}>Tip predmeta</label>
-                <select value={skinType} onChange={(e) => setSkinType(e.target.value)} style={styles.select}>
+                <select value={skinType} onChange={handleWeaponTypeChange} style={styles.select}>
                   <option value="Gift Card">Gift Kartica (Gift Card)</option>
                   <option value="Knife">Nož (Knife)</option>
                   <option value="Gloves">Rukavice (Gloves)</option>
