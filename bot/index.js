@@ -2446,7 +2446,7 @@ app.get('/api/auth/kick/callback', async (req, res) => {
     return res.redirect(`${frontendOrigin}/watchtime?error=missing_discord`);
   }
   
-  let realUsername = username || 'sharke_brat';
+  let realUsername = username || '';
   let realAvatar = avatar || '';
   let kickUserId = '';
   
@@ -2485,17 +2485,26 @@ app.get('/api/auth/kick/callback', async (req, res) => {
         if (userRes.ok) {
           const userResult = await userRes.json();
           const userData = userResult.data?.[0] || userResult.data || userResult;
-          realUsername = userData.username || userData.name || userData.slug || realUsername;
-          realAvatar = userData.profile_picture || userData.avatar || realAvatar;
+          realUsername = userData.username || userData.name || userData.slug || '';
+          realAvatar = userData.profile_picture || userData.avatar || '';
           kickUserId = userData.user_id || userData.id ? String(userData.user_id || userData.id) : '';
+        } else {
+          console.warn('⚠️ Kick user info fetch failed');
+          return res.redirect(`${frontendOrigin}/watchtime?error=kick_user_fetch_failed`);
         }
       } else {
         const errorText = await tokenResponse.text();
-        console.warn('⚠️ Kick Token exchange failed (koristi se fallback prijava):', errorText);
+        console.warn('⚠️ Kick Token exchange failed:', errorText);
+        return res.redirect(`${frontendOrigin}/watchtime?error=kick_token_failed`);
       }
     } catch (err) {
-      console.warn('⚠️ Real Kick OAuth error (koristi se fallback):', err.message);
+      console.warn('⚠️ Real Kick OAuth error:', err.message);
+      return res.redirect(`${frontendOrigin}/watchtime?error=kick_oauth_failed`);
     }
+  }
+
+  if (!realUsername) {
+    return res.redirect(`${frontendOrigin}/watchtime?error=kick_username_required`);
   }
   
   const db = readDb();
