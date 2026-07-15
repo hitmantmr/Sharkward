@@ -21,7 +21,8 @@ const {
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
-  UserSelectMenuBuilder
+  UserSelectMenuBuilder,
+  MessageFlags
 } = require('discord.js');
 
 // Inicijalizacija Discord klijenta sa potrebnim intentima
@@ -1098,26 +1099,26 @@ client.on('interactionCreate', async interaction => {
                       (interaction.member && interaction.member.permissions.has(PermissionFlagsBits.ManageChannels));
 
       if (!isOwner) {
-        return interaction.reply({ content: '❌ Samo vlasnik kanala može upravljati ovim glasovnim kanalom!', ephemeral: true });
+        return interaction.reply({ content: '❌ Samo vlasnik kanala može upravljati ovim glasovnim kanalom!', flags: MessageFlags.Ephemeral }).catch(() => null);
       }
 
       const channel = interaction.channel;
 
       if (interaction.customId === 'tempvc_lock') {
-        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: false });
-        return interaction.reply({ content: '🔒 Kanal je uspešno zaključan za ostale članove!', ephemeral: true });
+        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: false }).catch(() => null);
+        return interaction.reply({ content: '🔒 Kanal je uspešno zaključan za ostale članove!', flags: MessageFlags.Ephemeral }).catch(() => null);
       }
       if (interaction.customId === 'tempvc_unlock') {
-        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: null });
-        return interaction.reply({ content: '🔓 Kanal je uspešno otključan za sve članove!', ephemeral: true });
+        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: null }).catch(() => null);
+        return interaction.reply({ content: '🔓 Kanal je uspešno otključan za sve članove!', flags: MessageFlags.Ephemeral }).catch(() => null);
       }
       if (interaction.customId === 'tempvc_hide') {
-        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { ViewChannel: false });
-        return interaction.reply({ content: '👁️ Kanal je uspešno sakriven sa liste kanala!', ephemeral: true });
+        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { ViewChannel: false }).catch(() => null);
+        return interaction.reply({ content: '👁️ Kanal je uspešno sakriven sa liste kanala!', flags: MessageFlags.Ephemeral }).catch(() => null);
       }
       if (interaction.customId === 'tempvc_show') {
-        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { ViewChannel: null });
-        return interaction.reply({ content: '👀 Kanal je sada ponovo vidljiv svima na serveru!', ephemeral: true });
+        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { ViewChannel: null }).catch(() => null);
+        return interaction.reply({ content: '👀 Kanal je sada ponovo vidljiv svima na serveru!', flags: MessageFlags.Ephemeral }).catch(() => null);
       }
       if (interaction.customId === 'tempvc_name') {
         const modal = new ModalBuilder()
@@ -1127,11 +1128,11 @@ client.on('interactionCreate', async interaction => {
           .setCustomId('new_name')
           .setLabel('Novi naziv glasovnog kanala')
           .setStyle(TextInputStyle.Short)
-          .setValue(channel.name)
+          .setValue(channel ? channel.name : 'Voice')
           .setRequired(true)
           .setMaxLength(32);
         modal.addComponents(new ActionRowBuilder().addComponents(nameInput));
-        return interaction.showModal(modal);
+        return interaction.showModal(modal).catch(() => null);
       }
       if (interaction.customId === 'tempvc_limit') {
         const modal = new ModalBuilder()
@@ -1141,11 +1142,11 @@ client.on('interactionCreate', async interaction => {
           .setCustomId('new_limit')
           .setLabel('Broj mesta (0 = neograničeno, max 99)')
           .setStyle(TextInputStyle.Short)
-          .setValue(String(channel.userLimit || 0))
+          .setValue(String(channel ? channel.userLimit || 0 : 0))
           .setRequired(true)
           .setMaxLength(2);
         modal.addComponents(new ActionRowBuilder().addComponents(limitInput));
-        return interaction.showModal(modal);
+        return interaction.showModal(modal).catch(() => null);
       }
       if (interaction.customId === 'tempvc_kick') {
         const selectMenu = new UserSelectMenuBuilder()
@@ -1154,7 +1155,7 @@ client.on('interactionCreate', async interaction => {
           .setMinValues(1)
           .setMaxValues(1);
         const row = new ActionRowBuilder().addComponents(selectMenu);
-        return interaction.reply({ content: '🚫 Izaberi člana iz padajućeg menija da ga diskonektuješ:', components: [row], ephemeral: true });
+        return interaction.reply({ content: '🚫 Izaberi člana iz padajućeg menija da ga diskonektuješ:', components: [row], flags: MessageFlags.Ephemeral }).catch(() => null);
       }
     }
 
@@ -1163,19 +1164,19 @@ client.on('interactionCreate', async interaction => {
         const roleId = '1525282772799979540';
         const role = interaction.guild.roles.cache.get(roleId);
         if (!role) {
-          return interaction.reply({ content: '❌ Uloga za verifikaciju nije pronađena na serveru.', ephemeral: true });
+          return interaction.reply({ content: '❌ Uloga za verifikaciju nije pronađena na serveru.', flags: MessageFlags.Ephemeral });
         }
         
         const member = interaction.member;
         if (member.roles.cache.has(roleId)) {
-          return interaction.reply({ content: 'ℹ️ Već si verifikovan na serveru!', ephemeral: true });
+          return interaction.reply({ content: 'ℹ️ Već si verifikovan na serveru!', flags: MessageFlags.Ephemeral });
         }
         
         await member.roles.add(role);
-        await interaction.reply({ content: '✅ Uspešno si se verifikovao i dobio ulogu!', ephemeral: true });
+        await interaction.reply({ content: '✅ Uspešno si se verifikovao i dobio ulogu!', flags: MessageFlags.Ephemeral });
       } catch (err) {
         console.error('Greška pri verifikaciji:', err);
-        await interaction.reply({ content: `❌ Greška pri dodeljivanju uloge: ${err.message}`, ephemeral: true });
+        await interaction.reply({ content: `❌ Greška pri dodeljivanju uloge: ${err.message}`, flags: MessageFlags.Ephemeral });
       }
     }
     return;
@@ -1187,22 +1188,26 @@ client.on('interactionCreate', async interaction => {
                     (interaction.member && interaction.member.permissions.has(PermissionFlagsBits.ManageChannels));
 
     if (!isOwner) {
-      return interaction.reply({ content: '❌ Samo vlasnik kanala može vršiti ove izmene!', ephemeral: true });
+      return interaction.reply({ content: '❌ Samo vlasnik kanala može vršiti ove izmene!', flags: MessageFlags.Ephemeral }).catch(() => null);
     }
 
     if (interaction.customId === 'tempvc_modal_name') {
       const newName = interaction.fields.getTextInputValue('new_name');
-      await interaction.channel.setName(newName).catch(() => null);
-      return interaction.reply({ content: `✍️ Naziv kanala je uspešno promenjen u: **${newName}**`, ephemeral: true });
+      if (interaction.channel) {
+        await interaction.channel.setName(newName).catch(() => null);
+      }
+      return interaction.reply({ content: `✍️ Naziv kanala je uspešno promenjen u: **${newName}**`, flags: MessageFlags.Ephemeral }).catch(() => null);
     }
 
     if (interaction.customId === 'tempvc_modal_limit') {
       const val = parseInt(interaction.fields.getTextInputValue('new_limit'), 10);
       if (isNaN(val) || val < 0 || val > 99) {
-        return interaction.reply({ content: '❌ Unesi važeći broj između 0 i 99.', ephemeral: true });
+        return interaction.reply({ content: '❌ Unesi važeći broj između 0 i 99.', flags: MessageFlags.Ephemeral }).catch(() => null);
       }
-      await interaction.channel.setUserLimit(val).catch(() => null);
-      return interaction.reply({ content: `👤 Limit kanala je postavljen na: **${val === 0 ? 'Neograničeno' : val}**`, ephemeral: true });
+      if (interaction.channel) {
+        await interaction.channel.setUserLimit(val).catch(() => null);
+      }
+      return interaction.reply({ content: `👤 Limit kanala je postavljen na: **${val === 0 ? 'Neograničeno' : val}**`, flags: MessageFlags.Ephemeral }).catch(() => null);
     }
   }
 
@@ -1212,16 +1217,17 @@ client.on('interactionCreate', async interaction => {
                     (interaction.member && interaction.member.permissions.has(PermissionFlagsBits.ManageChannels));
 
     if (!isOwner) {
-      return interaction.reply({ content: '❌ Samo vlasnik kanala može izbacivati članove!', ephemeral: true });
+      return interaction.reply({ content: '❌ Samo vlasnik kanala može izbacivati članove!', flags: MessageFlags.Ephemeral }).catch(() => null);
     }
 
     const targetUserId = interaction.values[0];
     const targetMember = await interaction.guild.members.fetch(targetUserId).catch(() => null);
     if (targetMember && targetMember.voice.channelId === interaction.channelId) {
+      await interaction.reply({ content: `🚫 Korisnik <@${targetUserId}> je uspešno izbačen iz tvog kanala!`, flags: MessageFlags.Ephemeral }).catch(() => null);
       await targetMember.voice.disconnect().catch(() => null);
-      return interaction.reply({ content: `🚫 Korisnik <@${targetUserId}> je uspešno izbačen iz tvog kanala!`, ephemeral: true });
+      return;
     } else {
-      return interaction.reply({ content: `❌ Izabrani korisnik trenutno nije u tvom glasovnom kanalu.`, ephemeral: true });
+      return interaction.reply({ content: `❌ Izabrani korisnik trenutno nije u tvom glasovnom kanalu.`, flags: MessageFlags.Ephemeral }).catch(() => null);
     }
   }
 
