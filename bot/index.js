@@ -184,7 +184,8 @@ async function publishPartnershipEmbeds() {
           { name: '🎁 Besplatan Skin', value: 'Dobijaš besplatan skin odmah pri registraciji i otvaranju prvog kupona!' },
           { name: '💰 +5% Bonus na Depozit', value: 'Dodatnih +5% bonusa na sve uplate na sajtu (kartice, kripto, skinovi).' },
           { name: '🔥 Brza Isplata', value: 'Direktno podizanje osvojenih skinova u tvoj Steam inventar bez čekanja.' },
-          { name: '🔑 Promo Kod', value: '```SHARKE```', inline: false }
+          { name: '🔑 Promo Kod', value: '```SHARKE```', inline: false },
+          { name: '🔗 Link za Registraciju', value: '[Klikni ovde da se registruješ](https://csgo-skins.com/?ref=SHARKE)', inline: false }
         )
         .setThumbnail('attachment://csgoskins.png')
         .setFooter({ text: 'Igraj odgovorno (18+) • SHARKAWARD Lojaliti Program' })
@@ -226,7 +227,8 @@ async function publishPartnershipEmbeds() {
           { name: '🎁 Trostruki Bonus', value: 'Fantastičan bonus dobrodošlice na prva 3 depozita!' },
           { name: '🎰 Besplatni Spinovi & Freebet', value: 'Dodatni spinovi za kazino i besplatne opklade za sve nove registracije.' },
           { name: '📈 Najveće Kvote na Svetu', value: 'Garantovano najbolji uslovi klađenja za sportske i uživo događaje.' },
-          { name: '🔑 Promo Kod', value: '```AJKULA```', inline: false }
+          { name: '🔑 Promo Kod', value: '```AJKULA```', inline: false },
+          { name: '🔗 Link za Registraciju', value: '[Klikni ovde da se registruješ](https://www.mozzartbet.com)', inline: false }
         )
         .setThumbnail('attachment://mozzart.png')
         .setFooter({ text: 'Igraj odgovorno (18+) • SHARKAWARD Lojaliti Program' })
