@@ -33,7 +33,11 @@ const Privacy = ({ setActiveTab }) => {
             <li>Email address (if you subscribe to our newsletter or create an account).</li>
             <li>Username or display name (such as Discord and Kick usernames connected via OAuth).</li>
             <li>Steam Trade URL or any other profile details you choose to provide.</li>
+            <li>Loyalty account information, including points earned, redeemed rewards, referral history, and participation in promotional campaigns.</li>
           </ul>
+          <p style={{ ...styles.text, marginTop: '8px', fontStyle: 'italic' }}>
+            Note on OAuth: We only receive the information that you authorize the third-party authentication provider (Discord or Kick) to share with us.
+          </p>
 
           <h4 style={{ ...styles.subSectionTitle, marginTop: '14px' }}>Information Collected Automatically</h4>
           <p style={styles.text}>When you visit our website, we automatically collect certain information about your device, including:</p>
@@ -49,16 +53,36 @@ const Privacy = ({ setActiveTab }) => {
 
           <h4 style={{ ...styles.subSectionTitle, marginTop: '14px' }}>Cookies and Tracking Technologies</h4>
           <p style={styles.text}>
-            We use cookies and similar tracking technologies to track activity on our website and hold certain information. Cookies are files with small amounts of data which may include an anonymous unique identifier.
+            We use cookies and similar tracking technologies to track activity on our website and hold certain information. The cookies we utilize include:
           </p>
+          <ul style={styles.list}>
+            <li><strong>Essential Cookies:</strong> Required for the technical operation and security of the website.</li>
+            <li><strong>Authentication Cookies:</strong> Used to maintain your login session across refreshes.</li>
+            <li><strong>Analytics Cookies:</strong> Used to analyze general traffic patterns and optimize the user experience.</li>
+            <li><strong>Preference Cookies:</strong> Used to store your UI preferences (such as light/dark mode choices).</li>
+          </ul>
           <p style={{ ...styles.text, marginTop: '8px' }}>
             You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our website.
           </p>
         </div>
 
-        {/* 3. How We Use Your Information */}
+        {/* 3. Legal Basis for Processing */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>3. How We Use Your Information</h3>
+          <h3 style={styles.sectionTitle}>3. Legal Basis for Processing</h3>
+          <p style={styles.text}>
+            Where applicable under data protection laws (such as GDPR), we process your personal information based on one or more of the following legal bases:
+          </p>
+          <ul style={styles.list}>
+            <li><strong>Your consent:</strong> When you authorize us to link your Discord/Kick profiles.</li>
+            <li><strong>Performance of a contract:</strong> To calculate points and deliver the skin rewards you redeem.</li>
+            <li><strong>Compliance with legal obligations:</strong> To satisfy regulatory or compliance requests.</li>
+            <li><strong>Our legitimate interests:</strong> In operating, securing, and continuously improving SHARKAWARD.</li>
+          </ul>
+        </div>
+
+        {/* 4. How We Use Your Information */}
+        <div style={styles.section}>
+          <h3 style={styles.sectionTitle}>4. How We Use Your Information</h3>
           <p style={styles.text}>We use the information we collect in the following ways:</p>
           <ul style={styles.list}>
             <li>To provide and maintain our website.</li>
@@ -71,14 +95,14 @@ const Privacy = ({ setActiveTab }) => {
           </ul>
         </div>
 
-        {/* 4. Disclosure of Your Information */}
+        {/* 5. Disclosure of Your Information */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>4. Disclosure of Your Information</h3>
+          <h3 style={styles.sectionTitle}>5. Disclosure of Your Information</h3>
           <p style={styles.text}>We may share your information in certain situations:</p>
           
           <h4 style={styles.subSectionTitle}>With Affiliate Partners</h4>
           <p style={styles.text}>
-            When you click on links to our partner sites, certain information (such as your click data, promo code entries, and referral source) may be shared with these partners for referral tracking purposes.
+            When you click on links to our partner sites, certain information (such as your click data and referral source) may be shared with these partners for referral tracking purposes.
           </p>
 
           <h4 style={{ ...styles.subSectionTitle, marginTop: '14px' }}>Service Providers</h4>
@@ -100,9 +124,9 @@ const Privacy = ({ setActiveTab }) => {
           </p>
         </div>
 
-        {/* 5. Data Security */}
+        {/* 6. Data Security */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>5. Data Security</h3>
+          <h3 style={styles.sectionTitle}>6. Data Security</h3>
           <p style={styles.text}>
             We use administrative, technical, and physical security measures to protect your personal information. While we strive to use commercially acceptable means to protect your information, we cannot guarantee its absolute security.
           </p>
@@ -111,9 +135,9 @@ const Privacy = ({ setActiveTab }) => {
           </p>
         </div>
 
-        {/* 6. Your Rights */}
+        {/* 7. Your Rights */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>6. Your Rights</h3>
+          <h3 style={styles.sectionTitle}>7. Your Rights</h3>
           <p style={styles.text}>Depending on your location, you may have certain rights regarding your personal information:</p>
           <ul style={styles.list}>
             <li><strong>Access:</strong> You can request access to the personal information we hold about you.</li>
@@ -127,9 +151,9 @@ const Privacy = ({ setActiveTab }) => {
           </p>
         </div>
 
-        {/* 7. Third-Party Websites */}
+        {/* 8. Third-Party Websites */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>7. Third-Party Websites</h3>
+          <h3 style={styles.sectionTitle}>8. Third-Party Websites</h3>
           <p style={styles.text}>
             Our website contains links to third-party gaming and promotion sites. We are not responsible for the privacy practices or operations of these third-party platforms. We encourage you to read the privacy policies of any site you visit.
           </p>
@@ -138,9 +162,9 @@ const Privacy = ({ setActiveTab }) => {
           </p>
         </div>
 
-        {/* 8. Children's Privacy */}
+        {/* 9. Children's Privacy */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>8. Children's Privacy</h3>
+          <h3 style={styles.sectionTitle}>9. Children's Privacy</h3>
           <p style={{ ...styles.text, fontWeight: '700', color: '#fff' }}>
             Our website is not intended for anyone under the age of 18 or the legal gambling age in their jurisdiction. We do not knowingly collect personal information from minors.
           </p>
@@ -149,28 +173,25 @@ const Privacy = ({ setActiveTab }) => {
           </p>
         </div>
 
-        {/* 9. International Data Transfers */}
+        {/* 10. International Data Transfers */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>9. International Data Transfers</h3>
+          <h3 style={styles.sectionTitle}>10. International Data Transfers</h3>
           <p style={styles.text}>
-            Your information may be transferred to and maintained on computers located outside of your state, province, country, or other governmental jurisdiction where the data protection laws may differ from those of your jurisdiction.
-          </p>
-          <p style={{ ...styles.text, marginTop: '8px' }}>
-            By using our website, you consent to the transfer of your information to other countries for processing and storage.
+            We process and transfer data internationally in compliance with applicable cross-border regulations. By using our website, you acknowledge that your information may be processed and stored in locations where the data protection laws may differ from those of your jurisdiction.
           </p>
         </div>
 
-        {/* 10. Analytics and Tracking */}
+        {/* 11. Analytics and Tracking */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>10. Analytics and Tracking</h3>
+          <h3 style={styles.sectionTitle}>11. Analytics and Tracking</h3>
           <p style={styles.text}>
             We use analytics services to understand how visitors use our website. These services may collect information such as pages visited, time spent on each page, click patterns, referral sources, and device/browser info. This information helps us improve our website and provide better recommendations to our users.
           </p>
         </div>
 
-        {/* 11. Marketing Communications */}
+        {/* 12. Marketing Communications */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>11. Marketing Communications</h3>
+          <h3 style={styles.sectionTitle}>12. Marketing Communications</h3>
           <p style={styles.text}>If you have opted in to receive marketing communications, we may send you emails about:</p>
           <ul style={styles.list}>
             <li>New partner sites and exclusive bonuses.</li>
@@ -183,17 +204,20 @@ const Privacy = ({ setActiveTab }) => {
           </p>
         </div>
 
-        {/* 12. Data Retention */}
+        {/* 13. Data Retention */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>12. Data Retention</h3>
+          <h3 style={styles.sectionTitle}>13. Data Retention</h3>
           <p style={styles.text}>
             We retain your personal information for as long as necessary to fulfill the purposes outlined in this privacy policy, unless a longer retention period is required or permitted by law. When we no longer need your personal information, we will securely delete or destroy it.
           </p>
+          <p style={{ ...styles.text, marginTop: '8px', fontWeight: '500' }}>
+            If you close or unlink your account, we may retain certain information where required by law or for fraud prevention purposes.
+          </p>
         </div>
 
-        {/* 13. California Privacy Rights */}
+        {/* 14. California Privacy Rights */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>13. California Privacy Rights</h3>
+          <h3 style={styles.sectionTitle}>14. California Privacy Rights</h3>
           <p style={styles.text}>If you are a California resident, you have additional rights under the California Consumer Privacy Act (CCPA), including:</p>
           <ul style={styles.list}>
             <li>The right to know what personal information we collect, use, disclose, and sell.</li>
@@ -203,9 +227,9 @@ const Privacy = ({ setActiveTab }) => {
           </ul>
         </div>
 
-        {/* 14. European Privacy Rights */}
+        {/* 15. European Privacy Rights */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>14. European Privacy Rights</h3>
+          <h3 style={styles.sectionTitle}>15. European Privacy Rights</h3>
           <p style={styles.text}>If you are located in the European Economic Area (EEA), you have additional rights under the General Data Protection Regulation (GDPR), including:</p>
           <ul style={styles.list}>
             <li>The right to access your personal data.</li>
@@ -218,22 +242,22 @@ const Privacy = ({ setActiveTab }) => {
           </ul>
         </div>
 
-        {/* 15. Changes to This Privacy Policy */}
+        {/* 16. Changes to This Privacy Policy */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>15. Changes to This Privacy Policy</h3>
+          <h3 style={styles.sectionTitle}>16. Changes to This Privacy Policy</h3>
           <p style={styles.text}>
             We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date. You are advised to review this Privacy Policy periodically for any changes.
           </p>
         </div>
 
-        {/* 16. Contact Us */}
+        {/* 17. Contact Us */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>16. Contact Us</h3>
+          <h3 style={styles.sectionTitle}>17. Contact Us</h3>
           <p style={styles.text}>
-            If you have any questions about this Privacy Policy or our data practices, please contact us through the contact information provided on our website.
+            If you have any questions about this Privacy Policy or our data practices, please contact us through the contact information or official social channels provided on our website.
           </p>
           <p style={{ ...styles.text, marginTop: '8px' }}>
-            For data protection inquiries or to exercise your rights, please contact us with "Privacy Request" in the communication description.
+            For data protection inquiries or to exercise your rights, please submit a request to the site administrators via the official Discord server.
           </p>
         </div>
 
