@@ -136,6 +136,12 @@ const Admin = () => {
     loadAdminUsers(false);
   }, [user, leaderboard]);
 
+  useEffect(() => {
+    if (skinType === 'Gloves' && isStatTrak) {
+      setIsStatTrak(false);
+    }
+  }, [skinType, isStatTrak]);
+
   const handleModifyPointsAction = async (discordId, amount) => {
     const ok = await modifyAdminUserPoints(discordId, amount);
     if (ok) {
@@ -758,18 +764,20 @@ const Admin = () => {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: '4px 0' }}>
-                  <input
-                    type="checkbox"
-                    id="isStatTrak"
-                    checked={isStatTrak}
-                    onChange={handleStatTrakToggle}
-                    style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: 'var(--accent-cyan)' }}
-                  />
-                  <label htmlFor="isStatTrak" style={{ ...styles.label, cursor: 'pointer', marginBottom: 0, fontSize: '0.85rem', color: '#fff' }}>
-                    StatTrak™ Verzija Skina
-                  </label>
-                </div>
+                {skinType !== 'Gloves' && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: '4px 0' }}>
+                    <input
+                      type="checkbox"
+                      id="isStatTrak"
+                      checked={isStatTrak}
+                      onChange={handleStatTrakToggle}
+                      style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: 'var(--accent-cyan)' }}
+                    />
+                    <label htmlFor="isStatTrak" style={{ ...styles.label, cursor: 'pointer', marginBottom: 0, fontSize: '0.85rem', color: '#fff' }}>
+                      StatTrak™ Verzija Skina
+                    </label>
+                  </div>
+                )}
 
                 <div style={styles.formRow}>
                   <div style={styles.formGroup}>
