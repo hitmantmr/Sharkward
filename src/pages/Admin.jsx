@@ -43,6 +43,7 @@ const Admin = () => {
     API_URL,
     skins, 
     giveaways, 
+    leaderboard,
     addSkin, 
     deleteSkin, 
     restockSkin, 
@@ -87,22 +88,77 @@ const Admin = () => {
   const [adminPointsDelta, setAdminPointsDelta] = useState('500');
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [loadingAdminUsers, setLoadingAdminUsers] = useState(false);
+  const [selectedUserForPoints, setSelectedUserForPoints] = useState('');
+  const [pointsCorrectionAmount, setPointsCorrectionAmount] = useState('');
 
-  const loadAdminUsers = async () => {
-    setLoadingAdminUsers(true);
+  const loadAdminUsers = async (showLoading = false) => {
+    if (showLoading) setLoadingAdminUsers(true);
     const users = await fetchAdminUsers();
-    setAdminUsersList(users);
+    if (users && users.length > 0) {
+      setAdminUsersList(users);
+    }
     setLoadingAdminUsers(false);
   };
 
   useEffect(() => {
-    loadAdminUsers();
-  }, []);
+    const prefillUsers = () => {
+      const list = [];
+      if (user && user.discordId) {
+        list.push({
+          discordId: user.discordId,
+          username: user.discordUser || user.username || 'Sharke_Brat',
+          kickUsername: user.kickUsername || 'sharke',
+          kickAvatar: user.kickAvatar || '',
+          points: user.points || 0,
+          hoursWatched: user.hoursWatched || 0,
+          role: 'Admin'
+        });
+      }
+      if (Array.isArray(leaderboard) && leaderboard.length > 0) {
+        leaderboard.forEach(l => {
+          if (!list.some(f => f.discordId === l.discordId || f.kickUsername === l.kickUsername)) {
+            list.push({
+              discordId: l.discordId || 'id_' + (l.kickUsername || l.username),
+              username: l.username,
+              kickUsername: l.kickUsername,
+              kickAvatar: l.kickAvatar,
+              points: l.points,
+              hoursWatched: l.hours || 0,
+              role: 'Korisnik'
+            });
+          }
+        });
+      }
+      return list;
+    };
+
+    setAdminUsersList(prefillUsers());
+    loadAdminUsers(false);
+  }, [user, leaderboard]);
 
   const handleModifyPointsAction = async (discordId, amount) => {
     const ok = await modifyAdminUserPoints(discordId, amount);
     if (ok) {
       loadAdminUsers();
+    }
+  };
+
+  const handlePointsCorrectionSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedUserForPoints) {
+      alert('Molimo izaberite korisnika.');
+      return;
+    }
+    const amount = parseInt(pointsCorrectionAmount, 10);
+    if (isNaN(amount) || amount === 0) {
+      alert('Unesite ispravan iznos poena (pozitivan ili negativan).');
+      return;
+    }
+
+    const ok = await modifyAdminUserPoints(selectedUserForPoints, amount);
+    if (ok) {
+      setPointsCorrectionAmount('');
+      loadAdminUsers(false);
     }
   };
 
@@ -789,37 +845,87 @@ const Admin = () => {
               />
             </div>
 
-            {/* Unos iznosa poena za brzu promenu */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>Iznos poena:</span>
-              <input
-                type="number"
-                value={adminPointsDelta}
-                onChange={(e) => setAdminPointsDelta(e.target.value)}
-                style={{ ...styles.input, width: '110px', textAlign: 'center', padding: '0.4rem' }}
-                placeholder="Npr. 500"
-              />
-              <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-                {[100, 500, 1000, 5000].map(val => (
-                  <button
-                    key={val}
-                    type="button"
-                    onClick={() => setAdminPointsDelta(val.toString())}
-                    style={{
-                      padding: '4px 8px',
-                      fontSize: '0.75rem',
-                      borderRadius: '6px',
-                      backgroundColor: adminPointsDelta === val.toString() ? 'rgba(0, 240, 255, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                      border: adminPointsDelta === val.toString() ? '1px solid var(--accent-cyan)' : '1px solid rgba(255, 255, 255, 0.1)',
-                      color: adminPointsDelta === val.toString() ? 'var(--accent-cyan)' : '#ccc',
-                      cursor: 'pointer',
-                      fontWeight: '700'
-                    }}
-                  >
-                    +{val}
-                  </button>
-                ))}
+            {/* Korekcija Poena Gledaoca Form */}
+            <div style={{
+              padding: '1.25rem',
+              borderRadius: '12px',
+              backgroundColor: 'rgba(0, 0, 0, 0.25)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px',
+              marginBottom: '4px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '8px' }}>
+                <Coins size={18} color="#e5c158" />
+                <span style={{ fontSize: '0.85rem', fontWeight: '800', color: '#fff', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                  Korekcija Poena Gledaoca
+                </span>
               </div>
+              
+              <form onSubmit={handlePointsCorrectionSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <label style={{ fontSize: '0.8rem', color: '#ccc', fontWeight: '600' }}>
+                    Izaberi Korisnika (Discord ID)
+                  </label>
+                  <select 
+                    value={selectedUserForPoints} 
+                    onChange={(e) => setSelectedUserForPoints(e.target.value)}
+                    style={{ 
+                      ...styles.input, 
+                      backgroundColor: 'rgba(0, 0, 0, 0.3)', 
+                      color: '#fff', 
+                      cursor: 'pointer',
+                      paddingRight: '30px'
+                    }}
+                    required
+                  >
+                    <option value="">-- Izaberi korisnika --</option>
+                    {adminUsersList.map(u => (
+                      <option key={u.discordId} value={u.discordId} style={{ backgroundColor: '#18181b', color: '#fff' }}>
+                        @{u.username} ({u.discordId}){u.kickUsername ? ` (Kick: @${u.kickUsername})` : ''} — {u.points} pts
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <label style={{ fontSize: '0.8rem', color: '#ccc', fontWeight: '600' }}>
+                    Broj poena (Može i negativno)
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="npr. 500 ili -200"
+                    value={pointsCorrectionAmount}
+                    onChange={(e) => setPointsCorrectionAmount(e.target.value)}
+                    style={styles.input}
+                    required
+                  />
+                </div>
+
+                <button 
+                  type="submit" 
+                  style={{
+                    width: '100%',
+                    backgroundColor: '#2e7d32',
+                    color: '#fff',
+                    border: 'none',
+                    padding: '11px',
+                    borderRadius: '8px',
+                    fontSize: '0.85rem',
+                    fontWeight: '800',
+                    cursor: 'pointer',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    marginTop: '4px',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#1b5e20'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = '#2e7d32'}
+                >
+                  POTVRDI PROMENU
+                </button>
+              </form>
             </div>
 
             {/* Lista Članova sa upravljanjem */}
