@@ -17,7 +17,11 @@ const {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  AttachmentBuilder
+  AttachmentBuilder,
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+  UserSelectMenuBuilder
 } = require('discord.js');
 
 // Inicijalizacija Discord klijenta sa potrebnim intentima
@@ -36,6 +40,10 @@ const client = new Client({
 
 // Putanja do lokalne db.json baze
 const dbPath = path.join(__dirname, 'db.json');
+
+// --- Temp Voice Channel System ---
+const tempVoiceChannels = new Map();
+const TEMP_VOICE_TRIGGER_ID = '1525282825484370012';
 
 // --- Caching Buff163 prices (csgotrader API) ---
 let buffPrices = {};
@@ -1084,6 +1092,72 @@ async function sendLog(guild, channelKey, embed) {
 // Osluškivanje interakcija (slash komande)
 client.on('interactionCreate', async interaction => {
   if (interaction.isButton()) {
+    if (interaction.customId.startsWith('tempvc_')) {
+      const channelData = tempVoiceChannels.get(interaction.channelId);
+      const isOwner = (channelData && channelData.ownerId === interaction.user.id) || 
+                      (interaction.member && interaction.member.permissions.has(PermissionFlagsBits.ManageChannels));
+
+      if (!isOwner) {
+        return interaction.reply({ content: '❌ Samo vlasnik kanala može upravljati ovim glasovnim kanalom!', ephemeral: true });
+      }
+
+      const channel = interaction.channel;
+
+      if (interaction.customId === 'tempvc_lock') {
+        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: false });
+        return interaction.reply({ content: '🔒 Kanal je uspešno zaključan za ostale članove!', ephemeral: true });
+      }
+      if (interaction.customId === 'tempvc_unlock') {
+        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: null });
+        return interaction.reply({ content: '🔓 Kanal je uspešno otključan za sve članove!', ephemeral: true });
+      }
+      if (interaction.customId === 'tempvc_hide') {
+        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { ViewChannel: false });
+        return interaction.reply({ content: '👁️ Kanal je uspešno sakriven sa liste kanala!', ephemeral: true });
+      }
+      if (interaction.customId === 'tempvc_show') {
+        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { ViewChannel: null });
+        return interaction.reply({ content: '👀 Kanal je sada ponovo vidljiv svima na serveru!', ephemeral: true });
+      }
+      if (interaction.customId === 'tempvc_name') {
+        const modal = new ModalBuilder()
+          .setCustomId('tempvc_modal_name')
+          .setTitle('Promeni naziv kanala');
+        const nameInput = new TextInputBuilder()
+          .setCustomId('new_name')
+          .setLabel('Novi naziv glasovnog kanala')
+          .setStyle(TextInputStyle.Short)
+          .setValue(channel.name)
+          .setRequired(true)
+          .setMaxLength(32);
+        modal.addComponents(new ActionRowBuilder().addComponents(nameInput));
+        return interaction.showModal(modal);
+      }
+      if (interaction.customId === 'tempvc_limit') {
+        const modal = new ModalBuilder()
+          .setCustomId('tempvc_modal_limit')
+          .setTitle('Postavi limit članova');
+        const limitInput = new TextInputBuilder()
+          .setCustomId('new_limit')
+          .setLabel('Broj mesta (0 = neograničeno, max 99)')
+          .setStyle(TextInputStyle.Short)
+          .setValue(String(channel.userLimit || 0))
+          .setRequired(true)
+          .setMaxLength(2);
+        modal.addComponents(new ActionRowBuilder().addComponents(limitInput));
+        return interaction.showModal(modal);
+      }
+      if (interaction.customId === 'tempvc_kick') {
+        const selectMenu = new UserSelectMenuBuilder()
+          .setCustomId('tempvc_select_kick')
+          .setPlaceholder('Izaberi člana kog želiš da izbaciš iz kanala...')
+          .setMinValues(1)
+          .setMaxValues(1);
+        const row = new ActionRowBuilder().addComponents(selectMenu);
+        return interaction.reply({ content: '🚫 Izaberi člana iz padajućeg menija da ga diskonektuješ:', components: [row], ephemeral: true });
+      }
+    }
+
     if (interaction.customId === 'verify_member') {
       try {
         const roleId = '1525282772799979540';
@@ -1105,6 +1179,50 @@ client.on('interactionCreate', async interaction => {
       }
     }
     return;
+  }
+
+  if (interaction.isModalSubmit() && interaction.customId.startsWith('tempvc_modal_')) {
+    const channelData = tempVoiceChannels.get(interaction.channelId);
+    const isOwner = (channelData && channelData.ownerId === interaction.user.id) || 
+                    (interaction.member && interaction.member.permissions.has(PermissionFlagsBits.ManageChannels));
+
+    if (!isOwner) {
+      return interaction.reply({ content: '❌ Samo vlasnik kanala može vršiti ove izmene!', ephemeral: true });
+    }
+
+    if (interaction.customId === 'tempvc_modal_name') {
+      const newName = interaction.fields.getTextInputValue('new_name');
+      await interaction.channel.setName(newName).catch(() => null);
+      return interaction.reply({ content: `✍️ Naziv kanala je uspešno promenjen u: **${newName}**`, ephemeral: true });
+    }
+
+    if (interaction.customId === 'tempvc_modal_limit') {
+      const val = parseInt(interaction.fields.getTextInputValue('new_limit'), 10);
+      if (isNaN(val) || val < 0 || val > 99) {
+        return interaction.reply({ content: '❌ Unesi važeći broj između 0 i 99.', ephemeral: true });
+      }
+      await interaction.channel.setUserLimit(val).catch(() => null);
+      return interaction.reply({ content: `👤 Limit kanala je postavljen na: **${val === 0 ? 'Neograničeno' : val}**`, ephemeral: true });
+    }
+  }
+
+  if (interaction.isUserSelectMenu() && interaction.customId === 'tempvc_select_kick') {
+    const channelData = tempVoiceChannels.get(interaction.channelId);
+    const isOwner = (channelData && channelData.ownerId === interaction.user.id) || 
+                    (interaction.member && interaction.member.permissions.has(PermissionFlagsBits.ManageChannels));
+
+    if (!isOwner) {
+      return interaction.reply({ content: '❌ Samo vlasnik kanala može izbacivati članove!', ephemeral: true });
+    }
+
+    const targetUserId = interaction.values[0];
+    const targetMember = await interaction.guild.members.fetch(targetUserId).catch(() => null);
+    if (targetMember && targetMember.voice.channelId === interaction.channelId) {
+      await targetMember.voice.disconnect().catch(() => null);
+      return interaction.reply({ content: `🚫 Korisnik <@${targetUserId}> je uspešno izbačen iz tvog kanala!`, ephemeral: true });
+    } else {
+      return interaction.reply({ content: `❌ Izabrani korisnik trenutno nije u tvom glasovnom kanalu.`, ephemeral: true });
+    }
   }
 
   if (!interaction.isChatInputCommand()) return;
@@ -1954,6 +2072,91 @@ client.on('inviteCreate', invite => {
 client.on('voiceStateUpdate', async (oldState, newState) => {
   const guild = newState.guild;
   const member = newState.member;
+
+  // --- TEMP VOICE CREATION & AUTOMATIC DELETION ---
+  if (newState.channelId === TEMP_VOICE_TRIGGER_ID && member) {
+    try {
+      const triggerChannel = newState.channel;
+      const parentCategory = triggerChannel ? triggerChannel.parentId : null;
+
+      const newVoiceChannel = await guild.channels.create({
+        name: `🔊 | ${member.displayName}`,
+        type: ChannelType.GuildVoice,
+        parent: parentCategory || undefined,
+        permissionOverwrites: [
+          {
+            id: guild.roles.everyone.id,
+            allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.Connect]
+          },
+          {
+            id: member.id,
+            allow: [
+              PermissionFlagsBits.ManageChannels,
+              PermissionFlagsBits.Connect,
+              PermissionFlagsBits.Speak,
+              PermissionFlagsBits.MuteMembers,
+              PermissionFlagsBits.DeafenMembers,
+              PermissionFlagsBits.MoveMembers,
+              PermissionFlagsBits.ManageRoles
+            ]
+          }
+        ]
+      });
+
+      tempVoiceChannels.set(newVoiceChannel.id, { ownerId: member.id });
+
+      // Prebacivanje člana u novi glasovni kanal
+      await member.voice.setChannel(newVoiceChannel).catch(() => null);
+
+      // Slanje Embed kontrolne table u novi glasovni kanal
+      const avatarUrl = member.user.displayAvatarURL({ extension: 'png', size: 256 });
+      
+      const controlEmbed = new EmbedBuilder()
+        .setTitle('🔊 KONTROLNA TABLA GLASOVNOG KANALA')
+        .setColor('#53fc18')
+        .setThumbnail(avatarUrl)
+        .setDescription(
+          `Dobrodošli u vaš lični glasovni kanal, <@${member.id}>!\n\n` +
+          `Kao vlasnik, možete upravljati kanalom koristeći dugmiće ispod:\n\n` +
+          `• 🔒 **Zaključaj** / 🔓 **Otključaj**: Dozvolite ili zabranite ulazak drugima.\n` +
+          `• 👁️ **Sakrij** / 👀 **Prikaži**: Sakrijte ili prikažite kanal na listi.\n` +
+          `• ✍️ **Ime**: Promenite naziv kanala.\n` +
+          `• 👤 **Limit**: Postavite maksimalan broj mesta.\n` +
+          `• 🚫 **Izbaci**: Izbacite neželjene članove iz vašeg kanala.`
+        )
+        .setFooter({ text: 'ArsaOvde Shop • Voice Manager' });
+
+      const row1 = new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId('tempvc_lock').setLabel('Zaključaj').setEmoji('🔒').setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder().setCustomId('tempvc_unlock').setLabel('Otključaj').setEmoji('🔓').setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder().setCustomId('tempvc_hide').setLabel('Sakrij').setEmoji('👁️').setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder().setCustomId('tempvc_show').setLabel('Prikaži').setEmoji('👀').setStyle(ButtonStyle.Secondary)
+      );
+
+      const row2 = new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId('tempvc_name').setLabel('Ime').setEmoji('✍️').setStyle(ButtonStyle.Primary),
+        new ButtonBuilder().setCustomId('tempvc_limit').setLabel('Limit').setEmoji('👤').setStyle(ButtonStyle.Primary),
+        new ButtonBuilder().setCustomId('tempvc_kick').setLabel('Izbaci').setEmoji('🚫').setStyle(ButtonStyle.Danger)
+      );
+
+      await newVoiceChannel.send({ embeds: [controlEmbed], components: [row1, row2] }).catch(() => null);
+    } catch (err) {
+      console.error('Greška pri kreiranju temp voice kanala:', err);
+    }
+  }
+
+  // Automatsko brisanje praznih temp glasovnih kanala
+  if (oldState.channelId && tempVoiceChannels.has(oldState.channelId)) {
+    try {
+      const oldChannel = oldState.channel || await guild.channels.fetch(oldState.channelId).catch(() => null);
+      if (oldChannel && oldChannel.members.size === 0) {
+        tempVoiceChannels.delete(oldState.channelId);
+        await oldChannel.delete().catch(() => null);
+      }
+    } catch (err) {
+      console.error('Greška pri brisanju temp voice kanala:', err);
+    }
+  }
 
   if (!oldState.channelId && newState.channelId) {
     const embed = new EmbedBuilder()
