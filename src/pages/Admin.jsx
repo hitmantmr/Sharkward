@@ -90,6 +90,8 @@ const Admin = () => {
   const [loadingAdminUsers, setLoadingAdminUsers] = useState(false);
   const [selectedUserForPoints, setSelectedUserForPoints] = useState('');
   const [pointsCorrectionAmount, setPointsCorrectionAmount] = useState('');
+  const [selectedUserForRole, setSelectedUserForRole] = useState('');
+  const [selectedRole, setSelectedRole] = useState('Korisnik');
 
   const loadAdminUsers = async (showLoading = false) => {
     if (showLoading) setLoadingAdminUsers(true);
@@ -164,6 +166,20 @@ const Admin = () => {
     const ok = await modifyAdminUserPoints(selectedUserForPoints, amount);
     if (ok) {
       setPointsCorrectionAmount('');
+      loadAdminUsers(false);
+    }
+  };
+
+  const handleRoleCorrectionSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedUserForRole) {
+      alert('Molimo izaberite korisnika.');
+      return;
+    }
+    const ok = await updateAdminUserRole(selectedUserForRole, selectedRole);
+    if (ok) {
+      setSelectedUserForRole('');
+      setSelectedRole('Korisnik');
       loadAdminUsers(false);
     }
   };
@@ -840,19 +856,8 @@ const Admin = () => {
             <Users size={18} color="var(--accent-cyan)" /> Upravljanje Članovima & Permisijama
           </h3>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', flex: 1 }}>
-            {/* Pretraga Članova */}
-            <div style={{ ...styles.inputSearchWrapper, width: '100%' }}>
-              <Search size={16} color="var(--text-muted)" style={{ position: 'absolute', left: '12px' }} />
-              <input
-                type="text"
-                placeholder="Pretraži člana po Discord ili Kick imenu..."
-                value={userSearchQuery}
-                onChange={(e) => setUserSearchQuery(e.target.value)}
-                style={{ ...styles.input, paddingLeft: '38px', width: '100%' }}
-              />
-            </div>
-
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%', flex: 1 }}>
+            
             {/* Korekcija Poena Gledaoca Form */}
             <div style={{
               padding: '1.25rem',
@@ -862,7 +867,6 @@ const Admin = () => {
               display: 'flex',
               flexDirection: 'column',
               gap: '12px',
-              marginBottom: '4px'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '8px' }}>
                 <Coins size={18} color="#e5c158" />
@@ -936,118 +940,95 @@ const Admin = () => {
               </form>
             </div>
 
-            {/* Lista Članova sa upravljanjem */}
-            <div style={{ maxHeight: '420px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', paddingRight: '4px' }}>
-              {loadingAdminUsers ? (
-                <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>
-                  <Loader size={20} className="animate-spin" /> Učitavam članove...
+            {/* Korekcija Permisija Člana Form */}
+            <div style={{
+              padding: '1.25rem',
+              borderRadius: '12px',
+              backgroundColor: 'rgba(0, 0, 0, 0.25)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '8px' }}>
+                <ShieldCheck size={18} color="var(--accent-cyan)" />
+                <span style={{ fontSize: '0.85rem', fontWeight: '800', color: '#fff', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                  Korekcija Permisija Člana
+                </span>
+              </div>
+              
+              <form onSubmit={handleRoleCorrectionSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <label style={{ fontSize: '0.8rem', color: '#ccc', fontWeight: '600' }}>
+                    Izaberi Korisnika (Discord ID)
+                  </label>
+                  <select 
+                    value={selectedUserForRole} 
+                    onChange={(e) => setSelectedUserForRole(e.target.value)}
+                    style={{ 
+                      ...styles.input, 
+                      backgroundColor: 'rgba(0, 0, 0, 0.3)', 
+                      color: '#fff', 
+                      cursor: 'pointer',
+                      paddingRight: '30px'
+                    }}
+                    required
+                  >
+                    <option value="">-- Izaberi korisnika --</option>
+                    {adminUsersList.map(u => (
+                      <option key={u.discordId} value={u.discordId} style={{ backgroundColor: '#18181b', color: '#fff' }}>
+                        @{u.username} ({u.discordId}){u.kickUsername ? ` (Kick: @${u.kickUsername})` : ''} — [{u.role || 'Korisnik'}]
+                      </option>
+                    ))}
+                  </select>
                 </div>
-              ) : filteredAdminUsers.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-                  Nema pronađenih članova.
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <label style={{ fontSize: '0.8rem', color: '#ccc', fontWeight: '600' }}>
+                    Izaberi Permisiju / Ulogu na Sajtu
+                  </label>
+                  <select 
+                    value={selectedRole} 
+                    onChange={(e) => setSelectedRole(e.target.value)}
+                    style={{ 
+                      ...styles.input, 
+                      backgroundColor: 'rgba(0, 0, 0, 0.3)', 
+                      color: '#fff', 
+                      cursor: 'pointer',
+                      paddingRight: '30px'
+                    }}
+                    required
+                  >
+                    <option value="Korisnik">Korisnik (Standardni pristup)</option>
+                    <option value="Moderator">Moderator (Srednji nivo)</option>
+                    <option value="Admin">Admin (Pun pristup panelu)</option>
+                  </select>
                 </div>
-              ) : (
-                filteredAdminUsers.map(u => (
-                  <div key={u.discordId} style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '0.85rem 1rem', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)', backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
-                    {/* User Info Row */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        {u.kickAvatar ? (
-                          <img src={u.kickAvatar} alt={u.username} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(0, 240, 255, 0.3)' }} />
-                        ) : (
-                          <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255, 255, 255, 0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888' }}>
-                            <UserCheck size={16} />
-                          </div>
-                        )}
-                        <div>
-                          <div style={{ fontWeight: '700', fontSize: '0.9rem', color: '#fff' }}>
-                            @{u.username} {u.kickUsername && <span style={{ color: 'var(--accent-cyan)', fontSize: '0.8rem' }}>(Kick: @{u.kickUsername})</span>}
-                          </div>
-                          <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)' }}>
-                            ID: {u.discordId} • {u.hoursWatched}h gledanja
-                          </div>
-                        </div>
-                      </div>
 
-                      {/* Points badge */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: 'rgba(0, 240, 255, 0.1)', padding: '3px 8px', borderRadius: '20px', border: '1px solid rgba(0, 240, 255, 0.2)' }}>
-                        <Coins size={12} color="var(--accent-cyan)" />
-                        <span style={{ fontSize: '0.8rem', fontWeight: '800', color: 'var(--accent-cyan)' }}>{formatPoints(u.points)} pts</span>
-                      </div>
-                    </div>
-
-                    {/* Controls Row */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '4px', paddingTop: '8px', borderTop: '1px dashed rgba(255, 255, 255, 0.06)', flexWrap: 'wrap', gap: '8px' }}>
-                      {/* Permisija / Uloga */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Permisija:</span>
-                        <select
-                          value={u.role || 'Korisnik'}
-                          onChange={(e) => handleUpdateRoleAction(u.discordId, e.target.value)}
-                          style={{
-                            padding: '3px 8px',
-                            fontSize: '0.75rem',
-                            borderRadius: '6px',
-                            backgroundColor: u.role === 'Admin' ? 'rgba(83, 252, 24, 0.15)' : u.role === 'Moderator' ? 'rgba(0, 240, 255, 0.15)' : '#0c0f17',
-                            border: u.role === 'Admin' ? '1px solid #53fc18' : u.role === 'Moderator' ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
-                            color: u.role === 'Admin' ? '#53fc18' : u.role === 'Moderator' ? 'var(--accent-cyan)' : '#ccc',
-                            fontWeight: '700',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          <option value="Korisnik">Korisnik</option>
-                          <option value="Moderator">Moderator</option>
-                          <option value="Admin">Admin</option>
-                        </select>
-                      </div>
-
-                      {/* Dugmići za Poene */}
-                      <div style={{ display: 'flex', gap: '6px' }}>
-                        <button
-                          type="button"
-                          onClick={() => handleModifyPointsAction(u.discordId, parseInt(adminPointsDelta, 10) || 500)}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                            padding: '4px 10px',
-                            fontSize: '0.75rem',
-                            fontWeight: '800',
-                            borderRadius: '6px',
-                            backgroundColor: 'rgba(83, 252, 24, 0.15)',
-                            border: '1px solid #53fc18',
-                            color: '#53fc18',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          <UserPlus size={12} /> +{adminPointsDelta || 500}
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => handleModifyPointsAction(u.discordId, -(parseInt(adminPointsDelta, 10) || 500))}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                            padding: '4px 10px',
-                            fontSize: '0.75rem',
-                            fontWeight: '800',
-                            borderRadius: '6px',
-                            backgroundColor: 'rgba(239, 68, 68, 0.15)',
-                            border: '1px solid rgb(239, 68, 68)',
-                            color: 'rgb(239, 68, 68)',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          <UserMinus size={12} /> -{adminPointsDelta || 500}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
+                <button 
+                  type="submit" 
+                  className="glow-btn-cyan"
+                  style={{
+                    width: '100%',
+                    backgroundColor: 'var(--accent-cyan)',
+                    color: '#000',
+                    border: 'none',
+                    padding: '11px',
+                    borderRadius: '8px',
+                    fontSize: '0.85rem',
+                    fontWeight: '800',
+                    cursor: 'pointer',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    marginTop: '4px',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  POTVRDI PERMISIJU
+                </button>
+              </form>
             </div>
+
           </div>
         </div>
 
