@@ -125,20 +125,31 @@ function writeDb(data) {
   }
 }
 
+const LOG_CHANNEL_IDS = {
+  'isporuke': '1525282821558636704',
+  'kupovine': '1525282849174061067',
+  'poeni-admin': '1525282863061405816',
+  'artikli-admin': '1525282873517670480',
+  'kick-verifikacija': '1525282881784516699',
+  'admin-permisije': '1525282890009677976',
+  'sajt-podesavanja': '1525282900075872328',
+  'giveaways-admin': '1525282907575418971'
+};
+
 async function sendSiteLog(channelName, embed) {
   try {
-    const guild = await client.guilds.fetch('1525227708369184747');
-    if (!guild) return;
-    
-    const channel = guild.channels.cache.find(c => 
-      c.type === ChannelType.GuildText && 
-      c.name.toLowerCase().includes(channelName.toLowerCase())
-    );
-    
+    const targetChannelId = LOG_CHANNEL_IDS[channelName.toLowerCase()];
+    if (!targetChannelId) {
+      console.warn(`[SiteLog] Nepoznat log kanal u mapi: ${channelName}`);
+      return;
+    }
+
+    const channel = await client.channels.fetch(targetChannelId);
     if (channel) {
       await channel.send({ embeds: [embed] });
+      console.log(`[SiteLog] Log uspešno poslat u kanal sa ID: ${targetChannelId} (#${channel.name})`);
     } else {
-      console.warn(`[SiteLog] Kanal sa nazivom koji sadrži "${channelName}" nije pronađen.`);
+      console.warn(`[SiteLog] Kanal sa ID: ${targetChannelId} nije pronađen.`);
     }
   } catch (err) {
     console.warn('[SiteLog] Greška pri slanju loga na Discord:', err.message);
@@ -204,6 +215,9 @@ const STATS_CATEGORY_NAME = '📌 -「 Statistika 」';
 client.once('ready', async () => {
   console.log(`\n=============================================`);
   console.log(`🤖 Discord bot je spreman i ulogovan kao: ${client.user.tag}`);
+  client.guilds.cache.forEach(guild => {
+    console.log(`Joined Guild: ${guild.name} (ID: ${guild.id})`);
+  });
   console.log(`=============================================\n`);
 
   await registerSlashCommands();
