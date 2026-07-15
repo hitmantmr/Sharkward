@@ -16,7 +16,8 @@ const {
   AuditLogEvent,
   ActionRowBuilder,
   ButtonBuilder,
-  ButtonStyle
+  ButtonStyle,
+  AttachmentBuilder
 } = require('discord.js');
 
 // Inicijalizacija Discord klijenta sa potrebnim intentima
@@ -172,6 +173,9 @@ async function publishPartnershipEmbeds() {
         await m.delete().catch(() => null);
       }
 
+      const logoPath = path.join(__dirname, '../public/img/csgoskins logo.png');
+      const logoAttachment = new AttachmentBuilder(logoPath, { name: 'csgoskins.png' });
+
       const embed = new EmbedBuilder()
         .setTitle('🔥 CSGO-Skins.com Partnership')
         .setColor('#00e5ff')
@@ -182,7 +186,7 @@ async function publishPartnershipEmbeds() {
           { name: '🔥 Brza Isplata', value: 'Direktno podizanje osvojenih skinova u tvoj Steam inventar bez čekanja.' },
           { name: '🔑 Promo Kod', value: '```SHARKE```', inline: false }
         )
-        .setThumbnail('https://items.csgo-skins.com/images/2903b4b382566bbb191fa712a69da6aa3c4cad2f12a708b88878a8bb05599a75.webp')
+        .setThumbnail('attachment://csgoskins.png')
         .setFooter({ text: 'Igraj odgovorno (18+) • SHARKAWARD Lojaliti Program' })
         .setTimestamp();
 
@@ -193,7 +197,7 @@ async function publishPartnershipEmbeds() {
           .setStyle(ButtonStyle.Link)
       );
 
-      await channel.send({ embeds: [embed], components: [row] });
+      await channel.send({ embeds: [embed], files: [logoAttachment], components: [row] });
       console.log('✅ CSGO-Skins partnerski embed uspešno postavljen.');
     }
   } catch (err) {
@@ -211,6 +215,9 @@ async function publishPartnershipEmbeds() {
         await m.delete().catch(() => null);
       }
 
+      const logoPath = path.join(__dirname, '../public/img/mozzart logo.png');
+      const logoAttachment = new AttachmentBuilder(logoPath, { name: 'mozzart.png' });
+
       const embed = new EmbedBuilder()
         .setTitle('🏆 Mozzart Bet Partnership')
         .setColor('#e5c158')
@@ -221,7 +228,7 @@ async function publishPartnershipEmbeds() {
           { name: '📈 Najveće Kvote na Svetu', value: 'Garantovano najbolji uslovi klađenja za sportske i uživo događaje.' },
           { name: '🔑 Promo Kod', value: '```AJKULA```', inline: false }
         )
-        .setThumbnail('https://cdn.discordapp.com/emojis/1109968988636184646.webp?size=128&quality=lossless')
+        .setThumbnail('attachment://mozzart.png')
         .setFooter({ text: 'Igraj odgovorno (18+) • SHARKAWARD Lojaliti Program' })
         .setTimestamp();
 
@@ -232,7 +239,7 @@ async function publishPartnershipEmbeds() {
           .setStyle(ButtonStyle.Link)
       );
 
-      await channel.send({ embeds: [embed], components: [row] });
+      await channel.send({ embeds: [embed], files: [logoAttachment], components: [row] });
       console.log('✅ Mozzart Bet partnerski embed uspešno postavljen.');
     }
   } catch (err) {
