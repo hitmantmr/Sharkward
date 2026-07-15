@@ -2,32 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useRef } from 'r
 
 const AppContext = createContext();
 
-const initialSkins = [
-  {
-    id: '1',
-    name: 'CSGO SKINS - Gift Card $10',
-    type: 'GiftCard',
-    rarity: 'milspec',
-    condition: 'GIFT CARD',
-    price: 1300,
-    estPrice: '$10.00',
-    stock: 10,
-    image: 'gift_card_10',
-    status: 'available',
-  },
-  {
-    id: '2',
-    name: 'CSGO SKINS - Gift Card $5',
-    type: 'GiftCard',
-    rarity: 'milspec',
-    condition: 'GIFT CARD',
-    price: 700,
-    estPrice: '$5.00',
-    stock: 10,
-    image: 'gift_card_5',
-    status: 'available',
-  }
-];
+const initialSkins = [];
 
 const initialGiveaways = [];
 
