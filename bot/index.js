@@ -256,6 +256,220 @@ async function publishPartnershipEmbeds() {
   }
 }
 
+async function publishLiveShopCategoryEmbeds() {
+  console.log('🔄 Proveravam i osvežavam Shop kategoriju embeds...');
+  const shopChannelId = '1525282817041367040';
+  const giveawaysChannelId = '1525282842576420946';
+  const leaderboardChannelId = '1525282860980768830';
+  const linkChannelId = '1525282871558930593';
+
+  const data = readDb();
+
+  // 1. SHOP CHANNEL (Dostupni skinovi)
+  try {
+    const channel = await client.channels.fetch(shopChannelId);
+    if (channel && channel.isTextBased()) {
+      const messages = await channel.messages.fetch({ limit: 50 });
+      const botMsgs = messages.filter(m => m.author.id === client.user.id);
+      for (const m of botMsgs.values()) {
+        await m.delete().catch(() => null);
+      }
+
+      const availableSkins = (data.skins || []).filter(s => s.status === 'available' || !s.status);
+
+      const embed = new EmbedBuilder()
+        .setTitle('🛒 SHARKE SHOP • Dostupni Skinovi')
+        .setColor('#00E5FF')
+        .setDescription(
+          'Dobrodošli u zvanični **Sharke Shop**!\n' +
+          'Zamenite vaše sakupljene bodove sa gledanja strimova za vrhunske CS2 skinove na [sharkaward.com](https://sharkaward.com).\n\n' +
+          '🔥 **Trenutno dostupni artikli u prodavnici:**'
+        )
+        .setFooter({ text: 'Automatska sinhronizacija • SHARKAWARD Shop' })
+        .setTimestamp();
+
+      if (availableSkins.length === 0) {
+        embed.addFields({ name: 'ℹ️ Obaveštenje', value: 'Trenutno nema dostupnih skinova na lageru. Novi skinovi se dodaju redovno!', inline: false });
+      } else {
+        availableSkins.slice(0, 15).forEach((skin, index) => {
+          const priceStr = skin.price ? skin.price.toLocaleString() : '0';
+          const estStr = skin.estPrice ? ` (${skin.estPrice})` : '';
+          embed.addFields({
+            name: `${index + 1}. 🔫 ${skin.name}`,
+            value: `💰 **Cena:** \`${priceStr} poena\`${estStr}\nSTATUS: \`Dostupno za preuzimanje\``,
+            inline: false
+          });
+        });
+      }
+
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setLabel('🛒 Otvori Shop & Kupi Skin')
+          .setURL('https://sharkaward.com')
+          .setStyle(ButtonStyle.Link)
+      );
+
+      await channel.send({ embeds: [embed], components: [row] });
+      console.log('✅ Shop live embed uspešno osvežen.');
+    }
+  } catch (err) {
+    console.error('❌ Greška pri osvežavanju Shop live embeda:', err.message);
+  }
+
+  // 2. GIVEAWAYS CHANNEL (Aktivne nagradne igre)
+  try {
+    const channel = await client.channels.fetch(giveawaysChannelId);
+    if (channel && channel.isTextBased()) {
+      const messages = await channel.messages.fetch({ limit: 50 });
+      const botMsgs = messages.filter(m => m.author.id === client.user.id);
+      for (const m of botMsgs.values()) {
+        await m.delete().catch(() => null);
+      }
+
+      const activeGiveaways = (data.giveaways || []).filter(g => g.status === 'ACTIVE');
+
+      const embed = new EmbedBuilder()
+        .setTitle('🎁 SHARKE GIVEAWAYS • Aktivne Nagradne Igre')
+        .setColor('#FF0055')
+        .setDescription(
+          'Učestvujte u zvaničnim nagradnim igrama na sajtu i osvojite CS2 skinove!\n' +
+          'Učestvovanje je otvoreno za sve članove na [sharkaward.com](https://sharkaward.com).\n\n' +
+          '🎉 **Trenutno aktivni giveaways:**'
+        )
+        .setFooter({ text: 'Automatska sinhronizacija • SHARKAWARD Giveaways' })
+        .setTimestamp();
+
+      if (activeGiveaways.length === 0) {
+        embed.addFields({ name: 'ℹ️ Obaveštenje', value: 'Trenutno nema aktivnih nagradnih igara. Zapratite obaveštenja za sledeći giveaway!', inline: false });
+      } else {
+        activeGiveaways.forEach((gw, index) => {
+          const valStr = gw.value ? ` | 💵 **Vrednost:** \`${gw.value}\`` : '';
+          const ticketStr = gw.ticketCost ? `\n🎟️ **Ulaznica:** \`${gw.ticketCost} poena\`` : '';
+          const minDepStr = gw.minDeposit ? ` | 💳 **Min Depozit:** \`${gw.minDeposit}\`` : '';
+
+          embed.addFields({
+            name: `${index + 1}. 🎁 ${gw.prize}`,
+            value: `Status: 🟢 **AKTIVNO**${valStr}${ticketStr}${minDepStr}`,
+            inline: false
+          });
+
+          if (index === 0 && gw.imageUrl) {
+            embed.setThumbnail(gw.imageUrl);
+          }
+        });
+      }
+
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setLabel('🎁 Učestvuj na Sajtu')
+          .setURL('https://sharkaward.com')
+          .setStyle(ButtonStyle.Link)
+      );
+
+      await channel.send({ embeds: [embed], components: [row] });
+      console.log('✅ Giveaways live embed uspešno osvežen.');
+    }
+  } catch (err) {
+    console.error('❌ Greška pri osvežavanju Giveaways live embeda:', err.message);
+  }
+
+  // 3. LEADERBOARD CHANNEL (Top 10 poena)
+  try {
+    const channel = await client.channels.fetch(leaderboardChannelId);
+    if (channel && channel.isTextBased()) {
+      const messages = await channel.messages.fetch({ limit: 50 });
+      const botMsgs = messages.filter(m => m.author.id === client.user.id);
+      for (const m of botMsgs.values()) {
+        await m.delete().catch(() => null);
+      }
+
+      const usersArray = Object.entries(data.users || {}).map(([id, u]) => ({
+        id,
+        username: u.username || u.kickUsername || id,
+        points: u.points || 0
+      }));
+
+      usersArray.sort((a, b) => b.points - a.points);
+      const top10 = usersArray.slice(0, 10);
+      const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
+
+      let leaderboardText = '';
+      if (top10.length === 0) {
+        leaderboardText = 'Nema podataka u bazi poena.';
+      } else {
+        leaderboardText = top10.map((u, index) => {
+          const medal = medals[index] || `#${index + 1}`;
+          const formattedPoints = u.points.toLocaleString();
+          return `${medal} **${u.username}** — \`${formattedPoints} poena\``;
+        }).join('\n\n');
+      }
+
+      const embed = new EmbedBuilder()
+        .setTitle('🏆 SHARKE LEADERBOARD • Rang Lista Poena')
+        .setColor('#FFD700')
+        .setDescription(
+          'Top 10 članova Sharke zajednice sa najvećim brojem sakupljenih poena!\n' +
+          'Sakupljajte poene gledajući strimove i otključajte besplatne skinove na [sharkaward.com](https://sharkaward.com).\n\n' +
+          leaderboardText
+        )
+        .setFooter({ text: 'Osvežava se na svakih 5 minuta • SHARKAWARD Top Lista' })
+        .setTimestamp();
+
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setLabel('🏆 Pogledaj Celu Rangu Listu')
+          .setURL('https://sharkaward.com')
+          .setStyle(ButtonStyle.Link)
+      );
+
+      await channel.send({ embeds: [embed], components: [row] });
+      console.log('✅ Leaderboard live embed uspešno osvežen.');
+    }
+  } catch (err) {
+    console.error('❌ Greška pri osvežavanju Leaderboard live embeda:', err.message);
+  }
+
+  // 4. LINK OD SHOPA CHANNEL (Prelepi embed sa linkom)
+  try {
+    const channel = await client.channels.fetch(linkChannelId);
+    if (channel && channel.isTextBased()) {
+      const messages = await channel.messages.fetch({ limit: 50 });
+      const botMsgs = messages.filter(m => m.author.id === client.user.id);
+      for (const m of botMsgs.values()) {
+        await m.delete().catch(() => null);
+      }
+
+      const embed = new EmbedBuilder()
+        .setTitle('🌐 SHARKAWARD.COM • Zvanični Sharke Shop')
+        .setColor('#00FF88')
+        .setDescription(
+          '👑 **Dobrodošli na zvaničnu platformu Sharke zajednice!**\n\n' +
+          '🔗 **Link za pristup sajtu:** https://sharkaward.com\n\n' +
+          '💎 **Šta sve možete raditi na sajtu?**\n' +
+          '• 🛒 **Kupovina Skinova**: Menjajte poene za CS2 skinove u prodavnici.\n' +
+          '• 🎁 **Giveaways**: Učestvujte u ekskluzivnim nagradnim igrama.\n' +
+          '• 📊 **Live Leaderboard**: Pratite vaš rang i sakupljene bodove.\n' +
+          '• 🎁 **Dnevne Nagrade**: Povežite vaš Kick nalog i preuzimajte bonuse!\n\n' +
+          '🚀 Kliknite na dugme ispod i posetite naš sajt odmah!'
+        )
+        .setFooter({ text: 'SHARKAWARD Lojaliti Program • Sva prava zadržana' })
+        .setTimestamp();
+
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setLabel('🔗 Poseti Sharkaward Shop')
+          .setURL('https://sharkaward.com')
+          .setStyle(ButtonStyle.Link)
+      );
+
+      await channel.send({ embeds: [embed], components: [row] });
+      console.log('✅ Link od shopa embed uspešno postavljen.');
+    }
+  } catch (err) {
+    console.error('❌ Greška pri postavljanju Link od shopa embeda:', err.message);
+  }
+}
+
 function getUserProfile(discordId, username) {
   const data = readDb();
   if (!data.users) data.users = {};
@@ -323,6 +537,12 @@ client.once('ready', async () => {
   await registerSlashCommands();
   connectToKickWS();
   publishPartnershipEmbeds();
+
+  // Objavljivanje i sinhronizacija Live Shop soba (Shop, Giveaways, Leaderboard, Link)
+  publishLiveShopCategoryEmbeds();
+  setInterval(() => {
+    publishLiveShopCategoryEmbeds();
+  }, 5 * 60 * 1000); // 5 minuta
 
   // Pokrećemo periodično ažuriranje statistike na svakih 6 minuta za sve servere na kojima je bot
   client.guilds.cache.forEach(guild => {
@@ -3158,6 +3378,7 @@ app.post('/api/admin/skins/add', (req, res) => {
     logEmbed.setThumbnail(newSkin.image);
   }
   sendSiteLog('artikli-admin', logEmbed);
+  publishLiveShopCategoryEmbeds();
 
   res.json({ success: true, skins: data.skins });
 });
@@ -3169,6 +3390,7 @@ app.post('/api/admin/skins/delete', (req, res) => {
     const deletedSkin = data.skins?.find(s => s.id && s.id.toString() === skinId.toString());
     data.skins = data.skins?.filter(s => s.id && s.id.toString() !== skinId.toString()) || [];
     writeDb(data);
+    publishLiveShopCategoryEmbeds();
 
     const logEmbed = new EmbedBuilder()
       .setTitle('🗑️ Artikal Obrisan')
