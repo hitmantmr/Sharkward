@@ -53,7 +53,6 @@ const Admin = () => {
     updateAdminUserRole,
     syncGiveaways,
     clearAllGiveaways,
-    resetAllData,
     isLive,
     setIsLive
   } = useApp();
@@ -1152,12 +1151,6 @@ const Admin = () => {
         </form>
       </section>
 
-      {/* Reset dugme */}
-      <div style={styles.resetContainer}>
-        <button style={styles.resetBtn} onClick={resetAllData}>
-          <RotateCcw size={16} /> Resetuj Sve Podatke (Fabričko Podešavanje)
-        </button>
-      </div>
     </div>
   );
 };
