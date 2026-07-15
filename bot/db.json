@@ -40,7 +40,22 @@
     "kick": 6543,
     "registered": 1
   },
-  "skins": [],
+  "skins": [
+    {
+      "name": "★ Specialist Gloves | Marble Fade",
+      "type": "Gloves",
+      "rarity": "covert",
+      "condition": "FN",
+      "price": 192265,
+      "image": "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Tk71ruQBH4jYLf-i5U-fe9V7d9JfOaD2uZ0vpJveB7TSW2qhsmtzi6lob-KT-JOlUhC8Z2QOUDsxa6xIe0N7nk5ALWjolMm3793SxAvX0_5-sBUaNz-rqX0V-xn3he8w",
+      "imageUrl": "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Tk71ruQBH4jYLf-i5U-fe9V7d9JfOaD2uZ0vpJveB7TSW2qhsmtzi6lob-KT-JOlUhC8Z2QOUDsxa6xIe0N7nk5ALWjolMm3793SxAvX0_5-sBUaNz-rqX0V-xn3he8w",
+      "estPrice": "$1478.96",
+      "stock": 1,
+      "codes": [],
+      "id": "1784143115943",
+      "status": "available"
+    }
+  ],
   "giveaways": [
     {
       "id": "gw_stiletto_knife___tiger_tooth__minimal_wear__10_16_2025__12_54_00_AM",

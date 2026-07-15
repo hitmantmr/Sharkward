@@ -227,6 +227,7 @@ export const AppProvider = ({ children }) => {
           kickId: data.kickId || null,
           kickAvatar: data.kickAvatar || null,
           lastRewardAt: data.lastRewardAt || null,
+          tradeUrl: data.tradeUrl || prev.tradeUrl || localStorage.getItem(`sharke_trade_url_${prev.discordId}`) || ''
         }));
       }
     } catch (err) {
@@ -844,12 +845,27 @@ export const AppProvider = ({ children }) => {
     addToast('Svi podaci vraćeni na fabrička podešavanja.', 'info');
   };
 
-  const saveTradeUrl = (url) => {
+  const saveTradeUrl = async (url) => {
     setUser(prev => ({
       ...prev,
       tradeUrl: url
     }));
-    addToast('Steam Trade URL je uspešno sačuvan!', 'success');
+    if (user && user.discordId) {
+      try {
+        localStorage.setItem(`sharke_trade_url_${user.discordId}`, url);
+        await fetch(`${API_URL}/user/trade-url`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            discordId: user.discordId,
+            tradeUrl: url
+          })
+        });
+      } catch (err) {
+        console.warn('Greška pri čuvanju Trade URL-a na serveru:', err);
+      }
+    }
+    addToast('Steam Trade URL je zauvek sačuvan u tvom profilu!', 'success');
   };
 
   return (

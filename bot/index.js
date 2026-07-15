@@ -3204,6 +3204,18 @@ app.get('/api/user/:discordId', (req, res) => {
   res.json(user);
 });
 
+// 8. POST /api/user/trade-url -> Trajno čuvanje Steam Trade URL-a korisnika u bazi
+app.post('/api/user/trade-url', (req, res) => {
+  const { discordId, tradeUrl } = req.body;
+  const data = readDb();
+  if (data.users[discordId]) {
+    data.users[discordId].tradeUrl = tradeUrl;
+    writeDb(data);
+    return res.json({ success: true, tradeUrl });
+  }
+  res.status(404).json({ error: 'Korisnik nije pronađen.' });
+});
+
 // 9. POST /api/buy-skin -> Kupovina skina iz prodavnice (dinamički obračunate cene na serveru)
 app.post('/api/buy-skin', (req, res) => {
   const { discordId, skinId } = req.body;
