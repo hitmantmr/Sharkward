@@ -35,7 +35,7 @@ const AppContent = () => {
   };
 
   const [activeTab, setActiveTabState] = useState(getInitialTab);
-  const { isAdmin, toggleAdminMode } = useApp();
+  const { isAdmin, isUserAllowedAdmin, toggleAdminMode } = useApp();
 
   const setActiveTab = (tab) => {
     if (tab === activeTab) {
@@ -78,7 +78,7 @@ const AppContent = () => {
       case 'leaderboard':
         return <Leaderboard />;
       case 'admin':
-        return isAdmin ? <Admin /> : <Home setActiveTab={setActiveTab} />;
+        return (isAdmin && isUserAllowedAdmin) ? <Admin /> : <Home setActiveTab={setActiveTab} />;
       default:
         return <Home setActiveTab={setActiveTab} />;
     }

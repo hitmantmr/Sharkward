@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { Coins, ShieldCheck, Lock, Unlock } from 'lucide-react';
 
 const Navbar = ({ activeTab, setActiveTab }) => {
-  const { user, isAdmin, toggleAdminMode, isLive } = useApp();
+  const { user, isAdmin, isUserAllowedAdmin, toggleAdminMode, isLive } = useApp();
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -81,8 +81,8 @@ const Navbar = ({ activeTab, setActiveTab }) => {
             Leaderboard
           </button>
 
-          {/* Admin sekcija - vidljiva samo ako je admin mod uključen */}
-          {isAdmin && (
+          {/* Admin sekcija - vidljiva samo ako je admin mod uključen i korisnik ima dozvolu */}
+          {isAdmin && isUserAllowedAdmin && (
             <button
               className={`nav-link-btn admin-link-btn ${activeTab === 'admin' ? 'active' : ''}`}
               onClick={() => handleTabClick('admin')}
@@ -105,18 +105,20 @@ const Navbar = ({ activeTab, setActiveTab }) => {
             </button>
           )}
 
-          {/* Admin Lock Toggle */}
-          <button
-            style={{
-              ...styles.lockBtn,
-              backgroundColor: isAdmin ? 'rgba(0, 98, 255, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-              borderColor: isAdmin ? '#0062ff' : 'rgba(255, 255, 255, 0.08)'
-            }}
-            onClick={toggleAdminMode}
-            title={isAdmin ? "Ugasni Admin mod" : "Uključi Admin mod (Sharke)"}
-          >
-            {isAdmin ? <Unlock size={18} color="#00f0ff" /> : <Lock size={18} color="#9ca3af" />}
-          </button>
+          {/* Admin Lock Toggle - vidljiv isključivo dozvoljenim administratorima */}
+          {isUserAllowedAdmin && (
+            <button
+              style={{
+                ...styles.lockBtn,
+                backgroundColor: isAdmin ? 'rgba(0, 98, 255, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                borderColor: isAdmin ? '#0062ff' : 'rgba(255, 255, 255, 0.08)'
+              }}
+              onClick={toggleAdminMode}
+              title={isAdmin ? "Ugasni Admin mod" : "Uključi Admin mod (Sharke)"}
+            >
+              {isAdmin ? <Unlock size={18} color="#00f0ff" /> : <Lock size={18} color="#9ca3af" />}
+            </button>
+          )}
         </div>
       </div>
     </nav>

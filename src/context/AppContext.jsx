@@ -187,6 +187,9 @@ export const AppProvider = ({ children }) => {
     }
   });
 
+  const ALLOWED_ADMIN_IDS = ['404365998393655298', '436295751543554050'];
+  const isUserAllowedAdmin = user && user.discordId && ALLOWED_ADMIN_IDS.includes(String(user.discordId));
+
   const [skins, setSkins] = useState(() => {
     const saved = localStorage.getItem('sharke_skins');
     if (saved) {
@@ -271,6 +274,12 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('sharke_leaderboard', JSON.stringify(leaderboard));
   }, [leaderboard]);
+
+  useEffect(() => {
+    if (isAdmin && !isUserAllowedAdmin) {
+      setIsAdmin(false);
+    }
+  }, [user.discordId, isAdmin, isUserAllowedAdmin]);
 
   // --- Učitavanje skinova sa API-ja sa dinamički izračunatim cenama ---
   const fetchSkinsFromApi = async () => {
@@ -649,6 +658,10 @@ export const AppProvider = ({ children }) => {
 
   // --- Admin Funkcije (Lokalne) ---
   const toggleAdminMode = () => {
+    if (!isUserAllowedAdmin) {
+      addToast('Nemate dozvolu za pristup admin panelu.', 'error');
+      return;
+    }
     setIsAdmin(prev => {
       const next = !prev;
       addToast(next ? 'Admin mod aktiviran (Sharke).' : 'Admin mod ugašen.', 'info');
@@ -934,6 +947,7 @@ export const AppProvider = ({ children }) => {
       user,
       API_URL,
       isAdmin,
+      isUserAllowedAdmin,
       skins,
       giveaways,
       leaderboard,
