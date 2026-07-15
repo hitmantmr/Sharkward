@@ -2848,7 +2848,8 @@ app.post('/api/admin/skins/add', (req, res) => {
     .setDescription(`Novi skin je dodat u prodavnicu.`)
     .addFields(
       { name: 'Naziv', value: newSkin.name, inline: true },
-      { name: 'Cena (USD)', value: `$${newSkin.priceUsd}`, inline: true }
+      { name: 'Cena u poenima', value: `${newSkin.price || 0} poena`, inline: true },
+      { name: 'Vrednost (USD)', value: `${newSkin.estPrice || 'N/A'}`, inline: true }
     )
     .setTimestamp();
   if (newSkin.image) {
