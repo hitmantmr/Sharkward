@@ -1,65 +1,72 @@
 import React from 'react';
-import { ShieldCheck, Lock, CheckCircle, Home } from 'lucide-react';
+import { ShieldCheck, Lock, Home } from 'lucide-react';
 
 const Privacy = ({ setActiveTab }) => {
   return (
     <div style={styles.container} className="reveal-on-scroll">
       <div style={styles.header}>
         <ShieldCheck size={36} color="var(--accent-cyan)" />
-        <h1 style={styles.title}>Politika Privatnosti</h1>
-        <p style={styles.subtitle}>Poslednji put ažurirano: 15. Jul 2026.</p>
+        <h1 style={styles.title}>Privacy Policy</h1>
+        <p style={styles.subtitle}>Last updated: July 2026</p>
       </div>
 
       <div style={styles.card} className="glass">
+        
+        {/* 1. Information We Collect */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>1. Informacije koje Prikupljamo</h3>
+          <h3 style={styles.sectionTitle}>1. Information We Collect</h3>
           <p style={styles.text}>
-            Kako bismo vam omogućili sakupljanje poena i nesmetano korišćenje prodavnice, prikupljamo samo najneophodnije javne informacije koje nam sami stavite na raspolaganje prilikom prijave:
+            We only collect the minimum necessary public information required to enable stream watchtime tracking, reward calculations, and store deliveries:
           </p>
           <ul style={styles.list}>
-            <li><strong>Discord Nalog:</strong> Prikupljamo vaš jedinstveni Discord ID, Discord korisničko ime i profilnu sliku radi prepoznavanja.</li>
-            <li><strong>Kick Nalog:</strong> Kada povežete vaš Kick nalog, beležimo vaše Kick korisničko ime radi praćenja statusa gledanja strima.</li>
-            <li><strong>Statistika Aktivnosti:</strong> Pratimo broj sati koje provedete gledajući Sharke strim dok ste ulogovani, kao i istoriju vaših preuzetih skinova u prodavnici.</li>
-            <li><strong>Steam Trade URL:</strong> Ukoliko odlučite da ga sačuvate na vašem profilu, koristimo ga isključivo za slanje osvojenih skinova.</li>
+            <li><strong>Discord Account:</strong> We collect your public Discord ID, username, and avatar URL to authenticate your session and identity on the platform.</li>
+            <li><strong>Kick Account:</strong> When you link your Kick account, we save your Kick username to track stream viewing status and duration.</li>
+            <li><strong>Activity Statistics:</strong> We track your watchtime hours on the Sharke stream and the transaction logs of items you purchase in our store.</li>
+            <li><strong>Steam Trade URL:</strong> If you input it on your profile, we save your Trade URL solely to facilitate the delivery of CS2 skins.</li>
           </ul>
         </div>
 
+        {/* 2. How We Use Your Information */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>2. Svrha Korišćenja Podataka</h3>
+          <h3 style={styles.sectionTitle}>2. How We Use Your Information</h3>
           <p style={styles.text}>
-            Vaše podatke koristimo isključivo u sledeće svrhe:
+            Your information is used strictly for the following purposes:
           </p>
           <ul style={styles.list}>
-            <li>Kalkulacija i dodela poena za vernost (sati gledanja).</li>
-            <li>Isporuka skinova i vaučera koje naručite u našem shopu.</li>
-            <li>Zaštita platforme od zloupotreba, višestrukih naloga i botova.</li>
-            <li>Obezbeđivanje stabilne tehničke podrške u slučaju problema sa poenima.</li>
+            <li>To calculate and award loyalty points based on your watchtime.</li>
+            <li>To process and deliver CS2 skins and partner gift vouchers to your account.</li>
+            <li>To prevent fraud, multiple account creation (multi-accounting), and bot manipulation.</li>
+            <li>To provide customer support and troubleshoot points balance discrepancies.</li>
           </ul>
         </div>
 
+        {/* 3. Security and Storage */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>3. Bezbednost i Skladištenje Podataka</h3>
+          <h3 style={styles.sectionTitle}>3. Security and Storage</h3>
           <div style={styles.securityBox}>
             <Lock size={20} color="var(--accent-cyan)" style={{ flexShrink: 0 }} />
             <p style={{ ...styles.text, margin: 0 }}>
-              Svi vaši podaci se skladište u enkriptovanoj bazi podataka na našem sigurnom serveru. <strong>Nikada nećemo tražiti lozinku vašeg Discord, Kick ili Steam naloga.</strong> Povezivanje se vrši isključivo preko sigurnog Discord i Kick OAuth sistema.
+              All user data is stored securely in an encrypted database on our remote server. <strong>We will never request your Discord, Kick, or Steam passwords.</strong> All authentication and account linking is done securely using Discord and Kick OAuth APIs.
             </p>
           </div>
         </div>
 
+        {/* 4. Data Sharing */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>4. Deljenje Podataka sa Trećim Licima</h3>
+          <h3 style={styles.sectionTitle}>4. Data Sharing</h3>
           <p style={styles.text}>
-            Mi cenimo vašu privatnost. Vaše podatke <strong>nikada ne delimo, ne prodajemo niti iznajmljujemo</strong> marketinškim agencijama ili trećim licima. Podaci se koriste isključivo unutar platforme SHARKAWARD.
+            We respect your privacy. We **never share, sell, or rent** your personal data to advertisers, marketing agencies, or any third parties. All collected data is processed strictly within the SHARKAWARD platform.
           </p>
         </div>
 
+        {/* 5. User Rights */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>5. Prava Korisnika</h3>
+          <h3 style={styles.sectionTitle}>5. User Rights</h3>
           <p style={styles.text}>
-            U svakom trenutku imate pravo da zahtevate uvid u podatke koje čuvamo o vama ili da zatražite potpuno brisanje vašeg profila i svih povezanih podataka iz naše baze podataka. Za ovakve zahteve se možete obratiti administraciji direktno na Discord serveru.
+            You have the right to request access to the data we store about you, or to request the complete deletion of your account and all associated data from our database at any time. To make such requests, please contact the site administrators directly on the official Discord server.
           </p>
         </div>
+
       </div>
 
       <div style={styles.btnRow}>
@@ -68,7 +75,7 @@ const Privacy = ({ setActiveTab }) => {
           style={styles.backBtn}
           onClick={() => setActiveTab('home')}
         >
-          <Home size={18} /> POVRATAK NA POČETNU
+          <Home size={18} /> BACK TO HOME
         </button>
       </div>
     </div>
@@ -91,7 +98,7 @@ const styles = {
     gap: '10px',
   },
   title: {
-    fontSize: '2rem',
+    fontSize: '2.2rem',
     fontWeight: '900',
     letterSpacing: '1px',
     textTransform: 'uppercase',
@@ -127,7 +134,7 @@ const styles = {
   },
   text: {
     fontSize: '0.9rem',
-    lineHeight: '1.6',
+    lineHeight: '1.65',
     color: '#cbd5e1',
     margin: 0,
   },
