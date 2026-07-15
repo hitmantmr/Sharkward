@@ -124,11 +124,11 @@ const Home = ({ setActiveTab }) => {
           </a>
           
           <h1 className="landing-title">
-            Gledaj Live, <span className="neon-text-blue">Skupljaj Poene</span> & Uzmi CS:GO Skinove
+            Gledaj Live, <span className="neon-text-blue">Skupljaj Poene</span> & Uzmi CS2 Skinove
           </h1>
           
           <p className="landing-subtitle">
-            Poveži svoj Kick i Discord nalog, skupljaj poene dok gledaš strim i zameni ih za najjače CS:GO skinove u našem shopu potpuno besplatno.
+            Poveži svoj Kick i Discord nalog, skupljaj poene dok gledaš strim i zameni ih za najjače CS2 skinove u našem shopu potpuno besplatno.
           </p>
           
           <div className="landing-btns">
@@ -395,7 +395,7 @@ const Home = ({ setActiveTab }) => {
                 <span className="premium-step-num">04</span>
                 <div className="premium-step-body">
                   <span className="premium-step-title">Zameni poene</span>
-                  <span className="premium-step-desc">Kupi najjače CS:GO skinove u našoj prodavnici</span>
+                  <span className="premium-step-desc">Kupi najjače CS2 skinove u našoj prodavnici</span>
                 </div>
               </div>
             </div>

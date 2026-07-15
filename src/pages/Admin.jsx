@@ -459,7 +459,7 @@ const Admin = () => {
   };
 
   const handleSelectGiftCardPreset = (amount) => {
-    const cardName = `CSGO SKINS - Gift Card $${amount}`;
+    const cardName = `CS2 SKINS - Gift Card $${amount}`;
     const cardImage = `/img/giftcards/${amount}usd.svg`;
     setSkinName(cardName);
     setSkinType('Gift Card');
@@ -612,7 +612,7 @@ const Admin = () => {
                   }}
                   style={{ accentColor: 'var(--accent-cyan)', cursor: 'pointer', width: '16px', height: '16px' }}
                 />
-                <Gift size={16} color={adminModeType === 'giftcard' ? 'var(--accent-cyan)' : '#94a3b8'} /> CSGO-Skins Gift Kartice
+                <Gift size={16} color={adminModeType === 'giftcard' ? 'var(--accent-cyan)' : '#94a3b8'} /> CS2-Skins Gift Kartice
               </label>
             </div>
 

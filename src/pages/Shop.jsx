@@ -102,7 +102,7 @@ export function GiftCardVisual({ name, estPrice }) {
       {/* Top Header Text (Right Aligned) */}
       <div style={{ zIndex: 4, width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
         <span style={{ fontSize: '0.6rem', fontWeight: 900, color: '#ffffff', letterSpacing: '0.5px', fontFamily: 'system-ui, sans-serif' }}>
-          CSGO SKINS
+          CS2 SKINS
         </span>
       </div>
 
@@ -360,7 +360,7 @@ const Shop = ({ setActiveTab }) => {
       <div style={styles.shopSubHeader}>
         <div>
           <h2 style={styles.shopTitle}>Skin Shop</h2>
-          <p style={styles.shopSubtitle}>Zameni sakupljene poene za vaučere i premium CS:GO skinove</p>
+          <p style={styles.shopSubtitle}>Zameni sakupljene poene za vaučere i premium CS2 skinove</p>
         </div>
         <div style={styles.balanceDisplay} className="glass">
           <span style={styles.balanceLabel}>Tvoj Balans:</span>

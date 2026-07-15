@@ -197,7 +197,7 @@ const AppContent = () => {
           {/* Opisni tekst centriran u redu ispod */}
           <div style={styles.footerDescRow}>
             <p style={styles.footerDescCenter}>
-              Najbolje mesto za verne gledaoce Sharke strima. Gledaj live na KICK-u, skupljaj sate i uzmi najjače CS:GO skinove potpuno besplatno.
+              Najbolje mesto za verne gledaoce Sharke strima. Gledaj live na KICK-u, skupljaj sate i uzmi najjače CS2 skinove potpuno besplatno.
             </p>
           </div>
 

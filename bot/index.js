@@ -1208,7 +1208,7 @@ client.on('interactionCreate', async interaction => {
     const embed = new EmbedBuilder()
       .setTitle('🦈 Sharke Loyalty Program')
       .setColor('#0062ff')
-      .setDescription('Dobrodošli u Sharke lojaliti sistem! Gledajte Kick strim, budite aktivni i osvajajte poene koje možete zameniti za CS:GO skinove.')
+      .setDescription('Dobrodošli u Sharke lojaliti sistem! Gledajte Kick strim, budite aktivni i osvajajte poene koje možete zameniti za CS2 skinove.')
       .addFields(
         { name: '🌐 Sajt', value: 'http://localhost:5173', inline: true },
         { name: '🎥 Kick kanal', value: '[kick.com/sharke](https://kick.com/sharke)', inline: true }
