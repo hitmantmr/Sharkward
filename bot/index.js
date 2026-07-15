@@ -125,6 +125,26 @@ function writeDb(data) {
   }
 }
 
+async function sendSiteLog(channelName, embed) {
+  try {
+    const guild = await client.guilds.fetch('1525227708369184747');
+    if (!guild) return;
+    
+    const channel = guild.channels.cache.find(c => 
+      c.type === ChannelType.GuildText && 
+      c.name.toLowerCase().includes(channelName.toLowerCase())
+    );
+    
+    if (channel) {
+      await channel.send({ embeds: [embed] });
+    } else {
+      console.warn(`[SiteLog] Kanal sa nazivom koji sadrži "${channelName}" nije pronađen.`);
+    }
+  } catch (err) {
+    console.warn('[SiteLog] Greška pri slanju loga na Discord:', err.message);
+  }
+}
+
 function getUserProfile(discordId, username) {
   const data = readDb();
   if (!data.users) data.users = {};
@@ -2586,21 +2606,13 @@ app.post('/api/link-kick', async (req, res) => {
       }
     }
 
-    // Slanje log obaveštenja u kanal #kick-povezivanje
-    if (guild) {
-      try {
-        const logChannel = guild.channels.cache.find(c => c.name === 'kick-povezivanje');
-        if (logChannel) {
-          const embed = new EmbedBuilder()
-            .setTitle('🚀 Kick Nalog Povezan')
-            .setColor('#53fc18')
-            .setDescription(`Korisnik <@${discordId}> je uspešno povezao svoj Kick nalog **${kickUsername}**!\nDobio je ulogu **Povezan Kick**.`);
-          await logChannel.send({ embeds: [embed] });
-        }
-      } catch (err) {
-        console.warn('Greška pri slanju obaveštenja u log kanal:', err.message);
-      }
-    }
+    // Slanje log obaveštenja u kanal KICK-VERIFIKACIJA
+    const embed = new EmbedBuilder()
+      .setTitle('🟢 Kick Nalog Povezan')
+      .setColor('#53fc18')
+      .setDescription(`Korisnik <@${discordId}> je uspešno povezao svoj Kick nalog **${kickUsername}**!\nDobio je ulogu **Povezan Kick**.`)
+      .setTimestamp();
+    sendSiteLog('kick-verifikacija', embed);
   }
 
   const user = data.users[discordId];
@@ -2624,6 +2636,14 @@ app.post('/api/unlink-kick', (req, res) => {
   if (data.users?.[discordId]) {
     data.users[discordId].kickUsername = null;
     writeDb(data);
+    
+    const embed = new EmbedBuilder()
+      .setTitle('🔴 Kick Nalog Odjavljen')
+      .setColor('#ff3333')
+      .setDescription(`Korisnik <@${discordId}> je odjavio svoj Kick nalog.`)
+      .setTimestamp();
+    sendSiteLog('kick-verifikacija', embed);
+
     return res.json({ success: true, user: data.users[discordId] });
   }
   res.status(404).json({ error: 'Korisnik nije pronađen.' });
@@ -2666,6 +2686,18 @@ app.post('/api/buy-skin', (req, res) => {
   user.points -= livePriceInfo.price;
   skin.status = 'sold';
   writeDb(data);
+
+  const logEmbed = new EmbedBuilder()
+    .setTitle('🛒 Nova Kupovina u Shopu')
+    .setColor('#00E5FF')
+    .setDescription(`Korisnik <@${discordId}> je kupio skin!`)
+    .addFields(
+      { name: 'Skin', value: `${skin.name} (${skin.wear || 'FN'})`, inline: true },
+      { name: 'Cena', value: `${livePriceInfo.price} poena`, inline: true },
+      { name: 'Preostalo poena', value: `${user.points} poena`, inline: true }
+    )
+    .setTimestamp();
+  sendSiteLog('kupovine', logEmbed);
   
   // Vratimo skinove sa cenama za korisnički prikaz
   const processedSkins = (data.skins || initialSkins).map(s => {
@@ -2733,6 +2765,14 @@ app.post('/api/update-giveaways', (req, res) => {
   });
 
   writeDb(data);
+
+  const logEmbed = new EmbedBuilder()
+    .setTitle('🔄 Automatska Sinhronizacija Giveaway-a')
+    .setColor('#00E5FF')
+    .setDescription(`Uspešno sinhronizovano **${list.length}** nagradnih igara sa partnerske platforme.`)
+    .setTimestamp();
+  sendSiteLog('giveaways-admin', logEmbed);
+
   res.json({ success: true, count: list.length });
 });
 
@@ -2787,6 +2827,21 @@ app.post('/api/admin/skins/add', (req, res) => {
   if (!data.skins) data.skins = [];
   data.skins.unshift(newSkin);
   writeDb(data);
+
+  const logEmbed = new EmbedBuilder()
+    .setTitle('📦 Dodat Nov Artikal')
+    .setColor('#00E5FF')
+    .setDescription(`Novi skin je dodat u prodavnicu.`)
+    .addFields(
+      { name: 'Naziv', value: newSkin.name, inline: true },
+      { name: 'Cena (USD)', value: `$${newSkin.priceUsd}`, inline: true }
+    )
+    .setTimestamp();
+  if (newSkin.image) {
+    logEmbed.setThumbnail(newSkin.image);
+  }
+  sendSiteLog('artikli-admin', logEmbed);
+
   res.json({ success: true, skins: data.skins });
 });
 
@@ -2794,8 +2849,19 @@ app.post('/api/admin/skins/delete', (req, res) => {
   const { skinId } = req.body;
   const data = readDb();
   if (skinId) {
+    const deletedSkin = data.skins?.find(s => s.id && s.id.toString() === skinId.toString());
     data.skins = data.skins?.filter(s => s.id && s.id.toString() !== skinId.toString()) || [];
     writeDb(data);
+
+    const logEmbed = new EmbedBuilder()
+      .setTitle('🗑️ Artikal Obrisan')
+      .setColor('#ff3333')
+      .setDescription(`Skin je uklonjen iz prodavnice.`)
+      .addFields(
+        { name: 'Naziv', value: deletedSkin ? deletedSkin.name : `Skin ID: ${skinId}`, inline: true }
+      )
+      .setTimestamp();
+    sendSiteLog('artikli-admin', logEmbed);
   }
   res.json({ success: true, skins: data.skins });
 });
@@ -2804,8 +2870,19 @@ app.post('/api/admin/skins/restock', (req, res) => {
   const { skinId } = req.body;
   const data = readDb();
   if (skinId) {
+    const restockedSkin = data.skins?.find(s => s.id && s.id.toString() === skinId.toString());
     data.skins = data.skins?.map(s => s.id && s.id.toString() === skinId.toString() ? { ...s, status: 'available' } : s) || [];
     writeDb(data);
+
+    const logEmbed = new EmbedBuilder()
+      .setTitle('🔄 Artikal Dopunjen (Restock)')
+      .setColor('#53fc18')
+      .setDescription(`Skin je ponovo dostupan za kupovinu.`)
+      .addFields(
+        { name: 'Naziv', value: restockedSkin ? restockedSkin.name : `Skin ID: ${skinId}`, inline: true }
+      )
+      .setTimestamp();
+    sendSiteLog('artikli-admin', logEmbed);
   }
   res.json({ success: true, skins: data.skins });
 });
@@ -2823,6 +2900,21 @@ app.post('/api/admin/giveaways/add', (req, res) => {
   if (!data.giveaways) data.giveaways = [];
   data.giveaways.unshift(newGw);
   writeDb(data);
+
+  const logEmbed = new EmbedBuilder()
+    .setTitle('🎁 Novi Giveaway Pokrenut')
+    .setColor('#e5c158')
+    .setDescription(`Nova nagradna igra je pokrenuta na sajtu.`)
+    .addFields(
+      { name: 'Skin', value: newGw.name, inline: true },
+      { name: 'Trajanje', value: `${req.body.hoursLength || 24}h`, inline: true }
+    )
+    .setTimestamp();
+  if (newGw.image) {
+    logEmbed.setThumbnail(newGw.image);
+  }
+  sendSiteLog('giveaways-admin', logEmbed);
+
   res.json({ success: true, giveaways: data.giveaways });
 });
 
@@ -2846,6 +2938,20 @@ app.post('/api/admin/giveaways/end', (req, res) => {
   gw.winner = winner;
   gw.endedAt = 'Upravo sad';
   writeDb(data);
+
+  const logEmbed = new EmbedBuilder()
+    .setTitle('🎉 Giveaway Završen')
+    .setColor('#53fc18')
+    .setDescription(`Nagradna igra za skin **${gw.name}** je završena!`)
+    .addFields(
+      { name: 'Pobednik', value: winner, inline: true }
+    )
+    .setTimestamp();
+  if (gw.image) {
+    logEmbed.setThumbnail(gw.image);
+  }
+  sendSiteLog('giveaways-admin', logEmbed);
+
   res.json({ success: true, giveaways: data.giveaways });
 });
 
@@ -2874,6 +2980,18 @@ app.post('/api/admin/points/modify', (req, res) => {
   if (data.users?.[discordId]) {
     data.users[discordId].points = Math.max(0, (data.users[discordId].points || 0) + parseInt(amount || 0, 10));
     writeDb(data);
+
+    const logEmbed = new EmbedBuilder()
+      .setTitle('🪙 Izmena Poena (Admin)')
+      .setColor('#E5C158')
+      .setDescription(`Administrativna izmena poena za korisnika <@${discordId}>.`)
+      .addFields(
+        { name: 'Količina', value: `${amount >= 0 ? '+' : ''}${amount} poena`, inline: true },
+        { name: 'Novo stanje', value: `${data.users[discordId].points} poena`, inline: true }
+      )
+      .setTimestamp();
+    sendSiteLog('poeni-admin', logEmbed);
+
     res.json({ success: true, user: data.users[discordId] });
   } else {
     res.status(404).json({ error: 'Korisnik nije pronađen.' });
@@ -2887,6 +3005,17 @@ app.post('/api/admin/users/role', (req, res) => {
   if (data.users?.[discordId]) {
     data.users[discordId].role = role || 'Korisnik';
     writeDb(data);
+
+    const logEmbed = new EmbedBuilder()
+      .setTitle('🔧 Izmena Permisija (Admin)')
+      .setColor('#e5c158')
+      .setDescription(`Administrativna izmena uloge za korisnika <@${discordId}>.`)
+      .addFields(
+        { name: 'Nova uloga', value: role || 'Korisnik', inline: true }
+      )
+      .setTimestamp();
+    sendSiteLog('admin-permisije', logEmbed);
+
     res.json({ success: true, user: data.users[discordId] });
   } else {
     res.status(404).json({ error: 'Korisnik nije pronađen.' });
@@ -2902,6 +3031,14 @@ app.post('/api/admin/db/reset', (req, res) => {
     giveaways: initialGiveaways
   };
   writeDb(data);
+
+  const logEmbed = new EmbedBuilder()
+    .setTitle('⚙️ Resetovanje Baze Podataka')
+    .setColor('#ff3333')
+    .setDescription(`Izvršen je fabrički reset baze podataka sajta. Svi skinovi, giveaway-i i poeni su vraćeni na podrazumevane vrednosti.`)
+    .setTimestamp();
+  sendSiteLog('sajt-podesavanja', logEmbed);
+
   res.json({ success: true, data });
 });
 
