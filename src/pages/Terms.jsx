@@ -41,7 +41,7 @@ const Terms = ({ setActiveTab }) => {
             SHARKAWARD participates in affiliate marketing programs. This means we may earn commissions or referral bonuses when you click on links to our partner gaming sites and sign up, enter promotional codes, or make deposits. These affiliate relationships do not affect the information we provide or our recommendations.
           </p>
           <p style={{ ...styles.text, marginTop: '8px' }}>
-            All opinions and reviews expressed on this site are our own, based on our research and experience. We strive to provide accurate and up-to-date information about our partner sites.
+            All opinions and reviews expressed on this site are our own, based on publicly available information and our independent evaluation.
           </p>
         </div>
 
@@ -64,9 +64,57 @@ const Terms = ({ setActiveTab }) => {
           </ul>
         </div>
 
-        {/* 5. Use of Bonus Codes and Promotions */}
+        {/* 5. No Warranty */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>5. Use of Bonus Codes and Promotions</h3>
+          <h3 style={styles.sectionTitle}>5. No Warranty</h3>
+          <p style={styles.text}>
+            The services and information provided on SHARKAWARD are provided "AS IS" and "AS AVAILABLE" without warranties of any kind, either express or implied. We do not warrant that the descriptions, information, or points balances are 100% error-free, uninterrupted, or accurate.
+          </p>
+        </div>
+
+        {/* 6. Account Suspension & Termination */}
+        <div style={styles.section}>
+          <h3 style={styles.sectionTitle}>6. Account Termination</h3>
+          <p style={styles.text}>
+            We reserve the right to suspend or terminate any account that violates these Terms of Service or engages in fraudulent activity, including abuse of our rewards system. Termination may occur immediately and without prior notice at our sole discretion.
+          </p>
+        </div>
+
+        {/* 7. Loyalty Points */}
+        <div style={styles.section}>
+          <h3 style={styles.sectionTitle}>7. Loyalty Points</h3>
+          <p style={styles.text}>
+            Loyalty points accumulated through watchtime or events have no cash value and cannot be exchanged for money. We reserve the right to modify, remove or expire loyalty points at any time. Fraudulent earning of points (including botting, scripts, or multiple accounts) will result in permanent account suspension and loss of all accumulated points.
+          </p>
+        </div>
+
+        {/* 8. Rewards */}
+        <div style={styles.section}>
+          <h3 style={styles.sectionTitle}>8. Rewards</h3>
+          <p style={styles.text}>
+            Rewards, including CS2 skins and digital gift cards, are subject to availability. We reserve the right to substitute rewards with alternatives of equal or greater value in the event of stock shortages or Steam trading restrictions.
+          </p>
+        </div>
+
+        {/* 9. Third Party Services */}
+        <div style={styles.section}>
+          <h3 style={styles.sectionTitle}>9. Third Party Services</h3>
+          <p style={styles.text}>
+            SHARKAWARD is not affiliated with or operated by any third-party gaming platform (such as Rain.gg, CSGORoll, Clash.gg, or CS2-Skins) unless explicitly stated. Any use of such third-party platforms is subject to their own respective terms and conditions.
+          </p>
+        </div>
+
+        {/* 10. Errors */}
+        <div style={styles.section}>
+          <h3 style={styles.sectionTitle}>10. Errors</h3>
+          <p style={styles.text}>
+            We reserve the right to correct any errors regarding points, rewards, promotions, or affiliate offers. In the event of a database discrepancy, incorrect item pricing, or tracking issue, SHARKAWARD reserves the right to cancel or adjust the transaction.
+          </p>
+        </div>
+
+        {/* 11. Use of Bonus Codes and Promotions */}
+        <div style={styles.section}>
+          <h3 style={styles.sectionTitle}>11. Use of Bonus Codes and Promotions</h3>
           <p style={styles.text}>
             We may provide bonus codes and promotional offers from our partner sites. These offers are subject to the terms and conditions of the respective gaming/gambling sites. We are not responsible for changes to or cancellation of these offers.
           </p>
@@ -75,9 +123,9 @@ const Terms = ({ setActiveTab }) => {
           </p>
         </div>
 
-        {/* 6. Intellectual Property */}
+        {/* 12. Intellectual Property */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>6. Intellectual Property</h3>
+          <h3 style={styles.sectionTitle}>12. Intellectual Property</h3>
           <p style={styles.text}>
             All content on SHARKAWARD, including text, graphics, logos, images, and software, is the property of SHARKAWARD or its content suppliers and is protected by international copyright laws.
           </p>
@@ -86,9 +134,9 @@ const Terms = ({ setActiveTab }) => {
           </p>
         </div>
 
-        {/* 7. User Conduct */}
+        {/* 13. User Conduct */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>7. User Conduct</h3>
+          <h3 style={styles.sectionTitle}>13. User Conduct</h3>
           <p style={styles.text}>When using our services, you agree not to:</p>
           <ul style={styles.list}>
             <li>Violate any applicable laws or regulations.</li>
@@ -100,9 +148,9 @@ const Terms = ({ setActiveTab }) => {
           </ul>
         </div>
 
-        {/* 8. Limitation of Liability */}
+        {/* 14. Limitation of Liability */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>8. Limitation of Liability</h3>
+          <h3 style={styles.sectionTitle}>14. Limitation of Liability</h3>
           <p style={{ ...styles.text, fontSize: '0.8rem', color: '#ffb8b8', textTransform: 'uppercase', fontWeight: '700' }}>
             TO THE MAXIMUM EXTENT PERMITTED BY LAW, SHARKAWARD SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS OR REVENUES, WHETHER INCURRED DIRECTLY OR INDIRECTLY, OR ANY LOSS OF DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES.
           </p>
@@ -115,17 +163,17 @@ const Terms = ({ setActiveTab }) => {
           </ul>
         </div>
 
-        {/* 9. Indemnification */}
+        {/* 15. Indemnification */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>9. Indemnification</h3>
+          <h3 style={styles.sectionTitle}>15. Indemnification</h3>
           <p style={styles.text}>
             You agree to defend, indemnify, and hold harmless SHARKAWARD, its affiliates, and their respective officers, directors, employees, and agents from any claims, liabilities, damages, losses, and expenses, including reasonable attorney's fees, arising out of or in any way connected with your access to or use of our services.
           </p>
         </div>
 
-        {/* 10. Geographic Restrictions */}
+        {/* 16. Geographic Restrictions */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>10. Geographic Restrictions</h3>
+          <h3 style={styles.sectionTitle}>16. Geographic Restrictions</h3>
           <p style={styles.text}>
             Online gambling laws vary by jurisdiction. It is your responsibility to ensure that your use of our affiliate partners' services complies with all applicable laws in your location.
           </p>
@@ -134,33 +182,41 @@ const Terms = ({ setActiveTab }) => {
           </p>
         </div>
 
-        {/* 11. Privacy */}
+        {/* 17. Privacy */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>11. Privacy</h3>
+          <h3 style={styles.sectionTitle}>17. Privacy</h3>
           <p style={styles.text}>
             Your use of our services is also governed by our Privacy Policy. Please review our Privacy Policy, which also governs the site and informs users of our data collection practices.
           </p>
         </div>
 
-        {/* 12. Changes to Terms */}
+        {/* 18. Changes to Terms */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>12. Changes to Terms</h3>
+          <h3 style={styles.sectionTitle}>18. Changes to Terms</h3>
           <p style={styles.text}>
             We reserve the right to modify these terms at any time. We will notify users of any material changes by updating the "Last updated" date at the top of this page. Your continued use of the service after any modifications indicates your acceptance of the updated terms.
           </p>
         </div>
 
-        {/* 13. Governing Law */}
+        {/* 19. Governing Law */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>13. Governing Law</h3>
+          <h3 style={styles.sectionTitle}>19. Governing Law</h3>
           <p style={styles.text}>
             These Terms of Service are governed by and construed in accordance with the laws of the jurisdiction in which SHARKAWARD operates, without regard to its conflict of law provisions.
           </p>
         </div>
 
-        {/* 14. Contact Information */}
+        {/* 20. Entire Agreement */}
         <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>14. Contact Information</h3>
+          <h3 style={styles.sectionTitle}>20. Entire Agreement</h3>
+          <p style={styles.text}>
+            These Terms constitute the entire agreement between you and SHARKAWARD regarding the use of the Service, superseding any prior agreements or communications.
+          </p>
+        </div>
+
+        {/* 21. Contact Information */}
+        <div style={styles.section}>
+          <h3 style={styles.sectionTitle}>21. Contact Information</h3>
           <p style={styles.text}>
             If you have any questions about these Terms of Service, please contact us through the contact information or social channels provided on our website.
           </p>
