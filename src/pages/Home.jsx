@@ -6,6 +6,34 @@ const Home = ({ setActiveTab }) => {
   const { user, giveaways, skins, isLive, addToast } = useApp();
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
 
+  // Filter aktivnih nagradnih igara
+  const activeGws = giveaways ? giveaways.filter(gw => gw.status === 'ACTIVE' || gw.status === 'active') : [];
+
+  // Pomoćna funkcija za pronalazak brojčane vrednosti iz stringa tipa "$1,450.00" ili "1450"
+  const parseVal = (valStr) => {
+    if (!valStr) return 0;
+    const clean = valStr.replace(/[^0-9.]/g, '');
+    return parseFloat(clean) || 0;
+  };
+
+  // Pronađi najskuplji aktivni giveaway
+  const mostExpensiveGw = activeGws.reduce((max, gw) => {
+    const currentVal = parseVal(gw.value || gw.estPrice);
+    const maxVal = parseVal(max ? (max.value || max.estPrice) : '$0');
+    return currentVal > maxVal ? gw : max;
+  }, null);
+
+  // Fallback nagradna igra sa zvaničnom čistom slikom sa Steam-a ako nema aktivnih u bazi
+  const fallbackGw = {
+    prize: '★ Karambit | Doppler (Factory New)',
+    value: '$950.00',
+    minDeposit: '1,000',
+    imageUrl: 'https://community.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1Q7uCvZaZkNM-SA1iSze91u_FsTju_qhAmoT-Jn4bjJC_4Ml93UtZuRLQPsBawkNfiMbnl5AKMiopCnin7iCJBv31j4rkBBKEg-6zUjV3GY6p9v8dpLWT3Fg',
+    isFallback: true
+  };
+
+  const featuredGw = mostExpensiveGw || fallbackGw;
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 40) {
@@ -385,25 +413,27 @@ const Home = ({ setActiveTab }) => {
           <div className="gw-vibe-showcase">
             <div className="skin-glow-radial-blue" style={{ width: '180px', height: '180px', background: 'radial-gradient(circle, rgba(0, 240, 255, 0.15) 0%, transparent 70%)' }}></div>
             <img 
-              src="./img/karambit_doppler.png" 
-              alt="★ Karambit | Doppler" 
+              src={featuredGw.imageUrl || featuredGw.image} 
+              alt={featuredGw.prize} 
               className="floating-skin-img-doppler" 
-              style={{ width: '150px', height: 'auto', zIndex: 2 }}
+              style={{ width: '150px', height: 'auto', zIndex: 2, objectFit: 'contain' }}
             />
           </div>
           
           {/* Skin Name */}
-          <h4 className="gw-vibe-skin-name">★ Karambit | Doppler (Factory New)</h4>
+          <h4 className="gw-vibe-skin-name">{featuredGw.prize}</h4>
           
           {/* Two dark info pills */}
           <div className="gw-vibe-pills-row">
             <div className="premium-display-pill">
               <span className="gw-vibe-pill-label">VREDNOST</span>
-              <span className="gw-vibe-pill-value-white">$950.00</span>
+              <span className="gw-vibe-pill-value-white">{featuredGw.value}</span>
             </div>
             <div className="premium-display-pill">
-              <span className="gw-vibe-pill-label">POENI ZA ULAZ</span>
-              <span className="gw-vibe-pill-value-cyan">1,000</span>
+              <span className="gw-vibe-pill-label">{featuredGw.isFallback ? 'POENI ZA ULAZ' : 'MIN. DEPOZIT'}</span>
+              <span className="gw-vibe-pill-value-cyan">
+                {featuredGw.isFallback ? featuredGw.minDeposit : (featuredGw.minDeposit || 'SHARKE')}
+              </span>
             </div>
           </div>
           
