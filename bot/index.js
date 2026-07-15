@@ -51,19 +51,61 @@ if (fs.existsSync(buffCachePath)) {
 
 async function fetchAndCacheBuffPrices() {
   console.log('🔄 Preuzimam najnovije cene sa Buff163 (csgotrader API)...');
+  let data = null;
+
+  // Način 1: Direktno preuzimanje
   try {
     const res = await fetch('https://prices.csgotrader.app/latest/buff163.json');
-    if (!res.ok) throw new Error(`HTTP status ${res.status}`);
-    const data = await res.json();
-    if (data && typeof data === 'object' && !Array.isArray(data)) {
-      buffPrices = data;
-      fs.writeFileSync(buffCachePath, JSON.stringify(data), 'utf8');
-      console.log('✅ Buff163 cene uspešno preuzete i keširane.');
+    if (res.ok) {
+      data = await res.json();
+      console.log('✅ Buff163 cene preuzete direktno.');
     } else {
-      console.warn('⚠️ Buff163 API je vratio neočekivan format.');
+      console.warn(`⚠️ Direktno preuzimanje vratilo status: ${res.status}`);
     }
   } catch (err) {
-    console.warn('❌ Greška pri preuzimanju Buff163 cena:', err.message);
+    console.warn('⚠️ Direktno preuzimanje Buff163 cena nije uspelo, pokušavam preko proxy-ja:', err.message);
+  }
+
+  // Način 2: Preko CORS proxy-ja (corsproxy.io)
+  if (!data) {
+    try {
+      console.log('🔄 Pokušavam preuzimanje preko corsproxy.io...');
+      const proxyUrl = `https://corsproxy.io/?${encodeURIComponent('https://prices.csgotrader.app/latest/buff163.json')}`;
+      const res = await fetch(proxyUrl);
+      if (res.ok) {
+        data = await res.json();
+        console.log('✅ Buff163 cene uspešno preuzete preko corsproxy.io.');
+      } else {
+        console.warn(`⚠️ corsproxy.io preuzimanje vratilo status: ${res.status}`);
+      }
+    } catch (err) {
+      console.warn('❌ Greška pri preuzimanju Buff163 cena preko corsproxy.io:', err.message);
+    }
+  }
+
+  // Način 3: Preko AllOrigins proxy-ja
+  if (!data) {
+    try {
+      console.log('🔄 Pokušavam preuzimanje preko api.allorigins.win...');
+      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent('https://prices.csgotrader.app/latest/buff163.json')}`;
+      const res = await fetch(proxyUrl);
+      if (res.ok) {
+        data = await res.json();
+        console.log('✅ Buff163 cene uspešno preuzete preko AllOrigins proxy-ja.');
+      } else {
+        console.warn(`⚠️ AllOrigins preuzimanje vratilo status: ${res.status}`);
+      }
+    } catch (err) {
+      console.warn('❌ Greška pri preuzimanju Buff163 cena preko AllOrigins:', err.message);
+    }
+  }
+
+  if (data && typeof data === 'object' && !Array.isArray(data)) {
+    buffPrices = data;
+    fs.writeFileSync(buffCachePath, JSON.stringify(data), 'utf8');
+    console.log('✅ Buff163 cene uspešno sačuvane i keširane.');
+  } else {
+    console.warn('⚠️ Svi izvori za preuzimanje cena su podbacili. Koristim postojeći lokalni keš.');
   }
 }
 
@@ -2091,6 +2133,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Logovanje dolaznih API zahteva radi lakše dijagnostike i otklanjanja grešaka
+app.use((req, res, next) => {
+  console.log(`[API REQUEST] ${req.method} ${req.url}`);
+  next();
+});
+
 // Pomocna funkcija za dinamičko računanje Buff163 cene uživo za skinove (koeficijent * 130)
 function calculateLivePrice(skin) {
   if (skin.type === 'GiftCard') {
@@ -2115,13 +2163,23 @@ function calculateLivePrice(skin) {
   const queryName = `${skin.name} (${wear})`;
 
   let item = buffPrices[queryName];
+  
+  // Rezervni mehanizam sa/bez ★ oznake
+  if (!item) {
+    if (queryName.startsWith('★ ')) {
+      item = buffPrices[queryName.replace(/^★\s*/, '')];
+    } else {
+      item = buffPrices[`★ ${queryName}`];
+    }
+  }
+
   if (!item) {
     // Provera Doppler/Gamma Doppler faza
     const phaseMatch = queryName.match(/\((Phase \d|Ruby|Sapphire|Black Pearl|Emerald)\)/i);
     if (phaseMatch) {
       const phase = phaseMatch[1];
       const nameWithoutPhase = queryName.replace(` (${phase})`, '');
-      const baseItem = buffPrices[nameWithoutPhase];
+      const baseItem = buffPrices[nameWithoutPhase] || buffPrices[`★ ${nameWithoutPhase}`] || buffPrices[nameWithoutPhase.replace(/^★\s*/, '')];
       if (baseItem && baseItem.starting_at) {
         if (baseItem.starting_at.doppler && baseItem.starting_at.doppler[phase]) {
           item = { starting_at: { price: baseItem.starting_at.doppler[phase] } };
