@@ -20,6 +20,8 @@ dist-ssr
 *.env
 bot/.env
 *.local
+*.zip
+SharkeShop_Production.zip
 
 # Caches & large temp files
 bot/buff163_cache.json
