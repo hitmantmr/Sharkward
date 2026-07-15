@@ -184,7 +184,7 @@ async function publishPartnershipEmbeds() {
           { name: '🎁 Besplatan Skin', value: '› Preuzmi besplatan skin odmah pri registraciji i otvaranju prvog kupona!' },
           { name: '💰 +5% Bonus na Depozit', value: '› Dodatnih **+5% bonusa** na sve tvoje uplate (kartice, kripto, skinovi).' },
           { name: '⚡ Brza Isplata Skinova', value: '› Direktno i momentalno povlačenje osvojenih skinova u tvoj Steam inventar.' },
-          { name: '🔑 Promo Kod', value: '**`SHARKE`**', inline: false }
+          { name: '🔑 Promo Kod: **`SHARKE`**', value: '\u200B', inline: false }
         )
         .setFooter({ text: 'Igraj odgovorno (18+) • SHARKAWARD Lojaliti Program' })
         .setTimestamp();
@@ -226,7 +226,7 @@ async function publishPartnershipEmbeds() {
           { name: '🎁 Paket Dobrodošlice', value: '› Fantastičan bonus na prva **3 depozita**!' },
           { name: '🎰 Free Spins & Freebet', value: '› Besplatni spinovi za kazino i besplatne opklade za sve nove igrače.' },
           { name: '📈 Najveće Kvote na Svetu', value: '› Garantovano najbolji uslovi za sportsko klađenje i uživo mečeve.' },
-          { name: '🔑 Promo Kod', value: '**`AJKULA`**', inline: false }
+          { name: '🔑 Promo Kod: **`AJKULA`**', value: '\u200B', inline: false }
         )
         .setFooter({ text: 'Igraj odgovorno (18+) • SHARKAWARD Lojaliti Program' })
         .setTimestamp();
