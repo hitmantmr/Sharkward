@@ -802,9 +802,13 @@ export const AppProvider = ({ children }) => {
         addToast(`Uspešno promenjeni poeni članu (${amount > 0 ? '+' : ''}${amount} pts)!`, 'success');
         fetchLeaderboardFromApi();
         return true;
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        addToast(`Server je odbio izmenu: ${errData.error || 'Nepoznata greška'}`, 'error');
       }
     } catch (err) {
-      addToast('Greška pri izmeni poena člana.', 'error');
+      console.error('Greška pri izmeni poena:', err);
+      addToast('Greška: Neuspešna veza sa serverom. Proveri da li je pokrenut bot.js na portu 5000!', 'error');
     }
     return false;
   };
