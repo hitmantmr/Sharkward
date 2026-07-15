@@ -201,10 +201,34 @@ const AppContent = () => {
             </p>
           </div>
 
+          {/* Pravni linkovi i Igraj Odgovorno */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '8px',
+            marginTop: '1.25rem',
+            paddingTop: '1.25rem',
+            borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+            fontSize: '0.75rem',
+            color: 'var(--text-muted)'
+          }}>
+            <p style={{ margin: 0, textAlign: 'center', color: 'rgba(255, 255, 255, 0.4)', fontWeight: '600' }}>
+              Igraj Odgovorno (18+). Ako ti treba pomoć, poseti
+            </p>
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+              <a href="#" onClick={(e) => { e.preventDefault(); alert('Uslovi Korišćenja:\n\nSajt je namenjen isključivo u promotivne svrhe za verne gledaoce Sharke strima. Poeni su virtuelni, nemaju stvarnu novčanu vrednost i služe isključivo za zabavu.'); }} style={{ color: 'rgba(255, 255, 255, 0.5)', textDecoration: 'none', transition: 'color 0.2s', fontWeight: '500' }} onMouseEnter={(e) => e.target.style.color = 'var(--accent-cyan)'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.5)'}>Uslovi Korišćenja</a>
+              <span style={{ color: 'rgba(255, 255, 255, 0.15)' }}>|</span>
+              <a href="#" onClick={(e) => { e.preventDefault(); alert('Politika Privatnosti:\n\nTvoji javni Discord i Kick podaci se koriste isključivo radi evidencije sate gledanja i dodele poena na prodavnici.'); }} style={{ color: 'rgba(255, 255, 255, 0.5)', textDecoration: 'none', transition: 'color 0.2s', fontWeight: '500' }} onMouseEnter={(e) => e.target.style.color = 'var(--accent-cyan)'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.5)'}>Politika Privatnosti</a>
+              <span style={{ color: 'rgba(255, 255, 255, 0.15)' }}>|</span>
+              <a href="https://www.begambleaware.org" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255, 255, 255, 0.5)', textDecoration: 'none', transition: 'color 0.2s', fontWeight: '500' }} onMouseEnter={(e) => e.target.style.color = 'var(--accent-cyan)'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.5)'}>BeGambleAware</a>
+            </div>
+          </div>
+
         </div>
 
         <div style={styles.footerBottom}>
-          <p>© 2026 SHARKAWARD. Sva prava zadržana. Sajt je napravljen u promotivne svrhe.</p>
+          <p>© 2026 SHARKAWARD. Sva prava zadržana.</p>
           <div style={styles.footerAdminToggle} onClick={toggleAdminMode}>
             <ShieldCheck size={14} color={isAdmin ? '#e5c158' : 'var(--text-muted)'} />
             <span>Admin status: {isAdmin ? 'Aktivan' : 'Neaktivan'}</span>
