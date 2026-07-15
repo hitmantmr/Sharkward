@@ -51,61 +51,19 @@ if (fs.existsSync(buffCachePath)) {
 
 async function fetchAndCacheBuffPrices() {
   console.log('🔄 Preuzimam najnovije cene sa Buff163 (csgotrader API)...');
-  let data = null;
-
-  // Način 1: Direktno preuzimanje
   try {
     const res = await fetch('https://prices.csgotrader.app/latest/buff163.json');
-    if (res.ok) {
-      data = await res.json();
-      console.log('✅ Buff163 cene preuzete direktno.');
+    if (!res.ok) throw new Error(`HTTP status ${res.status}`);
+    const data = await res.json();
+    if (data && typeof data === 'object' && !Array.isArray(data)) {
+      buffPrices = data;
+      fs.writeFileSync(buffCachePath, JSON.stringify(data), 'utf8');
+      console.log('✅ Buff163 cene uspešno preuzete i keširane.');
     } else {
-      console.warn(`⚠️ Direktno preuzimanje vratilo status: ${res.status}`);
+      console.warn('⚠️ Buff163 API je vratio neočekivan format.');
     }
   } catch (err) {
-    console.warn('⚠️ Direktno preuzimanje Buff163 cena nije uspelo, pokušavam preko proxy-ja:', err.message);
-  }
-
-  // Način 2: Preko CORS proxy-ja (corsproxy.io)
-  if (!data) {
-    try {
-      console.log('🔄 Pokušavam preuzimanje preko corsproxy.io...');
-      const proxyUrl = `https://corsproxy.io/?${encodeURIComponent('https://prices.csgotrader.app/latest/buff163.json')}`;
-      const res = await fetch(proxyUrl);
-      if (res.ok) {
-        data = await res.json();
-        console.log('✅ Buff163 cene uspešno preuzete preko corsproxy.io.');
-      } else {
-        console.warn(`⚠️ corsproxy.io preuzimanje vratilo status: ${res.status}`);
-      }
-    } catch (err) {
-      console.warn('❌ Greška pri preuzimanju Buff163 cena preko corsproxy.io:', err.message);
-    }
-  }
-
-  // Način 3: Preko AllOrigins proxy-ja
-  if (!data) {
-    try {
-      console.log('🔄 Pokušavam preuzimanje preko api.allorigins.win...');
-      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent('https://prices.csgotrader.app/latest/buff163.json')}`;
-      const res = await fetch(proxyUrl);
-      if (res.ok) {
-        data = await res.json();
-        console.log('✅ Buff163 cene uspešno preuzete preko AllOrigins proxy-ja.');
-      } else {
-        console.warn(`⚠️ AllOrigins preuzimanje vratilo status: ${res.status}`);
-      }
-    } catch (err) {
-      console.warn('❌ Greška pri preuzimanju Buff163 cena preko AllOrigins:', err.message);
-    }
-  }
-
-  if (data && typeof data === 'object' && !Array.isArray(data)) {
-    buffPrices = data;
-    fs.writeFileSync(buffCachePath, JSON.stringify(data), 'utf8');
-    console.log('✅ Buff163 cene uspešno sačuvane i keširane.');
-  } else {
-    console.warn('⚠️ Svi izvori za preuzimanje cena su podbacili. Koristim postojeći lokalni keš.');
+    console.warn('❌ Greška pri preuzimanju Buff163 cena:', err.message);
   }
 }
 
