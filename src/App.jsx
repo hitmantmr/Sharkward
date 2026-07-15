@@ -11,13 +11,15 @@ import Watchtime from './pages/Watchtime';
 import Giveaway from './pages/Giveaway';
 import Leaderboard from './pages/Leaderboard';
 import Admin from './pages/Admin';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
 
 import { MessageSquare, ExternalLink, ShieldCheck } from 'lucide-react';
 
 const AppContent = () => {
   const getSubpathBase = () => {
     const parts = window.location.pathname.split('/').filter(Boolean);
-    const validTabs = ['home', 'shop', 'watchtime', 'giveaway', 'leaderboard', 'admin'];
+    const validTabs = ['home', 'shop', 'watchtime', 'giveaway', 'leaderboard', 'admin', 'terms', 'privacy'];
     if (parts.length > 0 && !validTabs.includes(parts[0].toLowerCase())) {
       return `/${parts[0]}`;
     }
@@ -27,7 +29,7 @@ const AppContent = () => {
   const getInitialTab = () => {
     const parts = window.location.pathname.split('/').filter(Boolean);
     const lastPart = parts.length > 0 ? parts[parts.length - 1].toLowerCase() : '';
-    const validTabs = ['home', 'shop', 'watchtime', 'giveaway', 'leaderboard', 'admin'];
+    const validTabs = ['home', 'shop', 'watchtime', 'giveaway', 'leaderboard', 'admin', 'terms', 'privacy'];
     if (validTabs.includes(lastPart)) {
       return lastPart;
     }
@@ -54,7 +56,7 @@ const AppContent = () => {
     const handlePopState = () => {
       const parts = window.location.pathname.split('/').filter(Boolean);
       const lastPart = parts.length > 0 ? parts[parts.length - 1].toLowerCase() : '';
-      const validTabs = ['home', 'shop', 'watchtime', 'giveaway', 'leaderboard', 'admin'];
+      const validTabs = ['home', 'shop', 'watchtime', 'giveaway', 'leaderboard', 'admin', 'terms', 'privacy'];
       if (validTabs.includes(lastPart)) {
         setActiveTabState(lastPart);
       } else {
@@ -79,6 +81,10 @@ const AppContent = () => {
         return <Leaderboard />;
       case 'admin':
         return (isAdmin && isUserAllowedAdmin) ? <Admin /> : <Home setActiveTab={setActiveTab} />;
+      case 'terms':
+        return <Terms setActiveTab={setActiveTab} />;
+      case 'privacy':
+        return <Privacy setActiveTab={setActiveTab} />;
       default:
         return <Home setActiveTab={setActiveTab} />;
     }
@@ -217,9 +223,9 @@ const AppContent = () => {
               Igraj Odgovorno (18+). Ako ti treba pomoć, poseti
             </p>
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
-              <a href="#" onClick={(e) => { e.preventDefault(); alert('Uslovi Korišćenja:\n\nSajt je namenjen isključivo u promotivne svrhe za verne gledaoce Sharke strima. Poeni su virtuelni, nemaju stvarnu novčanu vrednost i služe isključivo za zabavu.'); }} style={{ color: 'rgba(255, 255, 255, 0.5)', textDecoration: 'none', transition: 'color 0.2s', fontWeight: '500' }} onMouseEnter={(e) => e.target.style.color = 'var(--accent-cyan)'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.5)'}>Uslovi Korišćenja</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('terms'); }} style={{ color: 'rgba(255, 255, 255, 0.5)', textDecoration: 'none', transition: 'color 0.2s', fontWeight: '500' }} onMouseEnter={(e) => e.target.style.color = 'var(--accent-cyan)'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.5)'}>Uslovi Korišćenja</a>
               <span style={{ color: 'rgba(255, 255, 255, 0.15)' }}>|</span>
-              <a href="#" onClick={(e) => { e.preventDefault(); alert('Politika Privatnosti:\n\nTvoji javni Discord i Kick podaci se koriste isključivo radi evidencije sate gledanja i dodele poena na prodavnici.'); }} style={{ color: 'rgba(255, 255, 255, 0.5)', textDecoration: 'none', transition: 'color 0.2s', fontWeight: '500' }} onMouseEnter={(e) => e.target.style.color = 'var(--accent-cyan)'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.5)'}>Politika Privatnosti</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('privacy'); }} style={{ color: 'rgba(255, 255, 255, 0.5)', textDecoration: 'none', transition: 'color 0.2s', fontWeight: '500' }} onMouseEnter={(e) => e.target.style.color = 'var(--accent-cyan)'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.5)'}>Politika Privatnosti</a>
               <span style={{ color: 'rgba(255, 255, 255, 0.15)' }}>|</span>
               <a href="https://www.begambleaware.org" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255, 255, 255, 0.5)', textDecoration: 'none', transition: 'color 0.2s', fontWeight: '500' }} onMouseEnter={(e) => e.target.style.color = 'var(--accent-cyan)'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.5)'}>BeGambleAware</a>
             </div>
