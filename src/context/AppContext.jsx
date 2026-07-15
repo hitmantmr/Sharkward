@@ -433,7 +433,25 @@ export const AppProvider = ({ children }) => {
     addToast('Discord nalog odjavljen.', 'info');
   };
 
-  const buySkin = (skinId) => {
+  const [orders, setOrders] = useState([]);
+
+  const fetchOrders = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/admin/orders`);
+      if (res.ok) {
+        const data = await res.json();
+        setOrders(data);
+      }
+    } catch (err) {
+      console.warn('Greška pri učitavanju narudžbina:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, [API_URL]);
+
+  const buySkin = async (skinId) => {
     const skinIndex = skins.findIndex(s => s.id === skinId);
     if (skinIndex === -1) return false;
 
@@ -455,36 +473,72 @@ export const AppProvider = ({ children }) => {
       return false;
     }
 
-    // Izvlačimo kod ako postoji u nizu kodova
-    const codes = Array.isArray(skin.codes) ? [...skin.codes] : [];
-    const assignedCode = codes.shift(); // Uzimamo prvi dostupan kod
+    try {
+      const res = await fetch(`${API_URL}/api/orders/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          discordId: user.discordId,
+          skinId: skin.id,
+          tradeUrl: user.tradeUrl
+        })
+      });
 
-    // Uspešna kupovina poena
-    setUser(prev => ({
-      ...prev,
-      points: prev.points - skin.price
-    }));
-
-    const nextStock = currentStock - 1;
-
-    setSkins(prev => prev.map(s => {
-      if (s.id === skinId) {
-        return {
-          ...s,
-          stock: nextStock,
-          codes: codes,
-          status: nextStock <= 0 ? 'sold' : 'available'
-        };
+      if (res.ok) {
+        const data = await res.json();
+        setUser(prev => ({ ...prev, points: data.points }));
+        if (data.skins) setSkins(data.skins);
+        fetchOrders();
+        addToast(`Uspešno si poručio ${skin.name}! Zahtev za isporuku je poslat adminu.`, 'success');
+        return true;
+      } else {
+        const errJson = await res.json().catch(() => ({}));
+        addToast(errJson.error || 'Greška pri kupovini.', 'error');
+        return false;
       }
-      return s;
-    }));
-
-    if (assignedCode) {
-      addToast(`Uspešno si kupio ${skin.name}! Tvoj kod: ${assignedCode}`, 'success');
-    } else {
-      addToast(`Uspešno si kupio ${skin.name}! Artikal ti šaljemo na Discord.`, 'success');
+    } catch (e) {
+      addToast('Greška pri komunikaciji sa serverom.', 'error');
+      return false;
     }
-    return true;
+  };
+
+  const fulfillOrder = async (orderId) => {
+    try {
+      const res = await fetch(`${API_URL}/api/admin/orders/fulfill`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setOrders(data.orders || []);
+        addToast('Narudžbina je uspešno označena kao isporučena!', 'success');
+        return true;
+      }
+    } catch (e) {
+      addToast('Greška pri obradi isporuke.', 'error');
+    }
+    return false;
+  };
+
+  const cancelOrder = async (orderId) => {
+    try {
+      const res = await fetch(`${API_URL}/api/admin/orders/cancel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setOrders(data.orders || []);
+        if (data.skins) setSkins(data.skins);
+        addToast('Narudžbina je otkazana i poeni su vraćeni korisniku.', 'info');
+        return true;
+      }
+    } catch (e) {
+      addToast('Greška pri otkazivanju narudžbine.', 'error');
+    }
+    return false;
   };
 
   const enterGiveaway = (giveawayId) => {
@@ -833,7 +887,11 @@ export const AppProvider = ({ children }) => {
       syncGiveaways,
       clearAllGiveaways,
       resetAllData,
-      saveTradeUrl
+      saveTradeUrl,
+      orders,
+      fetchOrders,
+      fulfillOrder,
+      cancelOrder
     }}>
       {children}
     </AppContext.Provider>

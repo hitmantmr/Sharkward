@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { ShieldCheck, Plus, Trash2, RotateCcw, Award, Coins, Play, Search, Loader, HelpCircle, Users, UserCheck, UserPlus, UserMinus, Gift, Crosshair, Sparkles, AlertTriangle } from 'lucide-react';
+import { ShieldCheck, Plus, Trash2, RotateCcw, Award, Coins, Play, Search, Loader, HelpCircle, Users, UserCheck, UserPlus, UserMinus, Gift, Crosshair, Sparkles, AlertTriangle, Wrench, Package, ExternalLink, CheckCircle, XCircle } from 'lucide-react';
 import { GiftCardVisual } from './Shop';
 
 // 1. Pomoćna funkcija za čišćenje naziva od wear-a, zvezdica i StatTrak oznaka
@@ -54,7 +54,11 @@ const Admin = () => {
     syncGiveaways,
     clearAllGiveaways,
     isLive,
-    setIsLive
+    setIsLive,
+    orders,
+    fetchOrders,
+    fulfillOrder,
+    cancelOrder
   } = useApp();
 
   // Država forme za skin / gift karticu
@@ -561,12 +565,79 @@ const Admin = () => {
     <div style={styles.container} className="fade-in">
       <div style={styles.header} className="glass">
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <ShieldCheck size={32} color="#53fc18" />
+          <Wrench size={32} color="#53fc18" />
           <div>
-            <h2 style={styles.title}>Sharke Admin Dashboard</h2>
-            <p style={styles.subtitle}>Upravljaj skinovima sa tržišnim cenama, permisijama i profilima članova</p>
+            <h2 style={styles.title}>
+              ADMIN <span style={{ color: '#53fc18' }}>DASHBOARD</span>
+            </h2>
+            <p style={styles.subtitle}>Upravljaj CS2 prodavnicom, narudžbinama gledalaca i prati statuse isporuka.</p>
           </div>
         </div>
+      </div>
+
+      {/* 📦 NARUDŽBINE NA ČEKANJU (PENDING TRADE OFFERS) */}
+      <div style={{ ...styles.card, marginBottom: '24px', border: '1px solid rgba(255, 255, 255, 0.08)' }} className="glass">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', paddingBottom: '12px', borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#ff4655', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+            <Package size={18} color="#ff4655" /> NARUDŽBINE NA ČEKANJU (PENDING TRADE OFFERS)
+          </h3>
+          <span style={{ fontSize: '12px', padding: '4px 10px', borderRadius: '999px', background: 'rgba(255, 70, 85, 0.1)', color: '#ff4655', border: '1px solid rgba(255, 70, 85, 0.2)', fontFamily: 'monospace' }}>
+            {(orders || []).filter(o => o.status === 'PENDING').length} na čekanju
+          </span>
+        </div>
+
+        {(!orders || orders.filter(o => o.status === 'PENDING').length === 0) ? (
+          <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', margin: '12px 0 4px 0' }}>
+            Nema aktivnih narudžbina za isporuku.
+          </p>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {orders.filter(o => o.status === 'PENDING').map(order => (
+              <div key={order.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', background: 'rgba(0, 0, 0, 0.3)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.06)', flexWrap: 'wrap', gap: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  {order.skinImage && (
+                    <img src={order.skinImage} alt={order.skinName} style={{ width: '48px', height: '48px', objectFit: 'contain' }} />
+                  )}
+                  <div>
+                    <div style={{ fontWeight: '700', fontSize: '15px', color: '#fff' }}>{order.skinName}</div>
+                    <div style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.6)', display: 'flex', gap: '12px', marginTop: '3px', flexWrap: 'wrap' }}>
+                      <span>Kupac: <strong style={{ color: '#53fc18' }}>@{order.kickUsername || order.username}</strong></span>
+                      <span>•</span>
+                      <span>Cena: <strong style={{ color: '#ffd700' }}>{order.price?.toLocaleString()} poena</strong></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                  {order.tradeUrl ? (
+                    <a
+                      href={order.tradeUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ textDecoration: 'none', padding: '8px 14px', borderRadius: '8px', background: 'rgba(83, 252, 24, 0.15)', color: '#53fc18', border: '1px solid rgba(83, 252, 24, 0.3)', fontWeight: '600', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }}
+                    >
+                      <ExternalLink size={14} /> Otvori Trade Link
+                    </a>
+                  ) : (
+                    <span style={{ fontSize: '12px', color: '#ff4655' }}>Nema Trade Link</span>
+                  )}
+                  <button
+                    onClick={() => fulfillOrder(order.id)}
+                    style={{ padding: '8px 14px', borderRadius: '8px', background: '#53fc18', color: '#000', fontWeight: '700', fontSize: '13px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    <CheckCircle size={14} /> Označi kao Isporučeno
+                  </button>
+                  <button
+                    onClick={() => cancelOrder(order.id)}
+                    style={{ padding: '8px 14px', borderRadius: '8px', background: 'rgba(255, 70, 85, 0.15)', color: '#ff4655', border: '1px solid rgba(255, 70, 85, 0.3)', fontWeight: '600', fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    <XCircle size={14} /> Otkaži
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 2-Kolonski Raspored: Dodaj Skin (Levo) & Upravljanje Članovima (Desno) */}

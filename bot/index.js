@@ -2997,6 +2997,7 @@ app.get('/api/auth/kick/callback', async (req, res) => {
 // 1. GET /api/stats -> Globalne statistike
 app.get('/api/stats', (req, res) => {
   const data = readDb();
+  const isLive = (data.liveState?.kick?.isLive) || (data.liveState?.youtube?.isLive) || false;
   const registeredCount = Object.values(data.users || {}).filter(u => u.kickUsername && u.kickUsername.trim() !== '').length;
   res.json({
     youtube: data.stats?.youtube || 264000,
@@ -3567,6 +3568,164 @@ app.post('/api/admin/users/role', (req, res) => {
   } else {
     res.status(404).json({ error: 'Korisnik nije pronađen.' });
   }
+});
+
+// ==========================================
+// API RUTE ZA NARUDŽBINE I TRADE OFFERS
+// ==========================================
+
+// GET /api/admin/orders -> Sve narudžbine (za Admin Panel)
+app.get('/api/admin/orders', (req, res) => {
+  const data = readDb();
+  res.json(data.orders || []);
+});
+
+// POST /api/orders/create -> Kupovina skin-a i kreiranje narudžbine na čekanju
+app.post('/api/orders/create', (req, res) => {
+  const { discordId, skinId, tradeUrl } = req.body;
+  const data = readDb();
+
+  const user = data.users[discordId];
+  if (!user) {
+    return res.status(404).json({ error: 'Korisnik nije pronađen.' });
+  }
+
+  if (!user.kickUsername) {
+    return res.status(400).json({ error: 'Moraš povezati Kick nalog pre kupovine.' });
+  }
+
+  const skinIndex = (data.skins || []).findIndex(s => s.id === skinId);
+  if (skinIndex === -1) {
+    return res.status(404).json({ error: 'Skin nije pronađen.' });
+  }
+
+  const skin = data.skins[skinIndex];
+  const currentStock = typeof skin.stock === 'number' ? skin.stock : 1;
+  if (skin.status === 'sold' || currentStock <= 0) {
+    return res.status(400).json({ error: 'Ovaj artikal je rasprodat.' });
+  }
+
+  if ((user.points || 0) < skin.price) {
+    return res.status(400).json({ error: 'Nemaš dovoljno poena.' });
+  }
+
+  // Oduzimanje poena i ažuriranje zaliha skina
+  user.points = (user.points || 0) - skin.price;
+  skin.stock = Math.max(0, currentStock - 1);
+  if (skin.stock <= 0) skin.status = 'sold';
+
+  // Ako korisnik pošalje nov trade URL, sačuvamo ga
+  if (tradeUrl) {
+    user.tradeUrl = tradeUrl;
+  }
+
+  const finalTradeUrl = tradeUrl || user.tradeUrl || '';
+
+  // Kreiramo narudžbinu
+  const newOrder = {
+    id: 'ord_' + Date.now(),
+    discordId: discordId,
+    username: user.username || 'Korisnik',
+    kickUsername: user.kickUsername,
+    skinId: skin.id,
+    skinName: skin.name,
+    skinImage: skin.image || skin.imageUrl || '',
+    price: skin.price,
+    estPrice: skin.estPrice || '',
+    tradeUrl: finalTradeUrl,
+    status: 'PENDING',
+    createdAt: new Date().toISOString()
+  };
+
+  if (!data.orders) data.orders = [];
+  data.orders.unshift(newOrder);
+
+  writeDb(data);
+
+  // Slanje obaveštenja u Discord log kanal 'isporuke'
+  const logEmbed = new EmbedBuilder()
+    .setTitle('📦 Nova Narudžbina Skin-a Za Isporuku!')
+    .setColor('#e5c158')
+    .setDescription(`Korisnik <@${discordId}> (**@${user.kickUsername}**) je naručio skin sa sajta!`)
+    .addFields(
+      { name: 'Skin', value: skin.name, inline: true },
+      { name: 'Cena', value: `${skin.price.toLocaleString()} poena`, inline: true },
+      { name: 'Trade Offer URL', value: finalTradeUrl ? `[Otvori Steam Trade Link](${finalTradeUrl})` : '⚠️ Nije unet Trade Link', inline: false }
+    )
+    .setTimestamp();
+  sendSiteLog('isporuke', logEmbed);
+
+  // Automatsko osvežavanje Discord embeda prodavnice
+  publishLiveShopCategoryEmbeds();
+
+  res.json({ success: true, order: newOrder, points: user.points, skins: data.skins });
+});
+
+// POST /api/admin/orders/fulfill -> Označavanje narudžbine kao isporučene
+app.post('/api/admin/orders/fulfill', (req, res) => {
+  const { orderId } = req.body;
+  const data = readDb();
+
+  const orderIndex = (data.orders || []).findIndex(o => o.id === orderId);
+  if (orderIndex === -1) {
+    return res.status(404).json({ error: 'Narudžbina nije pronađena.' });
+  }
+
+  const order = data.orders[orderIndex];
+  order.status = 'COMPLETED';
+  order.fulfilledAt = new Date().toISOString();
+
+  writeDb(data);
+
+  // Log u Discord kanal 'isporuke'
+  const logEmbed = new EmbedBuilder()
+    .setTitle('✅ Narudžbina Uspešno Isporučena!')
+    .setColor('#53fc18')
+    .setDescription(`Admin je označio da je skin **${order.skinName}** isporučen korisniku <@${order.discordId}> (**@${order.kickUsername}**).`)
+    .setTimestamp();
+  sendSiteLog('isporuke', logEmbed);
+
+  res.json({ success: true, order, orders: data.orders });
+});
+
+// POST /api/admin/orders/cancel -> Otkazivanje narudžbine i povraćaj poena
+app.post('/api/admin/orders/cancel', (req, res) => {
+  const { orderId } = req.body;
+  const data = readDb();
+
+  const orderIndex = (data.orders || []).findIndex(o => o.id === orderId);
+  if (orderIndex === -1) {
+    return res.status(404).json({ error: 'Narudžbina nije pronađena.' });
+  }
+
+  const order = data.orders[orderIndex];
+  order.status = 'CANCELLED';
+
+  // Vraćanje poena korisniku
+  if (data.users[order.discordId]) {
+    data.users[order.discordId].points = (data.users[order.discordId].points || 0) + order.price;
+  }
+
+  // Vraćanje skina na stanje
+  const skin = (data.skins || []).find(s => s.id === order.skinId);
+  if (skin) {
+    skin.stock = (skin.stock || 0) + 1;
+    if (skin.status === 'sold') skin.status = 'available';
+  }
+
+  writeDb(data);
+
+  // Log u Discord kanal 'isporuke'
+  const logEmbed = new EmbedBuilder()
+    .setTitle('❌ Narudžbina Otkazana')
+    .setColor('#ff3333')
+    .setDescription(`Narudžbina za **${order.skinName}** je otkazana. Korisniku <@${order.discordId}> je vraćeno **${order.price.toLocaleString()}** poena.`)
+    .setTimestamp();
+  sendSiteLog('isporuke', logEmbed);
+
+  publishLiveShopCategoryEmbeds();
+
+  res.json({ success: true, order, orders: data.orders, skins: data.skins });
 });
 
 app.post('/api/admin/db/reset', (req, res) => {
