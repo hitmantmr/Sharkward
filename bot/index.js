@@ -156,6 +156,90 @@ async function sendSiteLog(channelName, embed) {
   }
 }
 
+async function publishPartnershipEmbeds() {
+  console.log('🔄 Proveravam i šaljem partnerske embeds...');
+  const csgoSkinsChannelId = '1525282819587313774';
+  const mozzartChannelId = '1525282844472246416';
+
+  // 1. CSGO-Skins Channel
+  try {
+    const channel = await client.channels.fetch(csgoSkinsChannelId);
+    if (channel && channel.isTextBased()) {
+      // Obrišemo stare poruke od bota da ne dupliramo
+      const messages = await channel.messages.fetch({ limit: 50 });
+      const botMsgs = messages.filter(m => m.author.id === client.user.id);
+      for (const m of botMsgs.values()) {
+        await m.delete().catch(() => null);
+      }
+
+      const embed = new EmbedBuilder()
+        .setTitle('🔥 CSGO-Skins.com Partnership')
+        .setColor('#00e5ff')
+        .setDescription('🚀 **Aktiviraj Sharke promo kod i preuzmi besplatan bonus!**\n\nRegistruj se preko našeg partnerskog linka i iskoristi ekskluzivne pogodnosti za sve Sharke gledaoce:')
+        .addFields(
+          { name: '🎁 Besplatan Skin', value: 'Dobijaš besplatan skin odmah pri registraciji i otvaranju prvog kupona!' },
+          { name: '💰 +5% Bonus na Depozit', value: 'Dodatnih +5% bonusa na sve uplate na sajtu (kartice, kripto, skinovi).' },
+          { name: '🔥 Brza Isplata', value: 'Direktno podizanje osvojenih skinova u tvoj Steam inventar bez čekanja.' },
+          { name: '🔑 Promo Kod', value: '```SHARKE```', inline: false }
+        )
+        .setThumbnail('https://items.csgo-skins.com/images/2903b4b382566bbb191fa712a69da6aa3c4cad2f12a708b88878a8bb05599a75.webp')
+        .setFooter({ text: 'Igraj odgovorno (18+) • SHARKAWARD Lojaliti Program' })
+        .setTimestamp();
+
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setLabel('🔗 Registruj se & Preuzmi Bonus')
+          .setURL('https://csgo-skins.com/?ref=SHARKE')
+          .setStyle(ButtonStyle.Link)
+      );
+
+      await channel.send({ embeds: [embed], components: [row] });
+      console.log('✅ CSGO-Skins partnerski embed uspešno postavljen.');
+    }
+  } catch (err) {
+    console.error('❌ Greška pri postavljanju CSGO-Skins partnerskog embeda:', err.message);
+  }
+
+  // 2. Mozzart Bet Channel
+  try {
+    const channel = await client.channels.fetch(mozzartChannelId);
+    if (channel && channel.isTextBased()) {
+      // Obrišemo stare poruke od bota da ne dupliramo
+      const messages = await channel.messages.fetch({ limit: 50 });
+      const botMsgs = messages.filter(m => m.author.id === client.user.id);
+      for (const m of botMsgs.values()) {
+        await m.delete().catch(() => null);
+      }
+
+      const embed = new EmbedBuilder()
+        .setTitle('🏆 Mozzart Bet Partnership')
+        .setColor('#e5c158')
+        .setDescription('👑 **Registruj se uz Sharke promo kod i igraj sa ekskluzivnim bonusima!**\n\nIskoristi najveće kvote na svetu i preuzmi fantastičan paket dobrodošlice:')
+        .addFields(
+          { name: '🎁 Trostruki Bonus', value: 'Fantastičan bonus dobrodošlice na prva 3 depozita!' },
+          { name: '🎰 Besplatni Spinovi & Freebet', value: 'Dodatni spinovi za kazino i besplatne opklade za sve nove registracije.' },
+          { name: '📈 Najveće Kvote na Svetu', value: 'Garantovano najbolji uslovi klađenja za sportske i uživo događaje.' },
+          { name: '🔑 Promo Kod', value: '```AJKULA```', inline: false }
+        )
+        .setThumbnail('https://cdn.discordapp.com/emojis/1109968988636184646.webp?size=128&quality=lossless')
+        .setFooter({ text: 'Igraj odgovorno (18+) • SHARKAWARD Lojaliti Program' })
+        .setTimestamp();
+
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setLabel('🔗 Registruj se na Mozzart Bet')
+          .setURL('https://www.mozzartbet.com')
+          .setStyle(ButtonStyle.Link)
+      );
+
+      await channel.send({ embeds: [embed], components: [row] });
+      console.log('✅ Mozzart Bet partnerski embed uspešno postavljen.');
+    }
+  } catch (err) {
+    console.error('❌ Greška pri postavljanju Mozzart Bet partnerskog embeda:', err.message);
+  }
+}
+
 function getUserProfile(discordId, username) {
   const data = readDb();
   if (!data.users) data.users = {};
@@ -222,6 +306,7 @@ client.once('ready', async () => {
 
   await registerSlashCommands();
   connectToKickWS();
+  publishPartnershipEmbeds();
 
   // Pokrećemo periodično ažuriranje statistike na svakih 6 minuta za sve servere na kojima je bot
   client.guilds.cache.forEach(guild => {
