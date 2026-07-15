@@ -1011,7 +1011,7 @@ async function checkLiveStatus() {
   let ytLiveInfo = null;
 
   try {
-    const targetUrl = 'https://www.youtube.com/@sharke123/live';
+    const targetUrl = 'https://www.youtube.com/@sharkelive/live';
     const response = await fetch(targetUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -1089,8 +1089,9 @@ async function checkLiveStatus() {
       if (channel) {
         try {
           const msg = await channel.send({
-            content: 'SHARKE JE LIVE! UPADAJ @everyone',
-            embeds: [embed]
+            content: '@everyone 🟢 **SHARKE JE UŽIVO NA KICK-U!** UPADAJ 🚀',
+            embeds: [embed],
+            allowedMentions: { parse: ['everyone'] }
           });
           kickState.messages[channel.guild.id] = msg.id;
         } catch (err) {
@@ -1114,8 +1115,9 @@ async function checkLiveStatus() {
             // Ako je poruka obrisana, šaljemo novu
             try {
               const msg = await channel.send({
-                content: 'SHARKE JE LIVE! UPADAJ @everyone',
-                embeds: [embed]
+                content: '@everyone 🟢 **SHARKE JE UŽIVO NA KICK-U!** UPADAJ 🚀',
+                embeds: [embed],
+                allowedMentions: { parse: ['everyone'] }
               });
               kickState.messages[guildId] = msg.id;
               writeDb(dbData);
@@ -1149,10 +1151,10 @@ async function checkLiveStatus() {
       .setColor('#ff0000') // YouTube crvena
       .setThumbnail(SHARKE_AVATAR)
       .addFields(
-        { name: '🚀 Ime kanala', value: `[${ytLiveInfo.author}](https://youtube.com/@sharke123)`, inline: true },
+        { name: '🚀 Ime kanala', value: `[${ytLiveInfo.author}](https://youtube.com/@sharkelive)`, inline: true },
         { name: '👥 Gledaoci', value: `\`${viewersFormatted}\``, inline: true },
         { name: '📜 Naslov', value: `*${ytLiveInfo.title}*`, inline: false },
-        { name: '🔴 Platforma', value: '[YouTube.com/@sharke123](https://youtube.com/@sharke123)', inline: true }
+        { name: '🔴 Platforma', value: '[YouTube.com/@sharkelive](https://youtube.com/@sharkelive)', inline: true }
       )
       .setImage(ytThumbnail)
       .setFooter({ text: 'Sharke Bot • Live Obaveštenje (Ažurirano)' })
@@ -1167,8 +1169,9 @@ async function checkLiveStatus() {
       if (channel) {
         try {
           const msg = await channel.send({
-            content: 'SHARKE JE LIVE! UPADAJ @everyone',
-            embeds: [embed]
+            content: '@everyone 🔴 **SHARKE JE UŽIVO NA YOUTUBE-U!** UPADAJ 🚀',
+            embeds: [embed],
+            allowedMentions: { parse: ['everyone'] }
           });
           ytState.messages[channel.guild.id] = msg.id;
         } catch (err) {
@@ -1192,8 +1195,9 @@ async function checkLiveStatus() {
             // Ako je poruka obrisana, šaljemo novu
             try {
               const msg = await channel.send({
-                content: 'SHARKE JE LIVE! UPADAJ @everyone',
-                embeds: [embed]
+                content: '@everyone 🔴 **SHARKE JE UŽIVO NA YOUTUBE-U!** UPADAJ 🚀',
+                embeds: [embed],
+                allowedMentions: { parse: ['everyone'] }
               });
               ytState.messages[guildId] = msg.id;
               writeDb(dbData);
@@ -1223,7 +1227,7 @@ async function checkNewVideos() {
   const SHARKE_AVATAR = 'https://files.kick.com/images/user/79848252/profile_image/conversion/a113a884-7fab-4cc6-b6af-4e8a3e2f75d7-fullsize.webp';
 
   try {
-    const targetUrl = 'https://www.youtube.com/@sharke123/videos';
+    const targetUrl = 'https://www.youtube.com/@sharkelive/videos';
     const response = await fetch(targetUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -1280,8 +1284,9 @@ async function checkNewVideos() {
                     .setTimestamp();
 
                   await channel.send({
-                    content: 'NOVI VIDEO! UPADAJ @everyone',
-                    embeds: [embed]
+                    content: '@everyone 🎬 **NOVI VIDEO NA YOUTUBE-U!** Gledaj odmah! 🍿',
+                    embeds: [embed],
+                    allowedMentions: { parse: ['everyone'] }
                   });
                   console.log('✅ Notifikacija za novi video uspešno poslata!');
                 }
