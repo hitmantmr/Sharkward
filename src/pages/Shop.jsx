@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useApp } from '../context/AppContext';
 import { Coins, Filter, Search, ShieldAlert, ArrowRight, Sparkles, Truck, CreditCard, LayoutGrid, Sword, Info, Lock, AlertTriangle } from 'lucide-react';
 
@@ -518,8 +519,8 @@ const Shop = ({ setActiveTab }) => {
       )}
       </div>
 
-      {/* 5. Modal za potvrdu kupovine */}
-      {selectedSkin && (
+      {/* 5. Modal za potvrdu kupovine (Renderovan preko React Portal-a direktno u document.body) */}
+      {selectedSkin && createPortal(
         <div style={styles.modalOverlay} onClick={(e) => { if (e.target === e.currentTarget) setSelectedSkin(null); }}>
           <div style={styles.modal}>
             <h3 style={styles.modalTitle}>Potvrda Kupovine</h3>
@@ -583,7 +584,8 @@ const Shop = ({ setActiveTab }) => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
