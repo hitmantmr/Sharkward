@@ -344,7 +344,7 @@ async function publishLiveShopCategoryEmbeds() {
       } else {
         activeGiveaways.forEach((gw, index) => {
           const valStr = gw.value ? ` | 💵 **Vrednost:** \`${gw.value}\`` : '';
-          const ticketStr = gw.ticketCost ? `\n🎟️ **Ulaznica:** \`${gw.ticketCost} poena\`` : '';
+          const ticketStr = gw.ticketCost ? `\n🎟️ **Ulaznica:** \`$${gw.ticketCost}\`` : '';
           const minDepStr = gw.minDeposit ? ` | 💳 **Min Depozit:** \`${gw.minDeposit}\`` : '';
 
           embed.addFields({
@@ -383,11 +383,14 @@ async function publishLiveShopCategoryEmbeds() {
         await m.delete().catch(() => null);
       }
 
-      const usersArray = Object.entries(data.users || {}).map(([id, u]) => ({
-        id,
-        username: u.username || u.kickUsername || id,
-        points: u.points || 0
-      }));
+      // Samo naloge koji su se uspešno registrovali i povezali svoj Kick nalog
+      const usersArray = Object.entries(data.users || {})
+        .filter(([id, u]) => u.kickUsername && u.kickUsername.trim() !== '')
+        .map(([id, u]) => ({
+          id,
+          username: u.kickUsername || u.username || id,
+          points: u.points || 0
+        }));
 
       usersArray.sort((a, b) => b.points - a.points);
       const top10 = usersArray.slice(0, 10);
@@ -395,7 +398,7 @@ async function publishLiveShopCategoryEmbeds() {
 
       let leaderboardText = '';
       if (top10.length === 0) {
-        leaderboardText = 'Nema podataka u bazi poena.';
+        leaderboardText = 'Trenutno nema registrovanih naloga sa povezanim Kick nalogom.';
       } else {
         leaderboardText = top10.map((u, index) => {
           const medal = medals[index] || `#${index + 1}`;
