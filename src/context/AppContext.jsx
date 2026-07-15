@@ -12,8 +12,8 @@ export const AppProvider = ({ children }) => {
   const getDefaultApiUrl = () => {
     if (typeof window !== 'undefined') {
       const host = window.location.hostname;
-      if (host.includes('sharkaward.com')) {
-        return 'https://api.sharkaward.com/api';
+      if (host.includes('sharkaward.com') || host.includes('github.io')) {
+        return 'https://sharkaward.com/api';
       }
     }
     return 'http://localhost:5000/api';
