@@ -520,8 +520,8 @@ const Shop = ({ setActiveTab }) => {
 
       {/* 5. Modal za potvrdu kupovine */}
       {selectedSkin && (
-        <div style={styles.modalOverlay}>
-          <div style={styles.modal} className="glass">
+        <div style={styles.modalOverlay} onClick={(e) => { if (e.target === e.currentTarget) setSelectedSkin(null); }}>
+          <div style={styles.modal}>
             <h3 style={styles.modalTitle}>Potvrda Kupovine</h3>
             
             <div style={styles.modalBody}>
@@ -1082,11 +1082,9 @@ const styles = {
     position: 'fixed',
     top: 0,
     left: 0,
-    width: '100vw',
-    height: '100vh',
-    backgroundColor: 'rgba(5, 7, 13, 0.75)',
-    backdropFilter: 'blur(10px)',
-    WebkitBackdropFilter: 'blur(10px)',
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -1094,15 +1092,16 @@ const styles = {
     padding: '1rem',
   },
   modal: {
-    maxWidth: '450px',
+    maxWidth: '460px',
     width: '100%',
-    padding: '2rem',
+    backgroundColor: '#0f111a',
+    padding: '1.75rem',
     display: 'flex',
     flexDirection: 'column',
-    gap: '1.5rem',
-    boxShadow: '0 20px 50px rgba(0, 0, 0, 0.6)',
-    border: '1px solid rgba(255, 255, 255, 0.08)',
-    borderRadius: '20px',
+    gap: '1.25rem',
+    boxShadow: '0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 240, 255, 0.12)',
+    border: '1px solid rgba(0, 240, 255, 0.25)',
+    borderRadius: '16px',
   },
   modalTitle: {
     fontSize: '1.3rem',
