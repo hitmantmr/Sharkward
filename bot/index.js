@@ -173,8 +173,8 @@ async function publishPartnershipEmbeds() {
         await m.delete().catch(() => null);
       }
 
-      const logoPath = path.join(__dirname, '../public/img/csgoskins logo.png');
-      const logoAttachment = new AttachmentBuilder(logoPath, { name: 'csgoskins.png' });
+      const logoPath = path.join(__dirname, '../public/img/csgoskins_centered.png');
+      const logoAttachment = new AttachmentBuilder(logoPath, { name: 'csgoskins_centered.png' });
 
       const embed = new EmbedBuilder()
         .setTitle('🔥 CSGO-Skins.com Partnership')
@@ -184,9 +184,9 @@ async function publishPartnershipEmbeds() {
           { name: '🎁 Besplatan Skin', value: 'Dobijaš besplatan skin odmah pri registraciji i otvaranju prvog kupona!' },
           { name: '💰 +5% Bonus na Depozit', value: 'Dodatnih +5% bonusa na sve uplate na sajtu (kartice, kripto, skinovi).' },
           { name: '🔥 Brza Isplata', value: 'Direktno podizanje osvojenih skinova u tvoj Steam inventar bez čekanja.' },
-          { name: '🔑 Promo Kod', value: '```SHARKE```', inline: false }
+          { name: '🔑 Promo Kod', value: '```\n               SHARKE\n```', inline: false }
         )
-        .setImage('attachment://csgoskins.png')
+        .setImage('attachment://csgoskins_centered.png')
         .setFooter({ text: 'Igraj odgovorno (18+) • SHARKAWARD Lojaliti Program' })
         .setTimestamp();
 
@@ -215,8 +215,8 @@ async function publishPartnershipEmbeds() {
         await m.delete().catch(() => null);
       }
 
-      const logoPath = path.join(__dirname, '../public/img/mozzart logo.png');
-      const logoAttachment = new AttachmentBuilder(logoPath, { name: 'mozzart.png' });
+      const logoPath = path.join(__dirname, '../public/img/mozzart_centered.png');
+      const logoAttachment = new AttachmentBuilder(logoPath, { name: 'mozzart_centered.png' });
 
       const embed = new EmbedBuilder()
         .setTitle('🏆 Mozzart Bet Partnership')
@@ -226,9 +226,9 @@ async function publishPartnershipEmbeds() {
           { name: '🎁 Trostruki Bonus', value: 'Fantastičan bonus dobrodošlice na prva 3 depozita!' },
           { name: '🎰 Besplatni Spinovi & Freebet', value: 'Dodatni spinovi za kazino i besplatne opklade za sve nove registracije.' },
           { name: '📈 Najveće Kvote na Svetu', value: 'Garantovano najbolji uslovi klađenja za sportske i uživo događaje.' },
-          { name: '🔑 Promo Kod', value: '```AJKULA```', inline: false }
+          { name: '🔑 Promo Kod', value: '```\n               AJKULA\n```', inline: false }
         )
-        .setImage('attachment://mozzart.png')
+        .setImage('attachment://mozzart_centered.png')
         .setFooter({ text: 'Igraj odgovorno (18+) • SHARKAWARD Lojaliti Program' })
         .setTimestamp();
 
