@@ -109,7 +109,7 @@ const AppContent = () => {
               <div style={{ ...styles.footerLogo, cursor: 'pointer', display: 'flex', alignItems: 'center' }} onClick={() => setActiveTab('home')}>
                 <img 
                   src="./img/logo sharkward.png" 
-                  alt="Sharkward Logo" 
+                  alt="Sharkaward Logo" 
                   style={{ 
                     height: '32px', 
                     width: '32px', 
@@ -121,7 +121,7 @@ const AppContent = () => {
                   }} 
                 />
                 <span>SHARK</span>
-                <span style={styles.logoBlue}>WARD</span>
+                <span style={styles.logoBlue}>AWARD</span>
               </div>
             </div>
 
@@ -204,7 +204,7 @@ const AppContent = () => {
         </div>
 
         <div style={styles.footerBottom}>
-          <p>© 2026 SHARKWARD. Sva prava zadržana. Sajt je napravljen u promotivne svrhe.</p>
+          <p>© 2026 SHARKAWARD. Sva prava zadržana. Sajt je napravljen u promotivne svrhe.</p>
           <div style={styles.footerAdminToggle} onClick={toggleAdminMode}>
             <ShieldCheck size={14} color={isAdmin ? '#e5c158' : 'var(--text-muted)'} />
             <span>Admin status: {isAdmin ? 'Aktivan' : 'Neaktivan'}</span>

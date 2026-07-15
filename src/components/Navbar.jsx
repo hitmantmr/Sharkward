@@ -20,7 +20,7 @@ const Navbar = ({ activeTab, setActiveTab }) => {
         <div style={styles.logo} onClick={() => handleTabClick('home')}>
           <img 
             src="./img/logo sharkward.png" 
-            alt="Sharkward Logo" 
+            alt="Sharkaward Logo" 
             style={{ 
               height: '32px', 
               width: '32px', 
@@ -32,7 +32,7 @@ const Navbar = ({ activeTab, setActiveTab }) => {
             }} 
           />
           <span style={styles.logoText}>SHARK</span>
-          <span style={styles.logoSubtext}>WARD</span>
+          <span style={styles.logoSubtext}>AWARD</span>
           <div style={{
             ...styles.liveIndicator,
             backgroundColor: isLive ? 'rgba(83, 252, 24, 0.1)' : 'rgba(156, 163, 175, 0.1)',

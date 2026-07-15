@@ -2062,7 +2062,7 @@ app.get('/api/auth/discord/simulate', (req, res) => {
           <span>Discord</span>
         </div>
         <h2 class="title">Autorizacija naloga</h2>
-        <p class="subtitle">Aplikacija <strong>SHARKWARD</strong> želi pristup tvom nalogu.</p>
+        <p class="subtitle">Aplikacija <strong>SHARKAWARD</strong> želi pristup tvom nalogu.</p>
         
         <form action="/api/auth/discord/callback" method="GET">
           <input type="hidden" name="code" value="mock_code_123">
@@ -2140,7 +2140,7 @@ app.get('/api/auth/kick/simulate', (req, res) => {
       <div class="card">
         <div class="logo">KICK</div>
         <h2 class="title">Autorizuj Aplikaciju</h2>
-        <p class="subtitle">Aplikacija <strong>SHARKWARD</strong> želi pristup tvom Kick nalogu (prijavljen kao <strong>@${mockUsername}</strong>).</p>
+        <p class="subtitle">Aplikacija <strong>SHARKAWARD</strong> želi pristup tvom Kick nalogu (prijavljen kao <strong>@${mockUsername}</strong>).</p>
         
         <form action="/api/auth/kick/callback" method="GET">
           <input type="hidden" name="code" value="mock_kick_code_456">
