@@ -745,47 +745,42 @@ export const AppProvider = ({ children }) => {
       const res = await fetch(`${API_URL}/admin/users`);
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) return data;
+        if (Array.isArray(data) && data.length > 0) {
+          return data.filter(u => u.kickUsername);
+        }
       }
     } catch (err) {
       console.warn('Greška pri učitavanju liste članova sa servera:', err);
     }
 
-    // Fallback: Ako API ne vrati listu (npr. prosek na Vercel-u), prikazujemo spisak iz baze/leaderboarda i prijavljenog naloga
+    // Fallback: Prikazujemo samo korisnike iz lokalnog stanja koji imaju povezan Kick nalog
     const fallbackList = [];
-    if (user && user.discordId) {
+    if (user && user.discordId && (user.kickUser || user.kickUsername)) {
       fallbackList.push({
         discordId: user.discordId,
-        username: user.discordUser || user.kickUser || 'Sharke_Brat',
-        kickUsername: user.kickUser || 'sharke',
+        username: user.discordUser || user.username || 'Sharke_Brat',
+        kickUsername: user.kickUser || user.kickUsername || '',
         kickAvatar: user.kickAvatar || '',
-        points: user.points || 250,
-        hoursWatched: user.hoursWatched || 15.4,
+        points: user.points || 0,
+        hoursWatched: user.hoursWatched || 0,
         role: isAdmin ? 'Admin' : 'Korisnik'
       });
     }
 
     if (Array.isArray(leaderboard) && leaderboard.length > 0) {
       leaderboard.forEach(l => {
-        if (!fallbackList.some(f => f.kickUsername === l.kickUsername || f.username === l.username)) {
+        if (l.kickUsername && !fallbackList.some(f => f.kickUsername === l.kickUsername || f.username === l.username)) {
           fallbackList.push({
             discordId: l.discordId || 'id_' + (l.kickUsername || l.username),
             username: l.username,
             kickUsername: l.kickUsername,
             kickAvatar: l.kickAvatar,
             points: l.points,
-            hoursWatched: l.hours,
+            hoursWatched: l.hours || 0,
             role: 'Korisnik'
           });
         }
       });
-    }
-
-    if (fallbackList.length === 0) {
-      fallbackList.push(
-        { discordId: '436295751543554050', username: 'sharke_brat', kickUsername: 'sharke', kickAvatar: '', points: 5420, hoursWatched: 42.5, role: 'Admin' },
-        { discordId: '123456789012345678', username: 'kiza_csgo', kickUsername: 'kiza_csgo', kickAvatar: '', points: 3100, hoursWatched: 28.1, role: 'Korisnik' }
-      );
     }
 
     return fallbackList;

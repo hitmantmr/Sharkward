@@ -103,11 +103,11 @@ const Admin = () => {
   useEffect(() => {
     const prefillUsers = () => {
       const list = [];
-      if (user && user.discordId) {
+      if (user && user.discordId && (user.kickUser || user.kickUsername)) {
         list.push({
           discordId: user.discordId,
           username: user.discordUser || user.username || 'Sharke_Brat',
-          kickUsername: user.kickUsername || 'sharke',
+          kickUsername: user.kickUser || user.kickUsername || '',
           kickAvatar: user.kickAvatar || '',
           points: user.points || 0,
           hoursWatched: user.hoursWatched || 0,
@@ -116,7 +116,7 @@ const Admin = () => {
       }
       if (Array.isArray(leaderboard) && leaderboard.length > 0) {
         leaderboard.forEach(l => {
-          if (!list.some(f => f.discordId === l.discordId || f.kickUsername === l.kickUsername)) {
+          if (l.kickUsername && !list.some(f => f.discordId === l.discordId || f.kickUsername === l.kickUsername)) {
             list.push({
               discordId: l.discordId || 'id_' + (l.kickUsername || l.username),
               username: l.username,

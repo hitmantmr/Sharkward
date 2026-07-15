@@ -2988,16 +2988,18 @@ app.post('/api/admin/giveaways/end', (req, res) => {
 // GET /api/admin/users -> Lista svih korisnika i permisija
 app.get('/api/admin/users', (req, res) => {
   const data = readDb();
-  const list = Object.entries(data.users || {}).map(([id, u]) => ({
-    discordId: id,
-    username: u.username || 'Neko',
-    kickUsername: u.kickUsername || null,
-    kickAvatar: u.kickAvatar || '',
-    points: u.points || 0,
-    hoursWatched: Math.round((u.hoursWatched || 0) * 10) / 10,
-    role: u.role || (id === '436295751543554050' ? 'Admin' : 'Korisnik'),
-    linkedAt: u.linkedAt || null
-  }));
+  const list = Object.entries(data.users || {})
+    .filter(([id, u]) => u.kickUsername)
+    .map(([id, u]) => ({
+      discordId: id,
+      username: u.username || 'Neko',
+      kickUsername: u.kickUsername,
+      kickAvatar: u.kickAvatar || '',
+      points: u.points || 0,
+      hoursWatched: Math.round((u.hoursWatched || 0) * 10) / 10,
+      role: u.role || (id === '436295751543554050' ? 'Admin' : 'Korisnik'),
+      linkedAt: u.linkedAt || null
+    }));
   res.json(list);
 });
 

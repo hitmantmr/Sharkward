@@ -2,22 +2,13 @@
   "users": {
     "436295751543554050": {
       "username": "hitmaan25",
-      "points": 1270,
+      "points": 10770,
       "hoursWatched": 0.3334,
       "linkedAt": "2026-07-14T00:00:44.248Z",
       "kickUsername": "Hitmaan",
       "kickAvatar": "https://files.kick.com/images/user/238639/profile_image/conversion/a3f2a63b-9f74-486b-8847-ef508dd71256-medium.webp",
       "kickId": "238639",
       "lastRewardAt": "2026-07-11T22:18:02.528Z"
-    },
-    "1525220477142827038": {
-      "username": "sharke_brat",
-      "points": 500,
-      "hoursWatched": 0,
-      "linkedAt": "2026-07-13T23:39:33.200Z",
-      "kickUsername": null,
-      "kickAvatar": "",
-      "kickId": null
     },
     "1441516036846260246": {
       "username": "arcanebsts",
@@ -46,8 +37,8 @@
   "stats": {
     "youtube": 264000,
     "tiktok": 146100,
-    "kick": 6511,
-    "registered": 94
+    "kick": 6534,
+    "registered": 93
   },
   "skins": [
     {
