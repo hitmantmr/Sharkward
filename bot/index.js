@@ -3003,6 +3003,18 @@ app.get('/api/auth/kick/callback', async (req, res) => {
     } catch (err) {}
   }
   
+  // Slanje log obaveštenja u kanal KICK-VERIFIKACIJA za pravi Kick OAuth
+  try {
+    const embed = new EmbedBuilder()
+      .setTitle('🟢 Kick Nalog Povezan')
+      .setColor('#53fc18')
+      .setDescription(`Korisnik <@${resolvedDiscordId}> je uspešno povezao svoj Kick nalog **${realUsername}**!\nDobio je ulogu **Povezan Kick**.` )
+      .setTimestamp();
+    sendSiteLog('kick-verifikacija', embed);
+  } catch (err) {
+    console.error('⚠️ Greška pri slanju kick loga:', err.message);
+  }
+  
   res.redirect(`${frontendOrigin}/watchtime?success=kick_linked&kick_user=${encodeURIComponent(realUsername)}&kick_id=${kickUserId}&kick_avatar=${encodeURIComponent(realAvatar)}&points=${user.points || 0}&hours=${user.hoursWatched || 0}`);
 });
 
