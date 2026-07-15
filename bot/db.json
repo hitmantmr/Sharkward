@@ -40,7 +40,56 @@
     "kick": 6539,
     "registered": 93
   },
-  "skins": [],
+  "skins": [
+    {
+      "name": "CSGO SKINS - Gift Card $25",
+      "type": "Gift Card",
+      "rarity": "covert",
+      "condition": "",
+      "price": 3250,
+      "image": "/img/giftcards/25usd.svg",
+      "imageUrl": "/img/giftcards/25usd.svg",
+      "estPrice": "$25.00",
+      "stock": 5,
+      "codes": [
+        "bla bla",
+        "bla bla",
+        "bla bla",
+        "bla bla",
+        "bla bla"
+      ],
+      "id": "1784131151262",
+      "status": "available"
+    },
+    {
+      "name": "★ Falchion Knife | Fade",
+      "type": "Knife",
+      "rarity": "covert",
+      "condition": "FN",
+      "price": 28830,
+      "image": "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1d7v6tYK1iLs-SD1iWwOpzj-1gSCGn20l-tmjVmIqhdHmWa1AkCJRyFuUItBW9wNTmY7jh5ADa3o5Fy3-sinhXrnE8OtZmGks",
+      "imageUrl": "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1d7v6tYK1iLs-SD1iWwOpzj-1gSCGn20l-tmjVmIqhdHmWa1AkCJRyFuUItBW9wNTmY7jh5ADa3o5Fy3-sinhXrnE8OtZmGks",
+      "estPrice": "$221.77",
+      "stock": 10,
+      "codes": [],
+      "id": "1784131125937",
+      "status": "available"
+    },
+    {
+      "name": "★ StatTrak™ Falchion Knife | Fade",
+      "type": "Knife",
+      "rarity": "covert",
+      "condition": "FN",
+      "price": 36252,
+      "image": "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1d7v6tYK1iLs-SD1iWwOpzj-1gSCGn20l-tmjVmIqhdHmWa1AkCJRyFuUItBW9wNTmY7jh5ADa3o5Fy3-sinhXrnE8OtZmGks",
+      "imageUrl": "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1d7v6tYK1iLs-SD1iWwOpzj-1gSCGn20l-tmjVmIqhdHmWa1AkCJRyFuUItBW9wNTmY7jh5ADa3o5Fy3-sinhXrnE8OtZmGks",
+      "estPrice": "$278.86",
+      "stock": 5,
+      "codes": [],
+      "id": "1784131083816",
+      "status": "available"
+    }
+  ],
   "giveaways": [
     {
       "id": "gw_stiletto_knife___tiger_tooth__minimal_wear__10_16_2025__12_54_00_AM",

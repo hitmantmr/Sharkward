@@ -102,21 +102,6 @@ function readDb() {
     if (fs.existsSync(dbPath)) {
       const fileData = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
       data = { ...data, ...fileData };
-      
-      // Automatska migracija na nove CS2 CDN slike ako detektujemo staru listu sa slike ili neispravne preklopljene linkove
-      const needsMigration = data.skins && data.skins.some(s => 
-        s.image === 'fade_butterfly' || 
-        s.image === 'pandora_gloves' || 
-        s.image === 'dragon_lore' ||
-        (s.type !== 'GiftCard' && s.image && !s.image.startsWith('http')) ||
-        (s.image && s.image.includes('community.akamai.steamstatic.com')) ||
-        (s.image && s.image.includes('Gz3UqlXOLrx'))
-      );
-      if (needsMigration) {
-        data.skins = initialSkins;
-        fs.writeFileSync(dbPath, JSON.stringify(data, null, 2), 'utf8');
-        console.log('🔄 Baza podataka db.json je uspešno migrirana na nove aktivne CDN linkove!');
-      }
     } else {
       fs.writeFileSync(dbPath, JSON.stringify(data, null, 2), 'utf8');
     }
@@ -2808,16 +2793,20 @@ app.post('/api/admin/skins/add', (req, res) => {
 app.post('/api/admin/skins/delete', (req, res) => {
   const { skinId } = req.body;
   const data = readDb();
-  data.skins = data.skins?.filter(s => s.id !== skinId) || [];
-  writeDb(data);
+  if (skinId) {
+    data.skins = data.skins?.filter(s => s.id && s.id.toString() !== skinId.toString()) || [];
+    writeDb(data);
+  }
   res.json({ success: true, skins: data.skins });
 });
 
 app.post('/api/admin/skins/restock', (req, res) => {
   const { skinId } = req.body;
   const data = readDb();
-  data.skins = data.skins?.map(s => s.id === skinId ? { ...s, status: 'available' } : s) || [];
-  writeDb(data);
+  if (skinId) {
+    data.skins = data.skins?.map(s => s.id && s.id.toString() === skinId.toString() ? { ...s, status: 'available' } : s) || [];
+    writeDb(data);
+  }
   res.json({ success: true, skins: data.skins });
 });
 

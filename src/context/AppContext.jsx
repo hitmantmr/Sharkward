@@ -552,7 +552,8 @@ export const AppProvider = ({ children }) => {
   };
 
   const deleteSkin = async (skinId) => {
-    setSkins(prev => prev.filter(s => s.id !== skinId));
+    if (!skinId) return;
+    setSkins(prev => prev.filter(s => s.id && s.id.toString() !== skinId.toString()));
     try {
       const res = await fetch(`${API_URL}/admin/skins/delete`, {
         method: 'POST',
@@ -570,7 +571,8 @@ export const AppProvider = ({ children }) => {
   };
 
   const restockSkin = async (skinId) => {
-    setSkins(prev => prev.map(s => s.id === skinId ? { ...s, status: 'available' } : s));
+    if (!skinId) return;
+    setSkins(prev => prev.map(s => s.id && s.id.toString() === skinId.toString() ? { ...s, status: 'available' } : s));
     try {
       const res = await fetch(`${API_URL}/admin/skins/restock`, {
         method: 'POST',
