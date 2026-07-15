@@ -177,14 +177,14 @@ async function publishPartnershipEmbeds() {
       const logoAttachment = new AttachmentBuilder(logoPath, { name: 'csgoskins_centered.png' });
 
       const embed = new EmbedBuilder()
-        .setTitle('🔥 CSGO-Skins.com Partnership')
+        .setTitle('🔥 CSGO-Skins.com • Zvanično Partnerstvo')
         .setColor('#00e5ff')
-        .setDescription('🚀 **Aktiviraj Sharke promo kod i preuzmi besplatan bonus!**\n\nRegistruj se preko našeg partnerskog linka i iskoristi ekskluzivne pogodnosti za sve Sharke gledaoce:')
+        .setDescription('🚀 **Aktiviraj Sharke promo kod i preuzmi ekskluzivni bonus!**\n\nRegistruj se preko našeg partnerskog dugmeta ispod i iskoristi sve pogodnosti namenjene Sharke zajednici:')
         .addFields(
-          { name: '🎁 Besplatan Skin', value: 'Dobijaš besplatan skin odmah pri registraciji i otvaranju prvog kupona!' },
-          { name: '💰 +5% Bonus na Depozit', value: 'Dodatnih +5% bonusa na sve uplate na sajtu (kartice, kripto, skinovi).' },
-          { name: '🔥 Brza Isplata', value: 'Direktno podizanje osvojenih skinova u tvoj Steam inventar bez čekanja.' },
-          { name: '🔑 Promo Kod', value: '```\n               SHARKE\n```', inline: false }
+          { name: '🎁 Besplatan Skin', value: '› Preuzmi besplatan skin odmah pri registraciji i otvaranju prvog kupona!' },
+          { name: '💰 +5% Bonus na Depozit', value: '› Dodatnih **+5% bonusa** na sve tvoje uplate (kartice, kripto, skinovi).' },
+          { name: '⚡ Brza Isplata Skinova', value: '› Direktno i momentalno povlačenje osvojenih skinova u tvoj Steam inventar.' },
+          { name: '🔑 Promo Kod', value: '🔑 Kod za aktivaciju: **`SHARKE`**', inline: false }
         )
         .setImage('attachment://csgoskins_centered.png')
         .setFooter({ text: 'Igraj odgovorno (18+) • SHARKAWARD Lojaliti Program' })
@@ -219,14 +219,14 @@ async function publishPartnershipEmbeds() {
       const logoAttachment = new AttachmentBuilder(logoPath, { name: 'mozzart_centered.png' });
 
       const embed = new EmbedBuilder()
-        .setTitle('🏆 Mozzart Bet Partnership')
+        .setTitle('🏆 Mozzart Bet • Zvanično Partnerstvo')
         .setColor('#e5c158')
         .setDescription('👑 **Registruj se uz Sharke promo kod i igraj sa ekskluzivnim bonusima!**\n\nIskoristi najveće kvote na svetu i preuzmi fantastičan paket dobrodošlice:')
         .addFields(
-          { name: '🎁 Trostruki Bonus', value: 'Fantastičan bonus dobrodošlice na prva 3 depozita!' },
-          { name: '🎰 Besplatni Spinovi & Freebet', value: 'Dodatni spinovi za kazino i besplatne opklade za sve nove registracije.' },
-          { name: '📈 Najveće Kvote na Svetu', value: 'Garantovano najbolji uslovi klađenja za sportske i uživo događaje.' },
-          { name: '🔑 Promo Kod', value: '```\n               AJKULA\n```', inline: false }
+          { name: '🎁 Paket Dobrodošlice', value: '› Fantastičan bonus na prva **3 depozita**!' },
+          { name: '🎰 Free Spins & Freebet', value: '› Besplatni spinovi za kazino i besplatne opklade za sve nove igrače.' },
+          { name: '📈 Najveće Kvote na Svetu', value: '› Garantovano najbolji uslovi za sportsko klađenje i uživo mečeve.' },
+          { name: '🔑 Promo Kod', value: '🔑 Kod za aktivaciju: **`AJKULA`**', inline: false }
         )
         .setImage('attachment://mozzart_centered.png')
         .setFooter({ text: 'Igraj odgovorno (18+) • SHARKAWARD Lojaliti Program' })
