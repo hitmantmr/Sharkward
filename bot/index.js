@@ -874,9 +874,9 @@ async function fetchStats() {
     console.log(`✅ Kick (Simuliran/Fallback): ${dbData.stats.kick} followers`);
   }
 
-  // 4. Registrovani (Sajt) - 91 + broj spojenih naloga u bazi
-  const linkedUsersCount = Object.keys(dbData.users || {}).length;
-  dbData.stats.registered = 91 + linkedUsersCount;
+  // 4. Registrovani (Sajt) - tačan broj članova koji su povezani sa Discordom i Kickom
+  const fullyRegisteredCount = Object.values(dbData.users || {}).filter(u => u.kickUsername && u.kickUsername.trim() !== '').length;
+  dbData.stats.registered = fullyRegisteredCount;
 
   writeDb(dbData);
   return dbData.stats;
@@ -2997,12 +2997,12 @@ app.get('/api/auth/kick/callback', async (req, res) => {
 // 1. GET /api/stats -> Globalne statistike
 app.get('/api/stats', (req, res) => {
   const data = readDb();
-  const isLive = (data.liveState?.kick?.isLive) || (data.liveState?.youtube?.isLive) || false;
+  const registeredCount = Object.values(data.users || {}).filter(u => u.kickUsername && u.kickUsername.trim() !== '').length;
   res.json({
     youtube: data.stats?.youtube || 264000,
     tiktok: data.stats?.tiktok || 146100,
     kick: data.stats?.kick || 6310,
-    registered: 91 + Object.keys(data.users || {}).length,
+    registered: registeredCount,
     isLive: isLive
   });
 });
