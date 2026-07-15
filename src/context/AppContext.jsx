@@ -438,7 +438,7 @@ export const AppProvider = ({ children }) => {
 
   const fetchOrders = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/admin/orders`);
+      const res = await fetch(`${API_URL}/admin/orders`);
       if (res.ok) {
         const data = await res.json();
         setOrders(data);
@@ -475,7 +475,7 @@ export const AppProvider = ({ children }) => {
     }
 
     try {
-      const res = await fetch(`${API_URL}/api/orders/create`, {
+      const res = await fetch(`${API_URL}/orders/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -505,7 +505,7 @@ export const AppProvider = ({ children }) => {
 
   const fulfillOrder = async (orderId) => {
     try {
-      const res = await fetch(`${API_URL}/api/admin/orders/fulfill`, {
+      const res = await fetch(`${API_URL}/admin/orders/fulfill`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderId })
@@ -524,7 +524,7 @@ export const AppProvider = ({ children }) => {
 
   const cancelOrder = async (orderId) => {
     try {
-      const res = await fetch(`${API_URL}/api/admin/orders/cancel`, {
+      const res = await fetch(`${API_URL}/admin/orders/cancel`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderId })
