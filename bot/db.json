@@ -2,13 +2,14 @@
   "users": {
     "436295751543554050": {
       "username": "hitmaan25",
-      "points": 2437426,
+      "points": 2245161,
       "hoursWatched": 0.3334,
       "linkedAt": "2026-07-14T00:00:44.248Z",
       "kickUsername": "Hitmaan",
       "kickAvatar": "https://files.kick.com/images/user/238639/profile_image/conversion/a3f2a63b-9f74-486b-8847-ef508dd71256-medium.webp",
       "kickId": "238639",
-      "lastRewardAt": "2026-07-11T22:18:02.528Z"
+      "lastRewardAt": "2026-07-11T22:18:02.528Z",
+      "tradeUrl": "https://steamcommunity.com/tradeoffer/new/?partner=836870968&token=OJqt7rEK"
     },
     "1441516036846260246": {
       "username": "arcanebsts",
@@ -50,10 +51,10 @@
       "image": "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Tk71ruQBH4jYLf-i5U-fe9V7d9JfOaD2uZ0vpJveB7TSW2qhsmtzi6lob-KT-JOlUhC8Z2QOUDsxa6xIe0N7nk5ALWjolMm3793SxAvX0_5-sBUaNz-rqX0V-xn3he8w",
       "imageUrl": "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Tk71ruQBH4jYLf-i5U-fe9V7d9JfOaD2uZ0vpJveB7TSW2qhsmtzi6lob-KT-JOlUhC8Z2QOUDsxa6xIe0N7nk5ALWjolMm3793SxAvX0_5-sBUaNz-rqX0V-xn3he8w",
       "estPrice": "$1478.96",
-      "stock": 1,
+      "stock": 0,
       "codes": [],
       "id": "1784143115943",
-      "status": "available"
+      "status": "sold"
     }
   ],
   "giveaways": [
@@ -161,5 +162,22 @@
         "667758066262867980": "1526347354548998236"
       }
     }
-  }
+  },
+  "orders": [
+    {
+      "id": "ord_1784143690272",
+      "discordId": "436295751543554050",
+      "username": "hitmaan25",
+      "kickUsername": "Hitmaan",
+      "skinId": "1784143115943",
+      "skinName": "★ Specialist Gloves | Marble Fade",
+      "skinImage": "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Tk71ruQBH4jYLf-i5U-fe9V7d9JfOaD2uZ0vpJveB7TSW2qhsmtzi6lob-KT-JOlUhC8Z2QOUDsxa6xIe0N7nk5ALWjolMm3793SxAvX0_5-sBUaNz-rqX0V-xn3he8w",
+      "price": 192265,
+      "estPrice": "$1478.96",
+      "tradeUrl": "https://steamcommunity.com/tradeoffer/new/?partner=836870968&token=OJqt7rEK",
+      "status": "COMPLETED",
+      "createdAt": "2026-07-15T19:28:10.272Z",
+      "fulfilledAt": "2026-07-15T19:28:34.108Z"
+    }
+  ]
 }

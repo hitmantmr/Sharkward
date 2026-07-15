@@ -9,7 +9,17 @@ const initialGiveaways = [];
 const initialLeaderboard = [];
 
 export const AppProvider = ({ children }) => {
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  const getDefaultApiUrl = () => {
+    if (typeof window !== 'undefined') {
+      const host = window.location.hostname;
+      if (host.includes('sharkaward.com')) {
+        return 'https://api.sharkaward.com/api';
+      }
+    }
+    return 'http://localhost:5000/api';
+  };
+
+  const API_URL = import.meta.env.VITE_API_URL || getDefaultApiUrl();
 
   // --- State učitavanje iz localStorage sa try-catch zaštitom ---
   const [user, setUser] = useState(() => {

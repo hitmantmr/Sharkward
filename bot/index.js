@@ -758,7 +758,7 @@ async function fetchKickFollowers() {
 
     const response = await fetch(proxyUrl, {
       headers: {
-        'Origin': 'http://localhost:5173',
+        'Origin': 'https://sharkaward.com',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
       }
     });
@@ -963,8 +963,8 @@ async function checkLiveStatus() {
 
     let response = await fetch(proxyUrl, {
       headers: {
-        'Origin': 'http://localhost:5173',
-        'Referer': 'http://localhost:5173/',
+        'Origin': 'https://sharkaward.com',
+        'Referer': 'https://sharkaward.com/',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
       }
     });
@@ -1688,7 +1688,7 @@ client.on('interactionCreate', async interaction => {
       .setColor('#0062ff')
       .setDescription('Dobrodošli u Sharke lojaliti sistem! Gledajte Kick strim, budite aktivni i osvajajte poene koje možete zameniti za CS2 skinove.')
       .addFields(
-        { name: '🌐 Sajt', value: 'http://localhost:5173', inline: true },
+        { name: '🌐 Sajt', value: 'https://sharkaward.com', inline: true },
         { name: '🎥 Kick kanal', value: '[kick.com/sharke](https://kick.com/sharke)', inline: true }
       )
       .setTimestamp();
@@ -2515,6 +2515,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Pomoćna funkcija za dinamičko dobijanje adrese backend servera (za produkcijski host/domene)
+function getBackendUrl(req) {
+  if (process.env.BACKEND_URL) return process.env.BACKEND_URL.replace(/\/$/, '');
+  const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
+  const host = req.get('host') || 'localhost:5000';
+  return `${protocol}://${host}`;
+}
+
 // Logovanje dolaznih API zahteva radi lakše dijagnostike i otklanjanja grešaka
 app.use((req, res, next) => {
   console.log(`[API REQUEST] ${req.method} ${req.url}`);
@@ -2725,9 +2733,10 @@ app.get('/api/auth/kick/simulate', (req, res) => {
 
 app.get('/api/auth/discord/login', (req, res) => {
   const clientId = process.env.DISCORD_CLIENT_ID || '1525220477142827038';
-  const redirectUri = encodeURIComponent('http://localhost:5000/api/auth/discord/callback');
+  const backendBase = getBackendUrl(req);
+  const redirectUri = encodeURIComponent(process.env.DISCORD_REDIRECT_URI || `${backendBase}/api/auth/discord/callback`);
   
-  // Zapamti odakle je došao korisnik (GitHub Pages ili localhost)
+  // Zapamti odakle je došao korisnik (GitHub Pages, domen ili localhost)
   const clientOrigin = req.query.origin || req.headers.referer || 'https://hitmantmr.github.io/Sharkward';
   const state = encodeURIComponent(clientOrigin);
   
@@ -2738,7 +2747,7 @@ app.get('/api/auth/discord/login', (req, res) => {
 app.get('/api/auth/discord/callback', async (req, res) => {
   const { code, state } = req.query;
   
-  // Odredi ciljnu frontend adresu (npr. https://hitmantmr.github.io/Sharkward ili http://localhost:5173)
+  // Odredi ciljnu frontend adresu
   let frontendOrigin = 'https://hitmantmr.github.io/Sharkward';
   if (state) {
     try {
@@ -2764,7 +2773,8 @@ app.get('/api/auth/discord/callback', async (req, res) => {
   try {
     const clientId = process.env.DISCORD_CLIENT_ID || '1525220477142827038';
     const clientSecret = process.env.DISCORD_CLIENT_SECRET || 'BnvzjKtKeA7EoaA86ZauIQn9Cs_TGG1a';
-    const redirectUri = 'http://localhost:5000/api/auth/discord/callback';
+    const backendBase = getBackendUrl(req);
+    const redirectUri = process.env.DISCORD_REDIRECT_URI || `${backendBase}/api/auth/discord/callback`;
     
     const tokenResponse = await fetch('https://discord.com/api/v10/oauth2/token', {
       method: 'POST',
@@ -2843,7 +2853,8 @@ app.get('/api/auth/kick/login', (req, res) => {
   }
 
   const clientId = process.env.KICK_CLIENT_ID || '01KX73WN1QMYEY1DWB44R79539';
-  const redirectUri = encodeURIComponent('http://localhost:5000/api/auth/kick/callback');
+  const backendBase = getBackendUrl(req);
+  const redirectUri = encodeURIComponent(process.env.KICK_REDIRECT_URI || `${backendBase}/api/auth/kick/callback`);
   
   // Generiši PKCE za Kick OAuth 2.1
   const pkce = generatePKCE();
@@ -2894,7 +2905,8 @@ app.get('/api/auth/kick/callback', async (req, res) => {
     try {
       const clientId = process.env.KICK_CLIENT_ID || '01KX73WN1QMYEY1DWB44R79539';
       const clientSecret = process.env.KICK_CLIENT_SECRET;
-      const redirectUri = 'http://localhost:5000/api/auth/kick/callback';
+      const backendBase = getBackendUrl(req);
+      const redirectUri = process.env.KICK_REDIRECT_URI || `${backendBase}/api/auth/kick/callback`;
       const verifier = app.locals.pkce?.[resolvedDiscordId];
 
       console.log(`🔑 [REAL KICK OAuth] Razmena koda za token. Verifier: ${verifier}`);
