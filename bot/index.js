@@ -2092,13 +2092,14 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
         permissionOverwrites: [
           {
             id: guild.roles.everyone.id,
-            allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.Connect]
+            deny: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.Connect]
           },
           {
             id: member.id,
             allow: [
-              PermissionFlagsBits.ManageChannels,
+              PermissionFlagsBits.ViewChannel,
               PermissionFlagsBits.Connect,
+              PermissionFlagsBits.ManageChannels,
               PermissionFlagsBits.Speak,
               PermissionFlagsBits.MuteMembers,
               PermissionFlagsBits.DeafenMembers,
