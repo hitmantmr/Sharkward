@@ -184,9 +184,8 @@ async function publishPartnershipEmbeds() {
           { name: '🎁 Besplatan Skin', value: '› Preuzmi besplatan skin odmah pri registraciji i otvaranju prvog kupona!' },
           { name: '💰 +5% Bonus na Depozit', value: '› Dodatnih **+5% bonusa** na sve tvoje uplate (kartice, kripto, skinovi).' },
           { name: '⚡ Brza Isplata Skinova', value: '› Direktno i momentalno povlačenje osvojenih skinova u tvoj Steam inventar.' },
-          { name: '🔑 Promo Kod', value: '🔑 Kod za aktivaciju: **`SHARKE`**', inline: false }
+          { name: '🔑 Promo Kod', value: '**`SHARKE`**', inline: false }
         )
-        .setImage('attachment://csgoskins_centered.png')
         .setFooter({ text: 'Igraj odgovorno (18+) • SHARKAWARD Lojaliti Program' })
         .setTimestamp();
 
@@ -197,8 +196,9 @@ async function publishPartnershipEmbeds() {
           .setStyle(ButtonStyle.Link)
       );
 
-      await channel.send({ embeds: [embed], files: [logoAttachment], components: [row] });
-      console.log('✅ CSGO-Skins partnerski embed uspešno postavljen.');
+      await channel.send({ embeds: [embed], components: [row] });
+      await channel.send({ files: [logoAttachment] });
+      console.log('✅ CSGO-Skins partnerski embed i zaseban logo uspešno postavljeni.');
     }
   } catch (err) {
     console.error('❌ Greška pri postavljanju CSGO-Skins partnerskog embeda:', err.message);
@@ -226,9 +226,8 @@ async function publishPartnershipEmbeds() {
           { name: '🎁 Paket Dobrodošlice', value: '› Fantastičan bonus na prva **3 depozita**!' },
           { name: '🎰 Free Spins & Freebet', value: '› Besplatni spinovi za kazino i besplatne opklade za sve nove igrače.' },
           { name: '📈 Najveće Kvote na Svetu', value: '› Garantovano najbolji uslovi za sportsko klađenje i uživo mečeve.' },
-          { name: '🔑 Promo Kod', value: '🔑 Kod za aktivaciju: **`AJKULA`**', inline: false }
+          { name: '🔑 Promo Kod', value: '**`AJKULA`**', inline: false }
         )
-        .setImage('attachment://mozzart_centered.png')
         .setFooter({ text: 'Igraj odgovorno (18+) • SHARKAWARD Lojaliti Program' })
         .setTimestamp();
 
@@ -239,8 +238,9 @@ async function publishPartnershipEmbeds() {
           .setStyle(ButtonStyle.Link)
       );
 
-      await channel.send({ embeds: [embed], files: [logoAttachment], components: [row] });
-      console.log('✅ Mozzart Bet partnerski embed uspešno postavljen.');
+      await channel.send({ embeds: [embed], components: [row] });
+      await channel.send({ files: [logoAttachment] });
+      console.log('✅ Mozzart Bet partnerski embed i zaseban logo uspešno postavljeni.');
     }
   } catch (err) {
     console.error('❌ Greška pri postavljanju Mozzart Bet partnerskog embeda:', err.message);
